@@ -1,0 +1,9 @@
+[submodule "git-training"]
+	path = git-training
+	url = git@github.com:skill-forger/git-training.git
+[submodule "golang-training"]
+	path = golang-training
+	url = git@github.com:skill-forger/golang-training.git
+[submodule "sql-training"]
+	path = sql-training
+	url = git@github.com:skill-forger/sql-training.git
