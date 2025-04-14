@@ -16,9 +16,8 @@
 - `POST /api.myservice.com/v1/user/favorites/bloggers/{:userId}` - Blogger can add another blogger into their following list
 - `DELETE /api.myservice.com/v1/user/favorites/bloggers/{:userId}` - Blogger can remove blogger from their following list
 - `GET /api.myservice.com/v1/user/favorites/bloggers` - Blogger can view all the bloggers from their following list
-- `Blogger can view all the posts of the following bloggers` em thấy giống với
+- `GET /api.myservice.com/v1/posts/bloggers/{:userId}` - Blogger can view all the posts of the following bloggers (em đang hiểu chức năng này là mọi người có thể xem tất cả bài viết của một blogger cụ thể)
 - `POST /api.myservice.com/v1/user/favorites/posts/{:postId}` - Blogger can add a post into their favourite list
-- `GET  /api.myservice.com/v1/posts/bloggers/{:userId}` - Blogger can view all the posts of the blogger
 - `DELETE /api.myservice.com/v1/user/favorites/posts/{:postId}` - Blogger can remove a post from their favourite list
 - `GET /api.myservice.com/v1/user/favorites/posts` - Blogger can view all posts from their favourite list
 
@@ -29,7 +28,6 @@
 - `GET  /api.myservice.com/v1/posts` - Reader/Blogger can view all published blog posts, filter by specific condition
 - `POST /api.myservice.com/v1/user/posts` - Blogger can create new blog post
 - `PUT /api.myservice.com/v1/user/posts/{:postId}` - Blogger can edit current blog post
-
 - `POST /api.myservice.com/v1/user/posts?isDraft = true/false` - Blogger can publish the blog post/ Blogger can draft the blog post to avoid incomplete blog post being published
 - `PUT /api.myservice.com/v1/user/posts/{:postId}/publish` - Blogger can publish the blog post
 
