@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: mysql:9
+    restart: always
+    cap_add:
+      - ALL
+    volumes:
+#      - ./data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=go
+      - MYSQL_USER=go
+      - MYSQL_PASSWORD=gogogo123456
+      - MYSQL_ROOT_PASSWORD=root123!@#
+    ports:
+      - '4406:3306'
+    hostname: go-project-mysql
+    container_name: go-project-mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=go-project-mysql
+      - PMA_PORT=4406
+      - PMA_USER=go
+      - PMA_PASSWORD=gogogo123456
+      - MYSQL_ROOT_PASSWORD=root123!@#
+    ports:
+      - '8080:80'
+    hostname: go-project-phpmyadmin
+    container_name: go-project-phpmyadmin
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
