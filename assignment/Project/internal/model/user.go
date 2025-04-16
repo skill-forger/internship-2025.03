@@ -10,6 +10,7 @@ type User struct {
 	Pseudonym    string `gorm:"type:varchar(100); CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null; uniqueIndex"`
 	ProfileImage string `gorm:"type:text; CHARACTER SET utf8 COLLATE utf8_unicode_ci"`
 	Biography    string `gorm:"type:text; CHARACTER SET utf8 COLLATE utf8_unicode_ci"`
+	Is_verified  bool   `gorm:"type:bool; default:false"`
 	Posts        []Post
 	Comments     []Comment
 	FavoritePost []*Post `gorm:"many2many:favorite_post"`
