@@ -1,0 +1,136 @@
+basePath: /
+definitions:
+  contract.HealthCheckResponse:
+    properties:
+      resource:
+        type: string
+      status:
+        type: string
+    type: object
+  contract.ProfileResponse:
+    properties:
+      biography:
+        type: string
+      created_at:
+        type: string
+      display_name:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      profile_image:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  contract.SignInRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  contract.SignInResponse:
+    properties:
+      expired_at:
+        type: integer
+      token:
+        type: string
+      type:
+        type: string
+      user_id:
+        type: integer
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is the swagger API for golang project layout.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: golang project layout server swagger API
+  version: "1.0"
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates user via predefined credentials and return JWT Token
+      parameters:
+      - description: Sign In Request Payload
+        in: body
+        name: SignInRequest
+        required: true
+        schema:
+          $ref: '#/definitions/contract.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/contract.SignInResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Signs In user into the system
+      tags:
+      - authentication
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Perform server and dependent resource liveness check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.HealthCheckResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Show server liveness
+      tags:
+      - health
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Respond profile detail information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ProfileResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Respond profile detail information
+      tags:
+      - profile
+securityDefinitions:
+  BearerToken:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
