@@ -68,17 +68,13 @@ swag init --parseDependency --parseDependencyLevel 3 -g main.go -g handler.go -d
 ```
 
 ## Server Startup
-1. Create a local environment file from the example
-    ```bash
-    cp local.env.example local.env
-    ```
-2. Edit the `local.env` file with your specific environment settings 
-3. Make sure the database service is open and running
-4. At the root directory, Run the following command
+1. Edit `local.env` file to specific environment configuration
+2. Make sure the database service is open and running
+3. At the root directory, Run the following command
     ```bash
     go run main.go serve
     ```
-5. Migrate database schema and data
+4. Migrate database schema and data
     ```bash
     go run main.go migration migrate --schema --data
     ```
