@@ -22,4 +22,4 @@ coverage.out
 /deployment/local/data/*
 
 # Ignore local.env
-local.env 
+Project\local.env
