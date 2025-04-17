@@ -10,4 +10,5 @@ type User struct {
 	Pseudonym    string
 	ProfileImage string
 	Biography    string
+	IsVerified   bool
 }
