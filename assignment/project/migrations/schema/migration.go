@@ -19,12 +19,6 @@ func NewMigration(db *gorm.DB) *gormigrate.Gormigrate {
 			Rollback: versions.Rollback20250301000000,
 		},
 
-		// {
-		// 	ID:       "20250415000000",
-		// 	Migrate:  versions.Migrate20250415000000,
-		// 	Rollback: versions.Rollback20250415000000,
-		// },
-
 		{
 			ID:       "20250416000000",
 			Migrate:  versions.Migrate20250416000000,
