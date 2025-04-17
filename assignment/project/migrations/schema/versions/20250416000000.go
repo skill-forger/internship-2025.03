@@ -21,7 +21,7 @@ func Migrate20250416000000(db *gorm.DB) error {
 		Body       string  `gorm:"type:text CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null"`
 		Slug       string  `gorm:"type:varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null; unique"`
 		IsPublic   bool    `gorm:"type:tinyint(1); default:false"`
-		UserID     uint    `gorm:"type:bigint(11); unsigned; not null"`
+		UserID     int     `gorm:"type:bigint(11); unsigned; not null"`
 		User       *User   `gorm:"foreignKey:UserID"`
 		FavoriteBy []*User `gorm:"many2many:favorite_post"`
 	}
@@ -29,9 +29,9 @@ func Migrate20250416000000(db *gorm.DB) error {
 	type Comment struct {
 		model.BaseModel
 		Content         string     `gorm:"type:text CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null"`
-		PostID          uint       `gorm:"type:bigint(11); unsigned; not null"`
-		UserID          uint       `gorm:"type:bigint(11); unsigned; not null"`
-		ParentCommentID *uint      `gorm:"type:bigint(11); unsigned"`
+		PostID          int        `gorm:"type:bigint(11); unsigned; not null"`
+		UserID          int        `gorm:"type:bigint(11); unsigned; not null"`
+		ParentCommentID *int       `gorm:"type:bigint(11); unsigned"`
 		User            *User      `gorm:"foreignKey:UserID"`
 		Post            *Post      `gorm:"foreignKey:PostID"`
 		ParentComment   *Comment   `gorm:"foreignKey:ParentCommentID"`
