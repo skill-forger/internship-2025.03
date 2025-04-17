@@ -9,6 +9,7 @@ import (
 func Migrate20250416000000(db *gorm.DB) error {
 
 	type User struct {
+		model.BaseModel
 		IsVerified bool    `gorm:"type:tinyint(1); default:false"`
 		FollowUser []*User `gorm:"many2many:follow_user;joinForeignKey:UserID;joinReferences:FollowUserID"`
 		Followers  []*User `gorm:"many2many:follow_user;joinForeignKey:FollowUserID;joinReferences:UserID"`
