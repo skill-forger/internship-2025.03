@@ -60,21 +60,13 @@ func Migrate20250416000000(db *gorm.DB) error {
 }
 
 func Rollback20250416000000(db *gorm.DB) error {
-	type User struct {
-		model.BaseModel
-	}
+	type User struct{}
 
-	type Post struct {
-		model.BaseModel
-	}
+	type Post struct{}
 
-	type Comment struct {
-		model.BaseModel
-	}
+	type Comment struct{}
 
-	type Tag struct {
-		model.BaseModel
-	}
+	type Tag struct{}
 
 	return db.Migrator().DropTable(
 		&User{},
