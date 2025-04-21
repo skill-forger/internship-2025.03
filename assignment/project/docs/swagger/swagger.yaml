@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  contract.CreateTagRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
   contract.HealthCheckResponse:
     properties:
       resource:
@@ -7,7 +14,18 @@ definitions:
       status:
         type: string
     type: object
-  contract.PostResponse:
+  contract.ListTagResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  contract.PostDetailResponse:
     properties:
       body:
         type: string
@@ -68,14 +86,7 @@ definitions:
       user_id:
         type: integer
     type: object
-  contract.TagRequest:
-    properties:
-      name:
-        type: string
-    required:
-    - name
-    type: object
-  contract.TagResponse:
+  contract.TagDetailResponse:
     properties:
       created_at:
         type: string
@@ -165,7 +176,7 @@ paths:
       summary: Respond profile detail information
       tags:
       - profile
-  /tag:
+  /tags:
     get:
       consumes:
       - application/json
@@ -177,7 +188,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/contract.TagResponse'
+              $ref: '#/definitions/contract.ListTagResponse'
             type: array
         "400":
           description: Bad Request
@@ -190,19 +201,19 @@ paths:
       - application/json
       description: Blogger can create new blog tag
       parameters:
-      - description: Tag Request
+      - description: Create Tag Request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/contract.TagRequest'
+          $ref: '#/definitions/contract.CreateTagRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/contract.TagResponse'
+            $ref: '#/definitions/contract.TagDetailResponse'
         "400":
           description: Bad Request
           schema: {}
@@ -211,7 +222,7 @@ paths:
       summary: Create a new tag
       tags:
       - tag
-  /tag/{id}:
+  /tags/{tagId}:
     delete:
       consumes:
       - application/json
@@ -235,7 +246,7 @@ paths:
       summary: Delete a tag
       tags:
       - tag
-  /tag/{id}/posts:
+  /tags/{tagId}/posts:
     get:
       consumes:
       - application/json
@@ -253,7 +264,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/contract.PostResponse'
+              $ref: '#/definitions/contract.PostDetailResponse'
             type: array
         "400":
           description: Bad Request

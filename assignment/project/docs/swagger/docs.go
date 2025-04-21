@@ -124,7 +124,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/tag": {
+        "/tags": {
             "get": {
                 "description": "Get all blog tags",
                 "consumes": [
@@ -143,7 +143,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/contract.TagResponse"
+                                "$ref": "#/definitions/contract.ListTagResponse"
                             }
                         }
                     },
@@ -172,12 +172,12 @@ const docTemplate = `{
                 "summary": "Create a new tag",
                 "parameters": [
                     {
-                        "description": "Tag Request",
+                        "description": "Create Tag Request",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/contract.TagRequest"
+                            "$ref": "#/definitions/contract.CreateTagRequest"
                         }
                     }
                 ],
@@ -185,7 +185,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/contract.TagResponse"
+                            "$ref": "#/definitions/contract.TagDetailResponse"
                         }
                     },
                     "400": {
@@ -195,7 +195,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/tag/{id}": {
+        "/tags/{tagId}": {
             "delete": {
                 "security": [
                     {
@@ -233,7 +233,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/tag/{id}/posts": {
+        "/tags/{tagId}/posts": {
             "get": {
                 "security": [
                     {
@@ -266,7 +266,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/contract.PostResponse"
+                                "$ref": "#/definitions/contract.PostDetailResponse"
                             }
                         }
                     },
@@ -279,6 +279,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "contract.CreateTagRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "contract.HealthCheckResponse": {
             "type": "object",
             "properties": {
@@ -290,7 +301,24 @@ const docTemplate = `{
                 }
             }
         },
-        "contract.PostResponse": {
+        "contract.ListTagResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "contract.PostDetailResponse": {
             "type": "object",
             "properties": {
                 "body": {
@@ -383,18 +411,7 @@ const docTemplate = `{
                 }
             }
         },
-        "contract.TagRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "contract.TagResponse": {
+        "contract.TagDetailResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
