@@ -1,6 +1,6 @@
 package model
 
-// User represents user table from the database
+// Post represents post table from the database
 type Post struct {
 	BaseModel
 	Tiltle   string
@@ -8,4 +8,5 @@ type Post struct {
 	Slug     string
 	IsPublic bool
 	UserID   int
+	Tags     []*Tag `gorm:"many2many:post_tags;"`
 }

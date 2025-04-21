@@ -7,8 +7,8 @@ import (
 	"golang-project/internal/model"
 )
 
-// prepareSignInResponse transforms the data and returns the Profile Response
-func prepareProfileResponse(o *model.User) *ct.ProfileResponse {
+// PrepareProfileResponse transforms the data and returns the Profile Response
+func PrepareProfileResponse(o *model.User) *ct.ProfileResponse {
 	data := &ct.ProfileResponse{
 		ID:           o.ID,
 		FirstName:    o.FirstName,

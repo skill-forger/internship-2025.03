@@ -13,3 +13,11 @@ type Authentication interface {
 type Profile interface {
 	GetByID(int) (*ct.ProfileResponse, error)
 }
+
+type Tag interface {
+	GetAll() ([]*ct.TagResponse, error)
+	GetByID(int) (*ct.TagResponse, error)
+	GetPostsByID(int) ([]*ct.PostResponse, error)
+	Create(request *ct.TagRequest) (*ct.TagResponse, error)
+	Delete(int) error
+}

@@ -25,5 +25,5 @@ func (s *service) GetByID(id int) (*ct.ProfileResponse, error) {
 		return nil, err
 	}
 
-	return prepareProfileResponse(user), nil
+	return PrepareProfileResponse(user), nil
 }
