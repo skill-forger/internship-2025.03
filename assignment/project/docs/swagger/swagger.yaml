@@ -16,14 +16,10 @@ definitions:
     type: object
   contract.ListTagResponse:
     properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updated_at:
-        type: string
+      tags:
+        items:
+          $ref: '#/definitions/contract.TagDetailResponse'
+        type: array
     type: object
   contract.PostDetailResponse:
     properties:
