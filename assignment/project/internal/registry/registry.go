@@ -3,14 +3,14 @@ package registry
 import (
 	"github.com/labstack/echo/v4"
 	swagger "github.com/swaggo/echo-swagger"
-	"golang-project/internal/registry/tag"
+	_ "golang-project/docs/swagger"
 	"gorm.io/gorm"
 
-	_ "golang-project/docs/swagger"
 	"golang-project/internal/handler"
 	"golang-project/internal/registry/authentication"
 	"golang-project/internal/registry/health"
 	"golang-project/internal/registry/profile"
+	"golang-project/internal/registry/tag"
 	"golang-project/server"
 )
 

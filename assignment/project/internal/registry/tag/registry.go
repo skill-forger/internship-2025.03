@@ -1,11 +1,12 @@
 package tag
 
 import (
+	"gorm.io/gorm"
+
 	"golang-project/internal/handler"
 	hdl "golang-project/internal/handler/tag"
 	repo "golang-project/internal/repository/tag"
 	svc "golang-project/internal/service/tag"
-	"gorm.io/gorm"
 )
 
 // NewRegistry returns a new resource handler for tag API

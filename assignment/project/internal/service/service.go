@@ -1,13 +1,7 @@
 package service
 
 import (
-	"errors"
 	ct "golang-project/internal/contract"
-)
-
-var (
-	ErrNotFound               = errors.New("Not found")
-	ErrTagAssociatedWithPosts = errors.New("cannot delete tag that is associated with posts")
 )
 
 // Authentication represents the service logic of Authentication

@@ -1,9 +1,10 @@
 package tag
 
 import (
+	"gorm.io/gorm"
+
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
-	"gorm.io/gorm"
 )
 
 // repository represents the implementation of repository.Tag
@@ -28,8 +29,5 @@ func (r *repository) Read(id int) (*model.Tag, error) {
 
 // Insert performs insert action into tag table
 func (r *repository) Insert(tag *model.Tag) error {
-	if err := r.db.Create(tag).Error; err != nil {
-		return err
-	}
-	return nil
+	return r.db.Create(tag).Error
 }

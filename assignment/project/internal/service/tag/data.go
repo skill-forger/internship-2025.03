@@ -1,9 +1,10 @@
 package tag
 
 import (
+	"time"
+
 	ct "golang-project/internal/contract"
 	"golang-project/internal/model"
-	"time"
 )
 
 // prepareTagResponse transforms tag model to response DTO
