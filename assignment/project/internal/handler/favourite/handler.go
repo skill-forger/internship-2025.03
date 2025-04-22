@@ -29,15 +29,15 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		IsAuthenticated: true,
 		Register: func(group *echo.Group) {
 			group.PUT("/bloggers/:userId", h.UpdateBloggerFollow)
-			group.GET("/bloggers", h.GetFollowedBloggers)
-			group.GET("/bloggers/posts", h.GetFollowedBloggersPosts)
+			group.GET("/bloggers", h.ListFollowedBloggers)
+			group.GET("/bloggers/posts", h.ListFollowedBloggersPosts)
 			group.PUT("/posts/:postId", h.UpdateFavouritePost)
-			group.GET("/posts", h.GetFavouritePosts)
+			group.GET("/posts", h.ListFavouritePosts)
 		},
 	}
 }
 
-// updateBloggerFollow handles adding/removing blogger from following list
+// UpdateBloggerFollow handles adding/removing blogger from following list
 //
 //	@Summary		Add/remove blogger from following list
 //	@Description	Blogger can add/remove blogger from their following list
@@ -46,9 +46,9 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Produce		json
 //	@Security		BearerToken
 //	@Param			userId	path		int	true	"User ID to follow/unfollow"
-//	@Success		200		{object}	"toggle successful"
+//	@Success		200		{object}	contract.BloggerFollowStatusResponse
 //	@Failure		400		{object}	error
-//	@Router			/favorites/bloggers/{userId} [put]
+//	@Router			/favorites/bloggers/:userId [put]
 func (h *handler) UpdateBloggerFollow(e echo.Context) error {
 	// Placeholder implementation
 	return e.JSON(http.StatusOK, &contract.BloggerFollowStatusResponse{
@@ -57,7 +57,7 @@ func (h *handler) UpdateBloggerFollow(e echo.Context) error {
 	})
 }
 
-// GetFollowedBloggers handles the request to get all bloggers from following list
+// ListFollowedBloggers handles the request to get all bloggers from following list
 //
 //	@Summary		View all followed bloggers
 //	@Description	Blogger can view all the bloggers from their following list
@@ -65,17 +65,17 @@ func (h *handler) UpdateBloggerFollow(e echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerToken
-//	@Success		200	{object}	contract.BloggerListResponse
+//	@Success		200	{object}	contract.ListBloggerResponse
 //	@Failure		400	{object}	error
 //	@Router			/favorites/bloggers [get]
-func (h *handler) GetFollowedBloggers(e echo.Context) error {
+func (h *handler) ListFollowedBloggers(e echo.Context) error {
 	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.BloggerListResponse{
+	return e.JSON(http.StatusOK, &contract.ListBloggerResponse{
 		Bloggers: []contract.ProfileResponse{},
 	})
 }
 
-// GetFollowedBloggersPosts handles the request to get all posts from followed bloggers
+// ListFollowedBloggersPosts handles the request to get all posts from followed bloggers
 //
 //	@Summary		View posts from followed bloggers
 //	@Description	Blogger can view all the posts of the following bloggers
@@ -83,17 +83,17 @@ func (h *handler) GetFollowedBloggers(e echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerToken
-//	@Success		200	{object}	contract.PostListResponse
+//	@Success		200	{object}	contract.ListPostResponse
 //	@Failure		400	{object}	error
 //	@Router			/favorites/bloggers/posts [get]
-func (h *handler) GetFollowedBloggersPosts(e echo.Context) error {
+func (h *handler) ListFollowedBloggersPosts(e echo.Context) error {
 	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.PostListResponse{
+	return e.JSON(http.StatusOK, &contract.ListPostResponse{
 		Posts: []contract.PostDetailResponse{},
 	})
 }
 
-// updateFavouritePost handles adding/removing a post from favourite list
+// UpdateFavouritePost handles adding/removing a post from favourite list
 //
 //	@Summary		Add/remove post from favourite list
 //	@Description	Blogger can add/remove a post from their favourite list
@@ -104,7 +104,7 @@ func (h *handler) GetFollowedBloggersPosts(e echo.Context) error {
 //	@Param			postId	path		int	true	"Post ID to add/remove from favourites"
 //	@Success		200		{object}	contract.PostFavouriteStatusResponse
 //	@Failure		400		{object}	error
-//	@Router			/favorites/posts/{postId} [put]
+//	@Router			/favorites/posts/:postId [put]
 func (h *handler) UpdateFavouritePost(e echo.Context) error {
 	// Placeholder implementation
 	return e.JSON(http.StatusOK, &contract.PostFavouriteStatusResponse{
@@ -113,7 +113,7 @@ func (h *handler) UpdateFavouritePost(e echo.Context) error {
 	})
 }
 
-// GetFavouritePosts handles the request to get all posts from favourite list
+// ListFavouritePosts handles the request to get all posts from favourite list
 //
 //	@Summary		View favourite posts
 //	@Description	Blogger can view all posts from their favourite list
@@ -121,12 +121,12 @@ func (h *handler) UpdateFavouritePost(e echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerToken
-//	@Success		200	{object}	contract.PostListResponse
+//	@Success		200	{object}	contract.ListPostResponse
 //	@Failure		400	{object}	error
 //	@Router			/favorites/posts [get]
-func (h *handler) GetFavouritePosts(e echo.Context) error {
+func (h *handler) ListFavouritePosts(e echo.Context) error {
 	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.PostListResponse{
+	return e.JSON(http.StatusOK, &contract.ListPostResponse{
 		Posts: []contract.PostDetailResponse{},
 	})
 }

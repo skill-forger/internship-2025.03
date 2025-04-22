@@ -12,3 +12,8 @@ type ProfileResponse struct {
 	CreatedAt    string `json:"created_at,omitempty"`
 	UpdatedAt    string `json:"updated_at,omitempty"`
 }
+
+// ListBloggerResponse contains the list of bloggers that the current user is following
+type ListBloggerResponse struct {
+	Bloggers []ProfileResponse `json:"bloggers,omitempty"`
+}
