@@ -107,12 +107,12 @@ func (h *handler) Create(c echo.Context) error {
 // @Accept      json
 // @Produce     json
 // @Security    BearerToken
-// @Param       tagId  path     int  true  "Tag ID"
+// @Param       id  path     int  true  "Tag ID"
 // @Success     204 "No Content"
 // @Failure     400 {object} error
-// @Router      /tags/:tagId [delete]
+// @Router      /tags/:id [delete]
 func (h *handler) Delete(e echo.Context) error {
-	idStr := e.Param("tagId")
+	idStr := e.Param("id")
 
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
