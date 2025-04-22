@@ -37,16 +37,16 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 }
 
 // Create handles the request to create a tag
-// @Summary     Create a new tag
-// @Description Create a new tag with the provided name
-// @Tags        tag
-// @Accept      json
-// @Produce     json
-// @Param       request  body     contract.CreateTagRequest  true  "Create Tag Request"
-// @Success     200      {object} contract.TagDetailResponse "Tag created successfully"
-// @Failure     400      {object} string                    "Invalid request"
-// @Failure     422      {object} string                    "Unprocessable entity"
-// @Router      /tags [post]
+//	@Summary		Create a new tag
+//	@Description	Create a new tag with the provided name
+//	@Tags			tag
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		contract.CreateTagRequest	true	"Create Tag Request"
+//	@Success		200		{object}	contract.TagDetailResponse	"Tag created successfully"
+//	@Failure		400		{object}	string						"Invalid request"
+//	@Failure		422		{object}	string						"Unprocessable entity"
+//	@Router			/tags [post]
 func (h *handler) Create(c echo.Context) error {
 	var req ct.CreateTagRequest
 
