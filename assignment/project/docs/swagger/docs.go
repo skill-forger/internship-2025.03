@@ -126,7 +126,7 @@ const docTemplate = `{
         },
         "/tags": {
             "get": {
-                "description": "Get all blog tags",
+                "description": "Readers/Bloggers can view all blog tags",
                 "consumes": [
                     "application/json"
                 ],
@@ -141,10 +141,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/contract.ListTagResponse"
-                            }
+                            "$ref": "#/definitions/contract.ListTagResponse"
                         }
                     },
                     "400": {
@@ -217,7 +214,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Tag ID",
-                        "name": "id",
+                        "name": "tagId",
                         "in": "path",
                         "required": true
                     }
@@ -235,12 +232,7 @@ const docTemplate = `{
         },
         "/tags/{tagId}/posts": {
             "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Get all blog posts belong to a particular tag",
+                "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
                 "consumes": [
                     "application/json"
                 ],
@@ -255,7 +247,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Tag ID",
-                        "name": "id",
+                        "name": "tagId",
                         "in": "path",
                         "required": true
                     }
@@ -264,10 +256,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/contract.PostDetailResponse"
-                            }
+                            "$ref": "#/definitions/contract.ListPostResponse"
                         }
                     },
                     "400": {
@@ -298,6 +287,17 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "contract.ListPostResponse": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.PostDetailResponse"
+                    }
                 }
             }
         },

@@ -14,6 +14,13 @@ definitions:
       status:
         type: string
     type: object
+  contract.ListPostResponse:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/contract.PostDetailResponse'
+        type: array
+    type: object
   contract.ListTagResponse:
     properties:
       tags:
@@ -176,16 +183,14 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all blog tags
+      description: Readers/Bloggers can view all blog tags
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/contract.ListTagResponse'
-            type: array
+            $ref: '#/definitions/contract.ListTagResponse'
         "400":
           description: Bad Request
           schema: {}
@@ -226,7 +231,7 @@ paths:
       parameters:
       - description: Tag ID
         in: path
-        name: id
+        name: tagId
         required: true
         type: integer
       produces:
@@ -246,11 +251,12 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all blog posts belong to a particular tag
+      description: Readers/Bloggers can view all blog posts belong to a particular
+        tag
       parameters:
       - description: Tag ID
         in: path
-        name: id
+        name: tagId
         required: true
         type: integer
       produces:
@@ -259,14 +265,10 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/contract.PostDetailResponse'
-            type: array
+            $ref: '#/definitions/contract.ListPostResponse'
         "400":
           description: Bad Request
           schema: {}
-      security:
-      - BearerToken: []
       summary: Get all posts for a tag
       tags:
       - tag

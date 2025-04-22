@@ -1,6 +1,6 @@
 package contract
 
-// TagDetailResponse specifies the data and types for tag API response
+// TagDetailResponse represents the detailed information of a tag entity used in the response of GetTagByID.
 type TagDetailResponse struct {
 	ID        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
@@ -8,12 +8,12 @@ type TagDetailResponse struct {
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
-// ListTagResponse specifies the data and types for list tag API response
+// ListTagResponse wraps a list of tag details returned from the ListTags API.
 type ListTagResponse struct {
 	Tags []TagDetailResponse `json:"tags"`
 }
 
-// CreateTagRequest specifies the data and types for tag API request
+// CreateTagRequest defines the structure for creating a new tag, including the validation rule .
 type CreateTagRequest struct {
 	Name string `json:"name" validate:"required"`
 }
