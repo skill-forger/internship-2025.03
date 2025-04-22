@@ -32,14 +32,14 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		Route: h.route,
 		Register: func(group *echo.Group) {
 			group.POST("", h.Create)
-			group.GET("", h.GetAll)
-			group.GET("/:id/posts", h.GetPosts)
+			group.GET("", h.List)
+			group.GET("/:id/posts", h.ListPosts)
 			group.DELETE("/:id", h.Delete)
 		},
 	}
 }
 
-// GetAll handles the request to get all tags
+// List handles the request to get all tags
 // @Summary     Get all tags
 // @Description  Readers/Bloggers can view all blog tags
 // @Tags        tag
@@ -48,11 +48,11 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 // @Success     200 {object}  contract.ListTagResponse
 // @Failure     400 {object} error
 // @Router      /tags [get]
-func (h *handler) GetAll(e echo.Context) error {
+func (h *handler) List(e echo.Context) error {
 	return nil
 }
 
-// GetPosts handles the request to get all posts for a tag
+// ListPosts handles the request to get all posts for a tag
 // @Summary     Get all posts for a tag
 // @Description  Readers/Bloggers can view all blog posts belong to a particular tag
 // @Tags        tag
@@ -61,8 +61,8 @@ func (h *handler) GetAll(e echo.Context) error {
 // @Param       tagId  path     int  true  "Tag ID"
 // @Success     200 {object}  contract.ListPostResponse
 // @Failure     400 {object} error
-// @Router      /tags/{tagId}/posts [get]
-func (h *handler) GetPosts(e echo.Context) error {
+// @Router      /tags/:tagId/posts [get]
+func (h *handler) ListPosts(e echo.Context) error {
 	return nil
 }
 
@@ -108,7 +108,7 @@ func (h *handler) Create(c echo.Context) error {
 // @Param       tagId  path     int  true  "Tag ID"
 // @Success     204 "No Content"
 // @Failure     400 {object} error
-// @Router      /tags/{tagId} [delete]
+// @Router      /tags/:tagId [delete]
 func (h *handler) Delete(e echo.Context) error {
 	return nil
 }
