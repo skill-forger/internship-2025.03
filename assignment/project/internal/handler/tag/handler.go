@@ -41,7 +41,7 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 // @Tags        tag
 // @Accept      json
 // @Produce     json
-// @Success     200 {array}  contract.TagResponse
+// @Success     200 {object} contract.ListTagResponse
 // @Failure     400 {object} error
 // @Router      /tags [get]
 func (h *handler) GetAll(e echo.Context) error {
@@ -51,5 +51,5 @@ func (h *handler) GetAll(e echo.Context) error {
 		return err
 	}
 
-	return e.JSON(http.StatusOK, response.Tags)
+	return e.JSON(http.StatusOK, response)
 }

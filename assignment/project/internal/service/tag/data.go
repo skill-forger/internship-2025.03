@@ -35,6 +35,13 @@ func prepareListTagResponse(o []*model.Tag) *ct.ListTagResponse {
 			ID:   tag.ID,
 			Name: tag.Name,
 		}
+
+		if tag.CreatedAt != nil {
+			data.Tags[i].CreatedAt = tag.CreatedAt.Format(time.RFC3339)
+		}
+		if tag.UpdatedAt != nil {
+			data.Tags[i].UpdatedAt = tag.UpdatedAt.Format(time.RFC3339)
+		}
 	}
 
 	return data
