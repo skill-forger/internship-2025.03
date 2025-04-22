@@ -61,3 +61,13 @@ func GetContextUser(e echo.Context) (*ct.ContextUser, error) {
 
 	return ctxUser, nil
 }
+
+// Favourite represents all favourite resource handler
+type Favourite interface {
+	ResourceHandler
+	UpdateBloggerFollow(echo.Context) error
+	GetFollowedBloggers(echo.Context) error
+	GetFollowedBloggersPosts(echo.Context) error
+	UpdateFavouritePost(echo.Context) error
+	GetFavouritePosts(echo.Context) error
+}
