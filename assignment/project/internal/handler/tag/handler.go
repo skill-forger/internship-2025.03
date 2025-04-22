@@ -54,7 +54,7 @@ func (h *handler) Create(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, "Invalid request")
 	}
 
-	if req.Name == "" || len(strings.TrimSpace(req.Name)) == 0 {
+	if len(strings.TrimSpace(req.Name)) == 0 {
 		return c.JSON(http.StatusUnprocessableEntity, "Name is required")
 	}
 
