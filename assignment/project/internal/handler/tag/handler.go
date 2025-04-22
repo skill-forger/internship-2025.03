@@ -7,7 +7,6 @@ import (
 	svc "golang-project/internal/service"
 	"golang-project/server"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -31,7 +30,6 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		Route: h.route,
 		Register: func(group *echo.Group) {
 			group.POST("", h.Create)
-			group.DELETE("/:id", h.Delete)
 		},
 	}
 }
@@ -66,28 +64,4 @@ func (h *handler) Create(c echo.Context) error {
 
 	// Return created tag
 	return c.JSON(http.StatusOK, createdTag)
-}
-
-// Delete handles the request to delete a tag
-// @Summary     Delete a tag
-// @Description Blogger can delete a tag that does not contain any blog
-// @Tags        tag
-// @Accept      json
-// @Produce     json
-// @Param       id  path     int  true  "Tag ID"
-// @Success     200 "Tag deleted successfully"
-// @Failure     400 {object} string "Invalid request"
-// @Router      /tags/{id} [delete]
-func (h *handler) Delete(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid tag ID")
-	}
-
-	err = h.tagSvc.Delete(id)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Unable to delete tag")
-	}
-
-	return c.JSON(http.StatusOK, "Tag deleted successfully")
 }

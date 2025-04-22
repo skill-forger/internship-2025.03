@@ -33,21 +33,3 @@ func (r *repository) Insert(tag *model.Tag) error {
 	}
 	return nil
 }
-
-// Delete performs delete action into tag table
-func (r *repository) Delete(id int) error {
-	if err := r.db.Delete(&model.Tag{}, id).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-// HasPost checks if a tag is associated with any post
-func (r *repository) HasPost(id int) (bool, error) {
-	var count int64
-	err := r.db.Table("post_tag").Where("tag_id = ?", id).Count(&count).Error
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
-}

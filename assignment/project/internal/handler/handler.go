@@ -47,7 +47,6 @@ type Profile interface {
 type Tag interface {
 	ResourceHandler
 	Create(echo.Context) error
-	Delete(echo.Context) error
 }
 
 // GetContextUser returns the authenticated user in echo Context

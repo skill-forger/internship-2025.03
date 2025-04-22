@@ -31,23 +31,3 @@ func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
 
 	return prepareTagResponse(tag), nil
 }
-
-// Delete a tag by ID
-func (s *service) Delete(id int) error {
-	//Check if the tag exists
-	_, err := s.tagRepo.Read(id)
-	if err != nil {
-		return svc.ErrNotFound
-	}
-
-	//Check if tag is associated with any post
-	hasPost, err := s.tagRepo.HasPost(id)
-	if err != nil {
-		return err
-	}
-	if hasPost {
-		return svc.ErrTagAssociatedWithPosts
-	}
-
-	return s.tagRepo.Delete(id)
-}
