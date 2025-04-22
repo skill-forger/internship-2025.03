@@ -1,18 +1,15 @@
 basePath: /
 definitions:
-  contract.CreatePostRequest:
+  contract.ChangePasswordRequest:
     properties:
-      body:
+      current_password:
         type: string
-      tags:
-        items:
-          type: integer
-        type: array
-      title:
+      new_password:
+        minLength: 8
         type: string
     required:
-    - body
-    - title
+    - current_password
+    - new_password
     type: object
   contract.HealthCheckResponse:
     properties:
@@ -20,50 +17,6 @@ definitions:
         type: string
       status:
         type: string
-    type: object
-  contract.PostListResponse:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      is_public:
-        type: boolean
-      pseudonym:
-        type: string
-      slug:
-        type: string
-      tags:
-        items:
-          type: string
-        type: array
-      title:
-        type: string
-    type: object
-  contract.PostResponse:
-    properties:
-      body:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: integer
-      is_public:
-        type: boolean
-      pseudonym:
-        type: string
-      slug:
-        type: string
-      tags:
-        items:
-          type: string
-        type: array
-      title:
-        type: string
-      updated_at:
-        type: string
-      user_id:
-        type: integer
     type: object
   contract.ProfileResponse:
     properties:
@@ -107,18 +60,51 @@ definitions:
       user_id:
         type: integer
     type: object
-  contract.UpdatePostRequest:
+  contract.SignUpRequest:
     properties:
-      body:
+      email:
         type: string
-      is_public:
-        default: false
-        type: boolean
-      tags:
-        items:
-          type: integer
-        type: array
-      title:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    type: object
+  contract.SignUpResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  contract.UpdateProfileRequest:
+    properties:
+      biography:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      profile_image:
+        type: string
+      pseudonym:
+        type: string
+    type: object
+  contract.VerifyEmailRequest:
+    properties:
+      code:
+        type: string
+    required:
+    - code
+    type: object
+  contract.VerifyEmailResponse:
+    properties:
+      message:
         type: string
     type: object
 host: localhost:3000
@@ -162,6 +148,56 @@ paths:
       summary: Signs In user into the system
       tags:
       - authentication
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Reader can sign up to become a blogger
+      parameters:
+      - description: Sign up request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.SignUpResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Register a new user
+      tags:
+      - authentication
+  /auth/verify:
+    post:
+      consumes:
+      - application/json
+      description: Blogger can verify their email address upon signing up
+      parameters:
+      - description: Email verification request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.VerifyEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.VerifyEmailResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Verify email address
+      tags:
+      - authentication
   /health:
     get:
       consumes:
@@ -180,145 +216,6 @@ paths:
       summary: Show server liveness
       tags:
       - health
-  /posts:
-    get:
-      consumes:
-      - application/json
-      description: Reader/Blogger can view all published posts and filter by specific
-        condition (e.g. tag, author)
-      parameters:
-      - description: Filter by tag
-        in: query
-        name: tag
-        type: string
-      - description: Filter by pseudonym
-        in: query
-        name: pseudonym
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/contract.PostListResponse'
-            type: array
-        "400":
-          description: Bad Request
-          schema: {}
-      security:
-      - BearerToken: []
-      summary: View all published posts
-      tags:
-      - post
-    post:
-      consumes:
-      - application/json
-      description: Blogger can create a new post (default as draft)
-      parameters:
-      - description: Create post request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/contract.CreatePostRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/contract.PostResponse'
-        "400":
-          description: Bad Request
-          schema: {}
-      security:
-      - BearerToken: []
-      summary: Create a new post
-      tags:
-      - post
-  /posts/{postId}:
-    delete:
-      consumes:
-      - application/json
-      description: Blogger can delete their own post
-      parameters:
-      - description: Post ID
-        in: path
-        name: postId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema: {}
-      security:
-      - BearerToken: []
-      summary: Delete a post
-      tags:
-      - post
-    get:
-      consumes:
-      - application/json
-      description: Respond post detail information
-      parameters:
-      - description: Post ID
-        in: path
-        name: postId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/contract.PostResponse'
-        "400":
-          description: Bad Request
-          schema: {}
-      security:
-      - BearerToken: []
-      summary: Respond post detail information
-      tags:
-      - post
-    put:
-      consumes:
-      - application/json
-      description: Blogger can update their post content and toggle publish/draft
-        status
-      parameters:
-      - description: Post ID
-        in: path
-        name: postId
-        required: true
-        type: integer
-      - description: Update post request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/contract.UpdatePostRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/contract.PostResponse'
-        "400":
-          description: Bad Request
-          schema: {}
-      security:
-      - BearerToken: []
-      summary: Update an existing post
-      tags:
-      - post
   /profile:
     get:
       consumes:
@@ -337,6 +234,57 @@ paths:
       security:
       - BearerToken: []
       summary: Respond profile detail information
+      tags:
+      - profile
+    put:
+      consumes:
+      - application/json
+      description: Blogger can update their profile information
+      parameters:
+      - description: Profile update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ProfileResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Update profile information
+      tags:
+      - profile
+  /profile/change-password:
+    put:
+      consumes:
+      - application/json
+      description: Blogger can change their account password
+      parameters:
+      - description: Change password request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Change account password
       tags:
       - profile
 securityDefinitions:

@@ -30,3 +30,26 @@ type SignInResponse struct {
 	Type         string `json:"type,omitempty"`
 	ExpiredAfter int    `json:"expired_at,omitempty"`
 }
+
+// SignUpRequest defines the payload required to create a new user account.
+type SignUpRequest struct {
+	Email     string `json:"email" validate:"required,email"`
+	Password  string `json:"password" validate:"required,min=8"`
+	FirstName string `json:"first_name" validate:"required"`
+	LastName  string `json:"last_name" validate:"required"`
+}
+
+// SignUpResponse defines the data returned after successful registration.
+type SignUpResponse struct {
+	Message string `json:"message"`
+}
+
+// VerifyEmailRequest defines the data structure required to verify a user's email.
+type VerifyEmailRequest struct {
+	Code string `json:"code" validate:"required"`
+}
+
+// VerifyEmailResponse defines the structure of the response after a successful email verification.
+type VerifyEmailResponse struct {
+	Message string `json:"message"`
+}
