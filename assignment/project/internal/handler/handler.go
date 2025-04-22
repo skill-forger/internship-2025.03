@@ -66,8 +66,8 @@ func GetContextUser(e echo.Context) (*ct.ContextUser, error) {
 type Favourite interface {
 	ResourceHandler
 	UpdateBloggerFollow(echo.Context) error
-	GetFollowedBloggers(echo.Context) error
-	GetFollowedBloggersPosts(echo.Context) error
+	ListFollowedBloggers(echo.Context) error
+	ListFollowedBloggersPosts(echo.Context) error
 	UpdateFavouritePost(echo.Context) error
-	GetFavouritePosts(echo.Context) error
+	ListFavouritePosts(echo.Context) error
 }
