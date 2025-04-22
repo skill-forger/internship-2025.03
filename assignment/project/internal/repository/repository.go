@@ -11,3 +11,10 @@ type User interface {
 	Update(*model.User) (*model.User, error)
 	ReadByEmail(string) (*model.User, error)
 }
+
+type Tag interface {
+	Insert(*model.Tag) error
+	Read(int) (*model.Tag, error)
+	Delete(int) error
+	HasPost(int) (bool, error)
+}
