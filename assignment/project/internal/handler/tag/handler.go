@@ -1,7 +1,9 @@
 package tag
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -110,5 +112,14 @@ func (h *handler) Create(c echo.Context) error {
 // @Failure     400 {object} error
 // @Router      /tags/:tagId [delete]
 func (h *handler) Delete(e echo.Context) error {
-	return nil
+	idStr := e.Param("tagId")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, fmt.Sprintf("Invalid tag ID: %s", idStr))
+	}
+
+	fmt.Println("Tag ID to delete:", id)
+
+	return e.JSON(http.StatusNoContent, nil)
 }
