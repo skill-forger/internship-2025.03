@@ -32,11 +32,42 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		Route: h.route,
 		Register: func(group *echo.Group) {
 			group.POST("", h.Create)
+			group.GET("", h.List)
+			group.GET("/:id/posts", h.ListPosts)
+			group.DELETE("/:id", h.Delete)
 		},
 	}
 }
 
+// List handles the request to get all tags
+// @Summary     Get all tags
+// @Description  Readers/Bloggers can view all blog tags
+// @Tags        tag
+// @Accept      json
+// @Produce     json
+// @Success     200 {object}  contract.ListTagResponse
+// @Failure     400 {object} error
+// @Router      /tags [get]
+func (h *handler) List(e echo.Context) error {
+	return nil
+}
+
+// ListPosts handles the request to get all posts for a tag
+// @Summary     Get all posts for a tag
+// @Description  Readers/Bloggers can view all blog posts belong to a particular tag
+// @Tags        tag
+// @Accept      json
+// @Produce     json
+// @Param       tagId  path     int  true  "Tag ID"
+// @Success     200 {object}  contract.ListPostResponse
+// @Failure     400 {object} error
+// @Router      /tags/:tagId/posts [get]
+func (h *handler) ListPosts(e echo.Context) error {
+	return nil
+}
+
 // Create handles the request to create a tag
+//
 //	@Summary		Create a new tag
 //	@Description	Create a new tag with the provided name
 //	@Tags			tag
@@ -65,4 +96,19 @@ func (h *handler) Create(c echo.Context) error {
 
 	// Return created tag
 	return c.JSON(http.StatusOK, createdTag)
+}
+
+// Delete handles the request to delete a tag
+// @Summary     Delete a tag
+// @Description  Blogger can delete a tag that does not contain any blog
+// @Tags        tag
+// @Accept      json
+// @Produce     json
+// @Security    BearerToken
+// @Param       tagId  path     int  true  "Tag ID"
+// @Success     204 "No Content"
+// @Failure     400 {object} error
+// @Router      /tags/:tagId [delete]
+func (h *handler) Delete(e echo.Context) error {
+	return nil
 }

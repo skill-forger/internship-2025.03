@@ -10,3 +10,8 @@ type PostDetailResponse struct {
 	CreatedAt string `json:"created_at,omitempty"`
 	UpdatedAt string `json:"updated_at,omitempty"`
 }
+
+// ListPostResponse specifies the data and types for list post API response
+type ListPostResponse struct {
+	Posts []PostDetailResponse `json:"posts"`
+}
