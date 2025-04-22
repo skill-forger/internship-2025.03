@@ -11,3 +11,8 @@ type User interface {
 	Update(*model.User) (*model.User, error)
 	ReadByEmail(string) (*model.User, error)
 }
+
+// Tag represents the repository actions to the tag table
+type Tag interface {
+	ReadAll() ([]*model.Tag, error)
+}

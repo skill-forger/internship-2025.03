@@ -10,6 +10,7 @@ import (
 )
 
 // ResourceHandler             represents all API resource handler
+//
 //	@title						golang project layout server swagger API
 //	@version					1.0
 //	@description				This is the swagger API for golang project layout.
@@ -40,6 +41,12 @@ type Authentication interface {
 type Profile interface {
 	ResourceHandler
 	Get(echo.Context) error
+}
+
+// Tag represents all tag resource handler
+type Tag interface {
+	ResourceHandler
+	GetAll(echo.Context) error
 }
 
 // GetContextUser returns the authenticated user in echo Context

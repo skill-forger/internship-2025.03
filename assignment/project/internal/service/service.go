@@ -13,3 +13,8 @@ type Authentication interface {
 type Profile interface {
 	GetByID(int) (*ct.ProfileResponse, error)
 }
+
+// Tag represents the service logic of Tag
+type Tag interface {
+	GetAllTags() (*ct.ListTagResponse, error)
+}

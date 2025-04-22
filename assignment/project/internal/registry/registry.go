@@ -10,6 +10,7 @@ import (
 	"golang-project/internal/registry/authentication"
 	"golang-project/internal/registry/health"
 	"golang-project/internal/registry/profile"
+	"golang-project/internal/registry/tag"
 	"golang-project/server"
 )
 
@@ -47,5 +48,6 @@ func initResourceHandlers(db *gorm.DB) []handler.ResourceHandler {
 	return []handler.ResourceHandler{
 		authentication.NewRegistry("/auth", db),
 		profile.NewRegistry("/profile", db),
+		tag.NewRegistry("/tags", db),
 	}
 }
