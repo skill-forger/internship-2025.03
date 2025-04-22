@@ -15,4 +15,6 @@ type User interface {
 type Tag interface {
 	Insert(*model.Tag) error
 	Read(int) (*model.Tag, error)
+	Delete(int) error
+	HasPosts(int) (bool, error)
 }

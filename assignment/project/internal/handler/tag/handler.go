@@ -1,7 +1,6 @@
 package tag
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -110,16 +109,17 @@ func (h *handler) Create(c echo.Context) error {
 // @Param       id  path     int  true  "Tag ID"
 // @Success     204 "No Content"
 // @Failure     400 {object} error
-// @Router      /tags/:id [delete]
+// @Router      /tags/{id} [delete]
 func (h *handler) Delete(e echo.Context) error {
-	idStr := e.Param("id")
-
-	id, err := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		return e.JSON(http.StatusBadRequest, fmt.Sprintf("Invalid tag ID: %s", idStr))
+		return e.JSON(http.StatusBadRequest, "Invalid tag ID")
 	}
 
-	fmt.Println("Tag ID to delete:", id)
+	err = h.tagSvc.Delete(id)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, "Unable to delete tag")
+	}
 
-	return e.JSON(http.StatusNoContent, nil)
+	return e.NoContent(http.StatusNoContent)
 }

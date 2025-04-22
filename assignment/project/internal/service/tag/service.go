@@ -31,3 +31,21 @@ func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
 
 	return prepareTagResponse(tag), nil
 }
+
+// Delete a tag
+func (s *service) Delete(id int) error {
+	_, err := s.tagRepo.Read(id)
+	if err != nil {
+		return err
+	}
+
+	hasPosts, err := s.tagRepo.HasPosts(id)
+	if err != nil {
+		return err
+	}
+	if hasPosts {
+		return err
+	}
+
+	return s.tagRepo.Delete(id)
+}
