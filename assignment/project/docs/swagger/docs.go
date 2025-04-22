@@ -65,6 +65,82 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/sign-up": {
+            "post": {
+                "description": "Reader can sign up to become a blogger",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "Sign up request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/contract.SignUpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/contract.SignUpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/auth/verify": {
+            "post": {
+                "description": "Blogger can verify their email address upon signing up",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Verify email address",
+                "parameters": [
+                    {
+                        "description": "Email verification request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/contract.VerifyEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/contract.VerifyEmailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Perform server and dependent resource liveness check",
@@ -122,44 +198,14 @@ const docTemplate = `{
                         "schema": {}
                     }
                 }
-            }
-        },
-        "/tags": {
-            "get": {
-                "description": "Get all blog tags",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all tags",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/contract.ListTagResponse"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
             },
-            "post": {
+            "put": {
                 "security": [
                     {
                         "BearerToken": []
                     }
                 ],
-                "description": "Blogger can create new blog tag",
+                "description": "Blogger can update their profile information",
                 "consumes": [
                     "application/json"
                 ],
@@ -167,17 +213,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tag"
+                    "profile"
                 ],
-                "summary": "Create a new tag",
+                "summary": "Update profile information",
                 "parameters": [
                     {
-                        "description": "Create Tag Request",
+                        "description": "Profile update request",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/contract.CreateTagRequest"
+                            "$ref": "#/definitions/contract.UpdateProfileRequest"
                         }
                     }
                 ],
@@ -185,7 +231,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/contract.TagDetailResponse"
+                            "$ref": "#/definitions/contract.ProfileResponse"
                         }
                     },
                     "400": {
@@ -195,14 +241,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/tags/{tagId}": {
-            "delete": {
+        "/profile/change-password": {
+            "put": {
                 "security": [
                     {
                         "BearerToken": []
                     }
                 ],
-                "description": "Blogger can delete a tag that does not contain any blog",
+                "description": "Blogger can change their account password",
                 "consumes": [
                     "application/json"
                 ],
@@ -210,65 +256,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tag"
+                    "profile"
                 ],
-                "summary": "Delete a tag",
+                "summary": "Change account password",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/tags/{tagId}/posts": {
-            "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Get all blog posts belong to a particular tag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all posts for a tag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "Change password request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/contract.ChangePasswordRequest"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/contract.PostDetailResponse"
-                            }
-                        }
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -279,14 +283,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "contract.CreateTagRequest": {
+        "contract.ChangePasswordRequest": {
             "type": "object",
             "required": [
-                "name"
+                "current_password",
+                "new_password"
             ],
             "properties": {
-                "name": {
+                "current_password": {
                     "type": "string"
+                },
+                "new_password": {
+                    "type": "string",
+                    "minLength": 8
                 }
             }
         },
@@ -301,46 +310,6 @@ const docTemplate = `{
                 }
             }
         },
-        "contract.ListTagResponse": {
-            "type": "object",
-            "properties": {
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/contract.TagDetailResponse"
-                    }
-                }
-            }
-        },
-        "contract.PostDetailResponse": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "contract.ProfileResponse": {
             "type": "object",
             "properties": {
@@ -348,9 +317,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "created_at": {
-                    "type": "string"
-                },
-                "display_name": {
                     "type": "string"
                 },
                 "email": {
@@ -366,6 +332,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "profile_image": {
+                    "type": "string"
+                },
+                "pseudonym": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -405,19 +374,73 @@ const docTemplate = `{
                 }
             }
         },
-        "contract.TagDetailResponse": {
+        "contract.SignUpRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                }
+            }
+        },
+        "contract.SignUpResponse": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "contract.UpdateProfileRequest": {
+            "type": "object",
+            "properties": {
+                "biography": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
+                "first_name": {
                     "type": "string"
                 },
-                "updated_at": {
+                "last_name": {
+                    "type": "string"
+                },
+                "profile_image": {
+                    "type": "string"
+                },
+                "pseudonym": {
+                    "type": "string"
+                }
+            }
+        },
+        "contract.VerifyEmailRequest": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "contract.VerifyEmailResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }
