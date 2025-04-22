@@ -2,6 +2,7 @@ package tag
 
 import (
 	ct "golang-project/internal/contract"
+
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
@@ -30,4 +31,14 @@ func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
 	}
 
 	return prepareTagResponse(tag), nil
+}
+
+// GetAllTags executes all tags retrieval logic
+func (s *service) GetAllTags() (*ct.ListTagResponse, error) {
+	tags, err := s.tagRepo.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareListTagResponse(tags), nil
 }

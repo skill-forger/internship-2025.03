@@ -17,6 +17,19 @@ func NewRepository(db *gorm.DB) repo.Tag {
 	return &repository{db: db}
 }
 
+// ReadAllTags finds and returns all tag models
+func (r *repository) ReadAll() ([]*model.Tag, error) {
+	var result []*model.Tag
+
+	query := r.db.Model(&model.Tag{}).Find(&result)
+
+	if err := query.Error; err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 // Read finds and returns the tag model by id
 func (r *repository) Read(id int) (*model.Tag, error) {
 	var tag model.Tag

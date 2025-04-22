@@ -31,6 +31,7 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
 		Route: h.route,
 		Register: func(group *echo.Group) {
+			group.GET("", h.GetAll)
 			group.POST("", h.Create)
 		},
 	}
@@ -65,4 +66,23 @@ func (h *handler) Create(c echo.Context) error {
 
 	// Return created tag
 	return c.JSON(http.StatusOK, createdTag)
+}
+
+// GetAll handles the request to get all tags
+// @Summary     Get all tags
+// @Description  Get all blog tags
+// @Tags        tag
+// @Accept      json
+// @Produce     json
+// @Success     200 {object} contract.ListTagResponse
+// @Failure     400 {object} error
+// @Router      /tags [get]
+func (h *handler) GetAll(e echo.Context) error {
+	response, err := h.tagSvc.GetAllTags()
+
+	if err != nil {
+		return err
+	}
+
+	return e.JSON(http.StatusOK, response)
 }
