@@ -13,3 +13,7 @@ type Authentication interface {
 type Profile interface {
 	GetByID(int) (*ct.ProfileResponse, error)
 }
+
+type Tag interface {
+	Create(string) (*ct.TagDetailResponse, error)
+}
