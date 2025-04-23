@@ -37,7 +37,7 @@ func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
 func (s *service) Delete(id int) error {
 	_, err := s.tagRepo.Read(id)
 	if err != nil {
-		return static.ErrNotFound
+		return static.ErrReadTagID
 	}
 
 	hasPosts, err := s.tagRepo.HasPosts(id)
