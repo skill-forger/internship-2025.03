@@ -1,6 +1,6 @@
 package model
 
-// User represents user table from the database
+// Comment represents comment table from the database
 type Comment struct {
 	BaseModel
 	Content         string
