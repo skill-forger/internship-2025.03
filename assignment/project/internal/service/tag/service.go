@@ -31,3 +31,13 @@ func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
 
 	return prepareTagResponse(tag), nil
 }
+
+// List executes all tags retrieval logic
+func (s *service) List() (*ct.ListTagResponse, error) {
+	tags, err := s.tagRepo.Select()
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareListTagResponse(tags), nil
+}
