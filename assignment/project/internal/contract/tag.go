@@ -10,7 +10,7 @@ type TagDetailResponse struct {
 
 // ListTagResponse specifies the data and types for list tag API response
 type ListTagResponse struct {
-	Tags []TagDetailResponse `json:"tags"`
+	Tags []*TagDetailResponse `json:"tags"`
 }
 
 // CreateTagRequest specifies the data and types for tag API request
