@@ -13,16 +13,15 @@ type PostDetailResponse struct {
 
 // PostResponse defines the full details of a blog post returned by the post detail API,
 type PostResponse struct {
-	ID        int      `json:"id,omitempty"`
-	Title     string   `json:"title,omitempty"`
-	Body      string   `json:"body,omitempty"`
-	Slug      string   `json:"slug,omitempty"`
-	IsPublic  bool     `json:"is_public,omitempty"`
-	UserID    int      `json:"user_id,omitempty"`
-	Pseudonym string   `json:"pseudonym,omitempty"`
-	Tags      []string `json:"tags,omitempty"`
-	CreatedAt string   `json:"created_at,omitempty"`
-	UpdatedAt string   `json:"updated_at,omitempty"`
+	ID          int                 `json:"id,omitempty"`
+	Title       string              `json:"title,omitempty"`
+	Body        string              `json:"body,omitempty"`
+	Slug        string              `json:"slug,omitempty"`
+	IsPublished bool                `json:"is_published,omitempty"`
+	User        ProfileResponse     `json:"user,omitempty"`
+	Tags        []TagDetailResponse `json:"tags,omitempty"`
+	CreatedAt   string              `json:"created_at,omitempty"`
+	UpdatedAt   string              `json:"updated_at,omitempty"`
 }
 
 // ListPostResponse defines the summary information of a blog post used in list endpoints,
@@ -32,17 +31,19 @@ type ListPostResponse struct {
 
 // CreatePostRequest represents the required and optional data needed to create a new blog post.
 type CreatePostRequest struct {
-	Title string   `json:"title" validate:"required"`
-	Body  string   `json:"body" validate:"required"`
-	Tags  []string `json:"tags,omitempty"`
+	UserID      int                 `json:"user_id"`
+	IsPublished bool                `json:"is_published,omitempty" default:"false"`
+	Title       string              `json:"title" validate:"required"`
+	Body        string              `json:"body" validate:"required"`
+	Tags        []TagDetailResponse `json:"tags,omitempty"`
 }
 
-// UpdatePostRequest represents the fields that can be updated in an existing blog post.
-type UpdatePostRequest struct {
-	Title    string   `json:"title,omitempty"`
-	Body     string   `json:"body,omitempty"`
-	Tags     []string `json:"tags,omitempty"`
-	IsPublic bool     `json:"is_public" default:"false"`
+// ListPostRequest represents the fields that can be updated in an existing blog post.
+type ListPostRequest struct {
+	Title       string              `json:"title,omitempty"`
+	Body        string              `json:"body,omitempty"`
+	Tags        []TagDetailResponse `json:"tags,omitempty"`
+	IsPublished bool                `json:"is_published"`
 }
 
 // PostQuery defines the filter parameters for retrieving posts.
@@ -50,4 +51,6 @@ type PostQuery struct {
 	Tag       string `query:"tag"`
 	Pseudonym string `query:"pseudonym"`
 	Title     string `query:"title"`
+	Limit     int    `query:"limit"`  // Number of posts to return
+	Offset    int    `query:"offset"` // Starting point for pagination
 }

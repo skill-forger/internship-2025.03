@@ -1,5 +1,24 @@
 basePath: /
 definitions:
+  contract.CreatePostRequest:
+    properties:
+      body:
+        type: string
+      is_published:
+        default: false
+        type: boolean
+      tags:
+        items:
+          $ref: '#/definitions/contract.TagDetailResponse'
+        type: array
+      title:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - body
+    - title
+    type: object
   contract.CreateTagRequest:
     properties:
       name:
@@ -14,11 +33,24 @@ definitions:
       status:
         type: string
     type: object
+  contract.ListPostRequest:
+    properties:
+      body:
+        type: string
+      is_published:
+        type: boolean
+      tags:
+        items:
+          $ref: '#/definitions/contract.TagDetailResponse'
+        type: array
+      title:
+        type: string
+    type: object
   contract.ListPostResponse:
     properties:
       posts:
         items:
-          $ref: '#/definitions/contract.PostDetailResponse'
+          $ref: '#/definitions/contract.PostResponse'
         type: array
     type: object
   contract.ListTagResponse:
@@ -28,7 +60,7 @@ definitions:
           $ref: '#/definitions/contract.TagDetailResponse'
         type: array
     type: object
-  contract.PostDetailResponse:
+  contract.PostResponse:
     properties:
       body:
         type: string
@@ -36,16 +68,20 @@ definitions:
         type: string
       id:
         type: integer
+      is_published:
+        type: boolean
+      slug:
+        type: string
       tags:
         items:
-          type: integer
+          $ref: '#/definitions/contract.TagDetailResponse'
         type: array
       title:
         type: string
       updated_at:
         type: string
-      user_id:
-        type: integer
+      user:
+        $ref: '#/definitions/contract.ProfileResponse'
     type: object
   contract.ProfileResponse:
     properties:
@@ -159,6 +195,148 @@ paths:
       summary: Show server liveness
       tags:
       - health
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: Reader/Blogger can view all published posts and filter by specific
+        condition (e.g. tag, author)
+      parameters:
+      - description: Number of posts to return
+        in: query
+        name: limit
+        type: integer
+      - description: Starting point for pagination
+        in: query
+        name: offset
+        type: integer
+      - in: query
+        name: pseudonym
+        type: string
+      - in: query
+        name: tag
+        type: string
+      - in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: View all published posts
+      tags:
+      - post
+    post:
+      consumes:
+      - application/json
+      description: Blogger can create a new post (default as draft)
+      parameters:
+      - description: Create post request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.PostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Create a new post
+      tags:
+      - post
+  /posts/{postId}:
+    delete:
+      consumes:
+      - application/json
+      description: Blogger can delete their own post
+      parameters:
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Delete a post
+      tags:
+      - post
+    get:
+      consumes:
+      - application/json
+      description: Respond post detail information
+      parameters:
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.PostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Respond post detail information
+      tags:
+      - post
+    put:
+      consumes:
+      - application/json
+      description: Blogger can update their post content and toggle publish/draft
+        status
+      parameters:
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      - description: List post request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.ListPostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.PostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Update an existing post
+      tags:
+      - post
   /profile:
     get:
       consumes:
