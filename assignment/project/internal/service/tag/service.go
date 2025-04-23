@@ -5,6 +5,7 @@ import (
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
+	"golang-project/static"
 )
 
 // service represents the implementation of service.Tag
@@ -36,7 +37,7 @@ func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
 func (s *service) Delete(id int) error {
 	_, err := s.tagRepo.Read(id)
 	if err != nil {
-		return err
+		return static.ErrNotFound
 	}
 
 	hasPosts, err := s.tagRepo.HasPosts(id)
@@ -44,7 +45,7 @@ func (s *service) Delete(id int) error {
 		return err
 	}
 	if hasPosts {
-		return err
+		return static.ErrHasPosts
 	}
 
 	return s.tagRepo.Delete(id)
