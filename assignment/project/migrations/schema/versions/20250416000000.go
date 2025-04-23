@@ -17,13 +17,13 @@ func Migrate20250416000000(db *gorm.DB) error {
 
 	type Post struct {
 		model.BaseModel
-		Title      string  `gorm:"type:varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null"`
-		Body       string  `gorm:"type:text CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null"`
-		Slug       string  `gorm:"type:varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null; unique"`
-		IsPublic   bool    `gorm:"type:tinyint(1); default:false"`
-		UserID     int     `gorm:"type:bigint(11); unsigned; not null"`
-		User       *User   `gorm:"foreignKey:UserID"`
-		FavoriteBy []*User `gorm:"many2many:favorite_post"`
+		Title       string  `gorm:"type:varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null"`
+		Body        string  `gorm:"type:text CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null"`
+		Slug        string  `gorm:"type:varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci; not null; unique"`
+		IsPublished bool    `gorm:"type:tinyint(1); default:false"`
+		UserID      int     `gorm:"type:bigint(11); unsigned; not null"`
+		User        *User   `gorm:"foreignKey:UserID"`
+		FavoriteBy  []*User `gorm:"many2many:favorite_post"`
 	}
 
 	type Comment struct {
