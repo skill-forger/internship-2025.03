@@ -13,7 +13,14 @@ type ProfileResponse struct {
 	UpdatedAt    string `json:"updated_at,omitempty"`
 }
 
-// ListBloggerResponse contains the list of bloggers that the current user is following
-type ListBloggerResponse struct {
-	Bloggers []ProfileResponse `json:"bloggers,omitempty"`
+// ListProfileResponse contains the list of profiles that the current user is following
+type ListProfileResponse struct {
+	Bloggers []*ProfileResponse `json:"bloggers,omitempty"`
+}
+
+// BloggerFollowStatusResponse represents the response when a user follows/unfollows a blogger,
+// containing the user ID and the current following status
+type BloggerFollowStatusResponse struct {
+	UserID      int  `json:"user_id"`
+	IsFollowing bool `json:"is_following"`
 }

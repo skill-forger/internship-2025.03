@@ -81,7 +81,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/contract.ListBloggerResponse"
+                            "$ref": "#/definitions/contract.ListProfileResponse"
                         }
                     },
                     "400": {
@@ -322,31 +322,6 @@
                     }
                 }
             },
-            "get": {
-                "description": "Readers/Bloggers can view all blog tags",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all tags",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListTagResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            },
             "post": {
                 "description": "Create a new tag with the provided name",
                 "consumes": [
@@ -501,17 +476,6 @@
                 }
             }
         },
-        "contract.ListBloggerResponse": {
-            "type": "object",
-            "properties": {
-                "bloggers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/contract.ProfileResponse"
-                    }
-                }
-            }
-        },
         "contract.ListPostResponse": {
             "type": "object",
             "properties": {
@@ -519,6 +483,17 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/contract.PostDetailResponse"
+                    }
+                }
+            }
+        },
+        "contract.ListProfileResponse": {
+            "type": "object",
+            "properties": {
+                "bloggers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.ProfileResponse"
                     }
                 }
             }

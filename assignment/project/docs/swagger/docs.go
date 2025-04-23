@@ -87,185 +87,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/contract.ListBloggerResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/favorites/bloggers/posts": {
-            "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can view all the posts of the following bloggers",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "favourite"
-                ],
-                "summary": "View posts from followed bloggers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/favorites/bloggers/{userId}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can add/remove blogger from their following list",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "favourite"
-                ],
-                "summary": "Add/remove blogger from following list",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID to follow/unfollow",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.BloggerFollowStatusResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/favorites/posts": {
-            "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can view all posts from their favourite list",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "favourite"
-                ],
-                "summary": "View favourite posts",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/favorites/posts/{postId}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can add/remove a post from their favourite list",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "favourite"
-                ],
-                "summary": "Add/remove post from favourite list",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Post ID to add/remove from favourites",
-                        "name": "postId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.PostFavouriteStatusResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/favorites/bloggers": {
-            "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can view all the bloggers from their following list",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "favourite"
-                ],
-                "summary": "View all followed bloggers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListBloggerResponse"
+                            "$ref": "#/definitions/contract.ListProfileResponse"
                         }
                     },
                     "400": {
@@ -506,31 +328,6 @@ const docTemplate = `{
                     }
                 }
             },
-            "get": {
-                "description": "Readers/Bloggers can view all blog tags",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all tags",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListTagResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            },
             "post": {
                 "description": "Create a new tag with the provided name",
                 "consumes": [
@@ -649,80 +446,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/tags/:tagId": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can delete a tag that does not contain any blog",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Delete a tag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "tagId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/tags/:tagId/posts": {
-            "get": {
-                "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all posts for a tag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "tagId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -759,17 +482,6 @@ const docTemplate = `{
                 }
             }
         },
-        "contract.ListBloggerResponse": {
-            "type": "object",
-            "properties": {
-                "bloggers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/contract.ProfileResponse"
-                    }
-                }
-            }
-        },
         "contract.ListPostResponse": {
             "type": "object",
             "properties": {
@@ -777,6 +489,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/contract.PostDetailResponse"
+                    }
+                }
+            }
+        },
+        "contract.ListProfileResponse": {
+            "type": "object",
+            "properties": {
+                "bloggers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.ProfileResponse"
                     }
                 }
             }

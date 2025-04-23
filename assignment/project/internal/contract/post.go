@@ -13,5 +13,12 @@ type PostDetailResponse struct {
 
 // ListPostResponse specifies the data and types for list post API response
 type ListPostResponse struct {
-	Posts []PostDetailResponse `json:"posts"`
+	Posts []*PostDetailResponse `json:"posts"`
+}
+
+// PostFavouriteStatusResponse represents the response when a user marks/unmarks a post as favourite,
+// containing the post ID and the current favourite status
+type PostFavouriteStatusResponse struct {
+	PostID      int  `json:"post_id"`
+	IsFavourite bool `json:"is_favourite"`
 }
