@@ -43,7 +43,7 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 // @Param        postId   path      int    true  "Post ID"
 // @Success      200  {object}  contract.PostResponse
 // @Failure      400  {object}  error
-// @Router       /posts/:postId [get]
+// @Router       /posts/{postId} [get]
 func (h *handler) Get(e echo.Context) error {
 	return nil
 }
@@ -88,7 +88,7 @@ func (h *handler) Create(e echo.Context) error {
 // @Param        request  body      contract.UpdatePostRequest  true  "Update post request"
 // @Success      200      {object}  contract.PostResponse
 // @Failure      400      {object}  error
-// @Router       /posts/:postId [put]
+// @Router       /posts/{postId} [put]
 func (h *handler) Update(e echo.Context) error {
 	return nil
 }
@@ -103,7 +103,7 @@ func (h *handler) Update(e echo.Context) error {
 // @Param        postId   path      int    true  "Post ID"
 // @Success      204      {object}  nil
 // @Failure      400      {object}  error
-// @Router       /posts/:postId [delete]
+// @Router       /posts/{postId} [delete]
 func (h *handler) Delete(e echo.Context) error {
 	return nil
 }
