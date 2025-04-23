@@ -48,7 +48,7 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Param			userId	path		int	true	"User ID to follow/unfollow"
 //	@Success		200		{object}	contract.BloggerFollowStatusResponse
 //	@Failure		400		{object}	error
-//	@Router			/favorites/bloggers/:userId [put]
+//	@Router			/favorites/bloggers/{userId} [put]
 func (h *handler) UpdateBloggerFollow(e echo.Context) error {
 	// Placeholder implementation
 	return e.JSON(http.StatusOK, &contract.BloggerFollowStatusResponse{
@@ -104,7 +104,7 @@ func (h *handler) ListFollowedBloggersPosts(e echo.Context) error {
 //	@Param			postId	path		int	true	"Post ID to add/remove from favourites"
 //	@Success		200		{object}	contract.PostFavouriteStatusResponse
 //	@Failure		400		{object}	error
-//	@Router			/favorites/posts/:postId [put]
+//	@Router			/favorites/posts/{postId} [put]
 func (h *handler) UpdateFavouritePost(e echo.Context) error {
 	// Placeholder implementation
 	return e.JSON(http.StatusOK, &contract.PostFavouriteStatusResponse{
