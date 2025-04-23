@@ -227,7 +227,7 @@
                 }
             }
         },
-        "/tags/:tagId/posts": {
+        "/tags/{id}/posts": {
             "get": {
                 "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
                 "consumes": [
@@ -244,7 +244,7 @@
                     {
                         "type": "integer",
                         "description": "Tag ID",
-                        "name": "tagId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -320,6 +320,12 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "is_published": {
+                    "type": "boolean"
+                },
+                "slug": {
+                    "type": "string"
                 },
                 "tags": {
                     "type": "array",

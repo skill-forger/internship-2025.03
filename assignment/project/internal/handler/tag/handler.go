@@ -2,6 +2,7 @@ package tag
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -64,12 +65,22 @@ func (h *handler) List(e echo.Context) error {
 // @Tags        tag
 // @Accept      json
 // @Produce     json
-// @Param       tagId  path     int  true  "Tag ID"
-// @Success     200 {object}  contract.ListPostResponse
+// @Param       id  path     int  true  "Tag ID"
+// @Success     200 {object} contract.ListPostResponse
 // @Failure     400 {object} error
-// @Router      /tags/:tagId/posts [get]
+// @Router      /tags/{id}/posts [get]
 func (h *handler) ListPosts(e echo.Context) error {
-	return nil
+	id, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid tag id")
+	}
+
+	response, err := h.tagSvc.ListPosts(id)
+	if err != nil {
+		return err
+	}
+
+	return e.JSON(http.StatusOK, response)
 }
 
 // Create handles the request to create a tag

@@ -233,7 +233,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/tags/:tagId/posts": {
+        "/tags/{id}/posts": {
             "get": {
                 "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
                 "consumes": [
@@ -250,7 +250,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Tag ID",
-                        "name": "tagId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -326,6 +326,12 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "is_published": {
+                    "type": "boolean"
+                },
+                "slug": {
+                    "type": "string"
                 },
                 "tags": {
                     "type": "array",

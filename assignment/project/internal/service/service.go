@@ -18,4 +18,5 @@ type Profile interface {
 type Tag interface {
 	Create(string) (*ct.TagDetailResponse, error)
 	List() (*ct.ListTagResponse, error)
+	ListPosts(int) (*ct.ListPostResponse, error)
 }

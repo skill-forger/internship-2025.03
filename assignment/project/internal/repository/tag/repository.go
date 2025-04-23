@@ -40,6 +40,23 @@ func (r *repository) Read(id int) (*model.Tag, error) {
 	return &tag, nil
 }
 
+// SelectPost finds and returns all published post models by tag id
+func (r *repository) SelectPost(id int) ([]*model.Post, error) {
+	var result []*model.Post
+
+	query := r.db.Model(&model.Post{}).
+		Joins("JOIN post_tag ON posts.id =post_tag.post_id").
+		Where("post_tag.tag_id = ?", id).
+		Where("posts.is_published = ?", true).
+		Find(&result)
+
+	if err := query.Error; err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 // Insert performs insert action into tag table
 func (r *repository) Insert(tag *model.Tag) error {
 	return r.db.Create(tag).Error

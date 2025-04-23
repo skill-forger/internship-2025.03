@@ -36,6 +36,10 @@ definitions:
         type: string
       id:
         type: integer
+      is_published:
+        type: boolean
+      slug:
+        type: string
       tags:
         items:
           type: integer
@@ -250,7 +254,7 @@ paths:
       summary: Delete a tag
       tags:
       - tag
-  /tags/:tagId/posts:
+  /tags/{id}/posts:
     get:
       consumes:
       - application/json
@@ -259,7 +263,7 @@ paths:
       parameters:
       - description: Tag ID
         in: path
-        name: tagId
+        name: id
         required: true
         type: integer
       produces:

@@ -17,4 +17,5 @@ type Tag interface {
 	Insert(*model.Tag) error
 	Read(int) (*model.Tag, error)
 	Select() ([]*model.Tag, error)
+	SelectPost(int) ([]*model.Post, error)
 }

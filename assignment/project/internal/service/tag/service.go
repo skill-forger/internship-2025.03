@@ -41,3 +41,13 @@ func (s *service) List() (*ct.ListTagResponse, error) {
 
 	return prepareListTagResponse(tags), nil
 }
+
+// ListPosts executes all posts retrieval logic by tag id
+func (s *service) ListPosts(id int) (*ct.ListPostResponse, error) {
+	posts, err := s.tagRepo.SelectPost(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareListPostResponse(posts), nil
+}
