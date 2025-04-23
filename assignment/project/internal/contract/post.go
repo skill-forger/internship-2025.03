@@ -27,7 +27,7 @@ type PostResponse struct {
 
 // ListPostResponse defines the summary information of a blog post used in list endpoints,
 type ListPostResponse struct {
-	Posts []PostResponse `json:"posts"`
+	Posts []*PostResponse `json:"posts"`
 }
 
 // CreatePostRequest represents the required and optional data needed to create a new blog post.
