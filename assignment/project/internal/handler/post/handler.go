@@ -19,7 +19,6 @@ func NewHandler(route string) hdl.Post {
 	}
 }
 
-// RegisterRoutes registers the handler routes and returns the server.HandlerRegistry
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
 		Route:           h.route,
@@ -56,7 +55,7 @@ func (h *handler) Get(e echo.Context) error {
 //	@Tags			post
 //	@Accept			json
 //	@Produce		json
-//	@Param			filter	query		contract.PostQuery	false	"Filtering parameters"
+//	@Param			filter	query		contract.ListPostRequest	false	"Filtering parameters"
 //	@Success		200		{object}	contract.ListPostResponse
 //	@Failure		400		{object}	error
 //	@Router			/posts [get]
@@ -89,7 +88,7 @@ func (h *handler) Create(e echo.Context) error {
 //	@Produce		json
 //	@Security		BearerToken
 //	@Param			postId	path		int							true	"Post ID"
-//	@Param			request	body		contract.ListPostRequest	true	"List post request"
+//	@Param			request	body		contract.UpdatePostRequest	true	"Update post request"
 //	@Success		200		{object}	contract.PostResponse
 //	@Failure		400		{object}	error
 //	@Router			/posts/{postId} [put]

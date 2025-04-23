@@ -38,19 +38,19 @@ type CreatePostRequest struct {
 	Tags        []TagDetailResponse `json:"tags,omitempty"`
 }
 
-// ListPostRequest represents the fields that can be updated in an existing blog post.
-type ListPostRequest struct {
+// UpdatePostRequest represents the fields that can be updated in an existing blog post.
+type UpdatePostRequest struct {
 	Title       string              `json:"title,omitempty"`
 	Body        string              `json:"body,omitempty"`
 	Tags        []TagDetailResponse `json:"tags,omitempty"`
 	IsPublished bool                `json:"is_published"`
 }
 
-// PostQuery defines the filter parameters for retrieving posts.
-type PostQuery struct {
+// ListPostRequest defines the filter parameters for retrieving posts.
+type ListPostRequest struct {
 	Tag       string `query:"tag"`
 	Pseudonym string `query:"pseudonym"`
 	Title     string `query:"title"`
-	Limit     int    `query:"limit"`  // Number of posts to return
-	Offset    int    `query:"offset"` // Starting point for pagination
+	Page      int    `query:"page"`      // Page number
+	PageSize  int    `query:"page_size"` // Number of posts per page
 }

@@ -108,14 +108,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Number of posts to return",
-                        "name": "limit",
+                        "description": "Page number",
+                        "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Starting point for pagination",
-                        "name": "offset",
+                        "description": "Number of posts per page",
+                        "name": "pageSize",
                         "in": "query"
                     },
                     {
@@ -250,12 +250,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "List post request",
+                        "description": "Update post request",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/contract.ListPostRequest"
+                            "$ref": "#/definitions/contract.UpdatePostRequest"
                         }
                     }
                 ],
@@ -538,26 +538,6 @@ const docTemplate = `{
                 }
             }
         },
-        "contract.ListPostRequest": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "type": "string"
-                },
-                "is_published": {
-                    "type": "boolean"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/contract.TagDetailResponse"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
         "contract.ListPostResponse": {
             "type": "object",
             "properties": {
@@ -692,6 +672,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "contract.UpdatePostRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "is_published": {
+                    "type": "boolean"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.TagDetailResponse"
+                    }
+                },
+                "title": {
                     "type": "string"
                 }
             }

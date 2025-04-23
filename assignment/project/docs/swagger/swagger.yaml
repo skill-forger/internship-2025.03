@@ -33,19 +33,6 @@ definitions:
       status:
         type: string
     type: object
-  contract.ListPostRequest:
-    properties:
-      body:
-        type: string
-      is_published:
-        type: boolean
-      tags:
-        items:
-          $ref: '#/definitions/contract.TagDetailResponse'
-        type: array
-      title:
-        type: string
-    type: object
   contract.ListPostResponse:
     properties:
       posts:
@@ -136,6 +123,19 @@ definitions:
       updated_at:
         type: string
     type: object
+  contract.UpdatePostRequest:
+    properties:
+      body:
+        type: string
+      is_published:
+        type: boolean
+      tags:
+        items:
+          $ref: '#/definitions/contract.TagDetailResponse'
+        type: array
+      title:
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -202,13 +202,13 @@ paths:
       description: Reader/Blogger can view all published posts and filter by specific
         condition (e.g. tag, author)
       parameters:
-      - description: Number of posts to return
+      - description: Page number
         in: query
-        name: limit
+        name: page
         type: integer
-      - description: Starting point for pagination
+      - description: Number of posts per page
         in: query
-        name: offset
+        name: pageSize
         type: integer
       - in: query
         name: pseudonym
@@ -316,12 +316,12 @@ paths:
         name: postId
         required: true
         type: integer
-      - description: List post request
+      - description: Update post request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/contract.ListPostRequest'
+          $ref: '#/definitions/contract.UpdatePostRequest'
       produces:
       - application/json
       responses:
