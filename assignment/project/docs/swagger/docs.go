@@ -97,7 +97,39 @@ const docTemplate = `{
                 }
             }
         },
-        "/favorites/bloggers/:userId": {
+        "/favorites/bloggers/posts": {
+            "get": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "description": "Blogger can view all the posts of the following bloggers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "favourite"
+                ],
+                "summary": "View posts from followed bloggers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/contract.ListPostResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/favorites/bloggers/{userId}": {
             "put": {
                 "security": [
                     {
@@ -129,38 +161,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/contract.BloggerFollowStatusResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/favorites/bloggers/posts": {
-            "get": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can view all the posts of the following bloggers",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "favourite"
-                ],
-                "summary": "View posts from followed bloggers",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListPostResponse"
                         }
                     },
                     "400": {
@@ -202,7 +202,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/favorites/posts/:postId": {
+        "/favorites/posts/{postId}": {
             "put": {
                 "security": [
                     {

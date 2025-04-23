@@ -182,7 +182,7 @@ paths:
       summary: View all followed bloggers
       tags:
       - favourite
-  /favorites/bloggers/:userId:
+  /favorites/bloggers/{userId}:
     put:
       consumes:
       - application/json
@@ -248,7 +248,7 @@ paths:
       summary: View favourite posts
       tags:
       - favourite
-  /favorites/posts/:postId:
+  /favorites/posts/{postId}:
     put:
       consumes:
       - application/json
