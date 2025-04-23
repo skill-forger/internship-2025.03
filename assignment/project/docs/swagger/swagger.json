@@ -501,6 +501,79 @@
                 }
             }
         },
+        "contract.ListBloggerResponse": {
+            "type": "object",
+            "properties": {
+                "bloggers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.ProfileResponse"
+                    }
+                }
+            }
+        },
+        "contract.ListPostResponse": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.PostDetailResponse"
+                    }
+                }
+            }
+        },
+        "contract.ListTagResponse": {
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.TagDetailResponse"
+                    }
+                }
+            }
+        },
+        "contract.PostDetailResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "contract.PostFavouriteStatusResponse": {
+            "type": "object",
+            "properties": {
+                "is_favourite": {
+                    "type": "boolean"
+                },
+                "post_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "contract.ProfileResponse": {
             "type": "object",
             "properties": {

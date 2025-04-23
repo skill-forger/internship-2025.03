@@ -48,15 +48,6 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 // @Success     200 {object} contract.ListTagResponse
 // @Failure     400 {object} error
 // @Router      /tags [get]
-//
-//	@Summary		Get all tags
-//	@Description	Readers/Bloggers can view all blog tags
-//	@Tags			tag
-//	@Accept			json
-//	@Produce		json
-//	@Success		200	{object}	contract.ListTagResponse
-//	@Failure		400	{object}	error
-//	@Router			/tags [get]
 func (h *handler) List(e echo.Context) error {
 	response, err := h.tagSvc.List()
 
