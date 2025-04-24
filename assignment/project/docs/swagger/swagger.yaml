@@ -14,6 +14,43 @@ definitions:
       status:
         type: string
     type: object
+  contract.ListPostResponse:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/contract.PostResponse'
+        type: array
+    type: object
+  contract.ListTagResponse:
+    properties:
+      tags:
+        items:
+          $ref: '#/definitions/contract.TagDetailResponse'
+        type: array
+    type: object
+  contract.PostResponse:
+    properties:
+      body:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_published:
+        type: boolean
+      slug:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/contract.TagDetailResponse'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/contract.ProfileResponse'
+    type: object
   contract.ProfileResponse:
     properties:
       biography:
@@ -147,6 +184,23 @@ paths:
       tags:
       - profile
   /tags:
+    get:
+      consumes:
+      - application/json
+      description: Readers/Bloggers can view all blog tags
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListTagResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Get all tags
+      tags:
+      - tag
     post:
       consumes:
       - application/json
@@ -174,55 +228,6 @@ paths:
           schema:
             type: string
       summary: Create a new tag
-      tags:
-      - tag
-  /tags/:tagId/posts:
-    get:
-      consumes:
-      - application/json
-      description: Readers/Bloggers can view all blog posts belong to a particular
-        tag
-      parameters:
-      - description: Tag ID
-        in: path
-        name: tagId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/contract.ListPostResponse'
-        "400":
-          description: Bad Request
-          schema: {}
-      summary: Get all posts for a tag
-      tags:
-      - tag
-  /tags/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Blogger can delete a tag that does not contain any blog
-      parameters:
-      - description: Tag ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema: {}
-      security:
-      - BearerToken: []
-      summary: Delete a tag
       tags:
       - tag
   /tags/:tagId:

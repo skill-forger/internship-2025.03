@@ -125,6 +125,31 @@ const docTemplate = `{
             }
         },
         "/tags": {
+            "get": {
+                "description": "Readers/Bloggers can view all blog tags",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tag"
+                ],
+                "summary": "Get all tags",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/contract.ListTagResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new tag with the provided name",
                 "consumes": [
@@ -166,80 +191,6 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
-                    }
-                }
-            }
-        },
-        "/tags/:tagId/posts": {
-            "get": {
-                "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all posts for a tag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "tagId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/tags/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can delete a tag that does not contain any blog",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Delete a tag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
                     }
                 }
             }
@@ -339,6 +290,63 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "contract.ListPostResponse": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.PostResponse"
+                    }
+                }
+            }
+        },
+        "contract.ListTagResponse": {
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.TagDetailResponse"
+                    }
+                }
+            }
+        },
+        "contract.PostResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_published": {
+                    "type": "boolean"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.TagDetailResponse"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/contract.ProfileResponse"
                 }
             }
         },
