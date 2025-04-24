@@ -28,10 +28,10 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		Route:           h.route,
 		IsAuthenticated: true,
 		Register: func(group *echo.Group) {
-			group.PUT("/bloggers/:userId", h.UpdateBlogger)
+			group.PUT("/bloggers", h.UpdateBlogger)
 			group.GET("/bloggers", h.ListBloggers)
 			group.GET("/bloggers/posts", h.ListBloggerPosts)
-			group.PUT("/posts/:postId", h.UpdatePost)
+			group.PUT("/posts", h.UpdatePost)
 			group.GET("/posts", h.ListPosts)
 		},
 	}
@@ -45,15 +45,23 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerToken
-//	@Param			userId	path		int	true	"User ID to follow/unfollow"
+//	@Param			request	body		contract.BloggerFollowRequest	true	"Follow/unfollow action with user ID"
 //	@Success		200		{object}	contract.BloggerFollowStatusResponse
 //	@Failure		400		{object}	error
-//	@Router			/favorites/bloggers/{userId} [put]
+//	@Router			/favorites/bloggers [put]
 func (h *handler) UpdateBlogger(e echo.Context) error {
+	var req contract.BloggerFollowRequest
+	if err := e.Bind(&req); err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid request payload",
+		})
+	}
+
 	// Placeholder implementation
+	isFollowing := req.Action == contract.Follow
 	return e.JSON(http.StatusOK, &contract.BloggerFollowStatusResponse{
-		UserID:      1,
-		IsFollowing: true,
+		UserID:      req.UserID,
+		IsFollowing: isFollowing,
 	})
 }
 
@@ -101,15 +109,23 @@ func (h *handler) ListBloggerPosts(e echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerToken
-//	@Param			postId	path		int	true	"Post ID to add/remove from favourites"
+//	@Param			request	body		contract.PostFavouriteRequest	true	"Add/remove post from favourites action with post ID"
 //	@Success		200		{object}	contract.PostFavouriteStatusResponse
 //	@Failure		400		{object}	error
-//	@Router			/favorites/posts/{postId} [put]
+//	@Router			/favorites/posts [put]
 func (h *handler) UpdatePost(e echo.Context) error {
+	var req contract.PostFavouriteRequest
+	if err := e.Bind(&req); err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid request payload",
+		})
+	}
+
 	// Placeholder implementation
+	isFavourite := req.Action == contract.Favourite
 	return e.JSON(http.StatusOK, &contract.PostFavouriteStatusResponse{
-		PostID:      1,
-		IsFavourite: true,
+		PostID:      req.PostID,
+		IsFavourite: isFavourite,
 	})
 }
 

@@ -24,3 +24,16 @@ type BloggerFollowStatusResponse struct {
 	UserID      int  `json:"user_id"`
 	IsFollowing bool `json:"is_following"`
 }
+
+// BloggerFollowAction defines the possible actions for following/unfollowing
+type BloggerFollowAction string
+const (
+	Follow BloggerFollowAction = "follow"
+	Unfollow BloggerFollowAction = "unfollow"
+)
+
+// BloggerFollowRequest represents the request payload for follow/unfollow actions
+type BloggerFollowRequest struct {
+	Action BloggerFollowAction `json:"action" validate:"required,oneof=follow unfollow"`
+	UserID int                 `json:"user_id"`
+}

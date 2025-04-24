@@ -22,3 +22,16 @@ type PostFavouriteStatusResponse struct {
 	PostID      int  `json:"post_id"`
 	IsFavourite bool `json:"is_favourite"`
 }
+
+// PostFavouriteAction defines the possible actions for adding/removing posts from favourites
+type PostFavouriteAction string
+const (
+	Favourite PostFavouriteAction = "favourite"
+	Unfavourite PostFavouriteAction = "unfavourite"
+)
+
+// PostFavouriteRequest represents the request payload for add to/remove from favourites actions
+type PostFavouriteRequest struct {
+	Action PostFavouriteAction `json:"action" validate:"required,oneof=favourite unfavourite"`
+	PostID int                 `json:"post_id"`
+}
