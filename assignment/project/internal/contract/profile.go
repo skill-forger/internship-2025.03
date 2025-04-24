@@ -26,14 +26,15 @@ type BloggerFollowStatusResponse struct {
 }
 
 // BloggerFollowAction defines the possible actions for following/unfollowing
-type BloggerFollowAction string
+type BloggerFollowAction int
+
 const (
-	Follow BloggerFollowAction = "follow"
-	Unfollow BloggerFollowAction = "unfollow"
+	Unfollow BloggerFollowAction = 0
+	Follow   BloggerFollowAction = 1
 )
 
 // BloggerFollowRequest represents the request payload for follow/unfollow actions
 type BloggerFollowRequest struct {
-	Action BloggerFollowAction `json:"action" validate:"required,oneof=follow unfollow"`
+	Action BloggerFollowAction `json:"action" validate:"required,oneof=0 1"`
 	UserID int                 `json:"user_id"`
 }

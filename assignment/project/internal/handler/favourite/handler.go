@@ -45,10 +45,11 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerToken
-//	@Param			request	body		contract.BloggerFollowRequest	true	"Follow/unfollow action with user ID"
+//	@Param			request	body		contract.BloggerFollowRequest	true	"Follow (1) or unfollow (0) a blogger"
 //	@Success		200		{object}	contract.BloggerFollowStatusResponse
 //	@Failure		400		{object}	error
 //	@Router			/favorites/bloggers [put]
+//	@enum			Action	0:Unfollow,1:Follow
 func (h *handler) UpdateBlogger(e echo.Context) error {
 	var req contract.BloggerFollowRequest
 	if err := e.Bind(&req); err != nil {
@@ -109,10 +110,11 @@ func (h *handler) ListBloggerPosts(e echo.Context) error {
 //	@Accept			json
 //	@Produce		json
 //	@Security		BearerToken
-//	@Param			request	body		contract.PostFavouriteRequest	true	"Add/remove post from favourites action with post ID"
+//	@Param			request	body		contract.PostFavouriteRequest	true	"Add to favourite (1) or remove from favourites (0)"
 //	@Success		200		{object}	contract.PostFavouriteStatusResponse
 //	@Failure		400		{object}	error
 //	@Router			/favorites/posts [put]
+//	@enum			Action	0:Unfavourite,1:Favourite
 func (h *handler) UpdatePost(e echo.Context) error {
 	var req contract.PostFavouriteRequest
 	if err := e.Bind(&req); err != nil {
