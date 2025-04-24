@@ -24,3 +24,16 @@ func prepareTagResponse(o *model.Tag) *ct.TagDetailResponse {
 
 	return data
 }
+
+// prepareListTagResponse transforms the data and returns the List Tag Response
+func prepareListTagResponse(o []*model.Tag) *ct.ListTagResponse {
+	data := &ct.ListTagResponse{
+		Tags: make([]*ct.TagDetailResponse, 0, len(o)),
+	}
+
+	for _, tag := range o {
+		data.Tags = append(data.Tags, prepareTagResponse(tag))
+	}
+
+	return data
+}

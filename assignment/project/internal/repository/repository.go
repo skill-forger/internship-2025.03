@@ -17,4 +17,5 @@ type Tag interface {
 	Read(int) (*model.Tag, error)
 	Delete(int) error
 	HasPosts(int) (bool, error)
+	Select() ([]*model.Tag, error)
 }

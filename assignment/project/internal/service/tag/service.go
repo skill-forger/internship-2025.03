@@ -50,3 +50,13 @@ func (s *service) Delete(id int) error {
 
 	return s.tagRepo.Delete(id)
 }
+
+// List executes all tags retrieval logic
+func (s *service) List() (*ct.ListTagResponse, error) {
+	tags, err := s.tagRepo.Select()
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareListTagResponse(tags), nil
+}
