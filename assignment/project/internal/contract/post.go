@@ -1,5 +1,9 @@
 package contract
 
+import (
+	"golang-project/static"
+)
+
 // PostDetailResponse specifies the data and types for post API response
 type PostDetailResponse struct {
 	ID        int    `json:"id,omitempty"`
@@ -53,4 +57,17 @@ type ListPostRequest struct {
 	Title     string `query:"title"`
 	Page      int    `query:"page"`      // Page number
 	PageSize  int    `query:"page_size"` // Number of posts per page
+}
+
+// PostFavouriteStatusResponse represents the response when a user marks/unmarks a post as favourite,
+// containing the post ID and the current favourite status
+type PostFavouriteStatusResponse struct {
+	PostID      int  `json:"post_id"`
+	IsFavourite bool `json:"is_favourite"`
+}
+
+// PostFavouriteRequest represents the request payload for add to/remove from favourites actions
+type PostFavouriteRequest struct {
+	Action static.PostFavouriteAction `json:"action" validate:"required,oneof=favourite unfavourite"`
+	PostID int                        `json:"post_id"`
 }

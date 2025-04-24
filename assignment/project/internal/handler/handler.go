@@ -62,6 +62,16 @@ type Post interface {
 	Delete(echo.Context) error
 }
 
+// Favourite represents all favourite resource handler
+type Favourite interface {
+	ResourceHandler
+	UpdateBlogger(echo.Context) error
+	ListBloggers(echo.Context) error
+	ListBloggerPosts(echo.Context) error
+	UpdatePost(echo.Context) error
+	ListPosts(echo.Context) error
+}
+
 // GetContextUser returns the authenticated user in echo Context
 func GetContextUser(e echo.Context) (*ct.ContextUser, error) {
 	ctxUser, ok := e.Get("user").(*ct.ContextUser)
