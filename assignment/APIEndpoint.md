@@ -13,10 +13,10 @@
 
 ### Favourite
 
-- `PUT /favorites/bloggers/{:userId}` - Blogger can add/remove blogger from their following list
+- `PUT /favorites/bloggers` - Blogger can add/remove blogger from their following list
 - `GET /favorites/bloggers` - Blogger can view all the bloggers from their following list
 - `GET /favorites/bloggers/posts` - Blogger can view all the posts of the following bloggers
-- `PUT /favorites/posts/{:postId}` - Blogger can add/remove a post from their favourite list
+- `PUT /favorites/posts` - Blogger can add/remove a post from their favourite list
 - `GET /favorites/posts` - Blogger can view all posts from their favourite list
 
 ---
