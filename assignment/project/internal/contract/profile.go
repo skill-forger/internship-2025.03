@@ -1,5 +1,9 @@
 package contract
 
+import (
+	"golang-project/static"
+)
+
 // ProfileResponse specifies the data and types for profile API response
 type ProfileResponse struct {
 	ID           int    `json:"id,omitempty"`
@@ -25,16 +29,8 @@ type BloggerFollowStatusResponse struct {
 	IsFollowing bool `json:"is_following"`
 }
 
-// BloggerFollowAction defines the possible actions for following/unfollowing
-type BloggerFollowAction int
-
-const (
-	Unfollow BloggerFollowAction = 0
-	Follow   BloggerFollowAction = 1
-)
-
 // BloggerFollowRequest represents the request payload for follow/unfollow actions
 type BloggerFollowRequest struct {
-	Action BloggerFollowAction `json:"action" validate:"required,oneof=0 1"`
-	UserID int                 `json:"user_id"`
+	Action static.BloggerFollowAction `json:"action" validate:"required,oneof=follow unfollow"`
+	UserID int                        `json:"user_id"`
 }

@@ -1,21 +1,13 @@
 basePath: /
 definitions:
-  contract.BloggerFollowAction:
-    enum:
-    - 0
-    - 1
-    type: integer
-    x-enum-varnames:
-    - Unfollow
-    - Follow
   contract.BloggerFollowRequest:
     properties:
       action:
         allOf:
-        - $ref: '#/definitions/contract.BloggerFollowAction'
+        - $ref: '#/definitions/static.BloggerFollowAction'
         enum:
-        - 0
-        - 1
+        - follow
+        - unfollow
       user_id:
         type: integer
     required:
@@ -82,22 +74,14 @@ definitions:
           $ref: '#/definitions/contract.TagDetailResponse'
         type: array
     type: object
-  contract.PostFavouriteAction:
-    enum:
-    - 0
-    - 1
-    type: integer
-    x-enum-varnames:
-    - Unfavourite
-    - Favourite
   contract.PostFavouriteRequest:
     properties:
       action:
         allOf:
-        - $ref: '#/definitions/contract.PostFavouriteAction'
+        - $ref: '#/definitions/static.PostFavouriteAction'
         enum:
-        - 0
-        - 1
+        - favourite
+        - unfavourite
       post_id:
         type: integer
     required:
@@ -199,6 +183,22 @@ definitions:
       title:
         type: string
     type: object
+  static.BloggerFollowAction:
+    enum:
+    - follow
+    - unfollow
+    type: string
+    x-enum-varnames:
+    - Follow
+    - Unfollow
+  static.PostFavouriteAction:
+    enum:
+    - favourite
+    - unfavourite
+    type: string
+    x-enum-varnames:
+    - Favourite
+    - Unfavourite
 host: localhost:3000
 info:
   contact:
@@ -265,7 +265,7 @@ paths:
       - application/json
       description: Blogger can add/remove blogger from their following list
       parameters:
-      - description: Follow (1) or unfollow (0) a blogger
+      - description: Follow/unfollow action with user ID
         in: body
         name: request
         required: true
@@ -331,7 +331,7 @@ paths:
       - application/json
       description: Blogger can add/remove a post from their favourite list
       parameters:
-      - description: Add to favourite (1) or remove from favourites (0)
+      - description: Add/remove post from favourites action with post ID
         in: body
         name: request
         required: true

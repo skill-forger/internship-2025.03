@@ -115,7 +115,7 @@ const docTemplate = `{
                 "summary": "Add/remove blogger from following list",
                 "parameters": [
                     {
-                        "description": "Follow (1) or unfollow (0) a blogger",
+                        "description": "Follow/unfollow action with user ID",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -220,7 +220,7 @@ const docTemplate = `{
                 "summary": "Add/remove post from favourite list",
                 "parameters": [
                     {
-                        "description": "Add to favourite (1) or remove from favourites (0)",
+                        "description": "Add/remove post from favourites action with post ID",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -666,17 +666,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "contract.BloggerFollowAction": {
-            "type": "integer",
-            "enum": [
-                0,
-                1
-            ],
-            "x-enum-varnames": [
-                "Unfollow",
-                "Follow"
-            ]
-        },
         "contract.BloggerFollowRequest": {
             "type": "object",
             "required": [
@@ -685,12 +674,12 @@ const docTemplate = `{
             "properties": {
                 "action": {
                     "enum": [
-                        0,
-                        1
+                        "follow",
+                        "unfollow"
                     ],
                     "allOf": [
                         {
-                            "$ref": "#/definitions/contract.BloggerFollowAction"
+                            "$ref": "#/definitions/static.BloggerFollowAction"
                         }
                     ]
                 },
@@ -793,17 +782,6 @@ const docTemplate = `{
                 }
             }
         },
-        "contract.PostFavouriteAction": {
-            "type": "integer",
-            "enum": [
-                0,
-                1
-            ],
-            "x-enum-varnames": [
-                "Unfavourite",
-                "Favourite"
-            ]
-        },
         "contract.PostFavouriteRequest": {
             "type": "object",
             "required": [
@@ -812,12 +790,12 @@ const docTemplate = `{
             "properties": {
                 "action": {
                     "enum": [
-                        0,
-                        1
+                        "favourite",
+                        "unfavourite"
                     ],
                     "allOf": [
                         {
-                            "$ref": "#/definitions/contract.PostFavouriteAction"
+                            "$ref": "#/definitions/static.PostFavouriteAction"
                         }
                     ]
                 },
@@ -972,6 +950,28 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "static.BloggerFollowAction": {
+            "type": "string",
+            "enum": [
+                "follow",
+                "unfollow"
+            ],
+            "x-enum-varnames": [
+                "Follow",
+                "Unfollow"
+            ]
+        },
+        "static.PostFavouriteAction": {
+            "type": "string",
+            "enum": [
+                "favourite",
+                "unfavourite"
+            ],
+            "x-enum-varnames": [
+                "Favourite",
+                "Unfavourite"
+            ]
         }
     },
     "securityDefinitions": {

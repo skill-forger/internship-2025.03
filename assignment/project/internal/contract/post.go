@@ -1,5 +1,9 @@
 package contract
 
+import (
+	"golang-project/static"
+)
+
 // PostDetailResponse specifies the data and types for post API response
 type PostDetailResponse struct {
 	ID        int    `json:"id,omitempty"`
@@ -62,16 +66,8 @@ type PostFavouriteStatusResponse struct {
 	IsFavourite bool `json:"is_favourite"`
 }
 
-// PostFavouriteAction defines the possible actions for adding/removing posts from favourites
-type PostFavouriteAction int
-
-const (
-	Unfavourite PostFavouriteAction = 0
-	Favourite   PostFavouriteAction = 1
-)
-
 // PostFavouriteRequest represents the request payload for add to/remove from favourites actions
 type PostFavouriteRequest struct {
-	Action PostFavouriteAction `json:"action" validate:"required,oneof=0 1"`
-	PostID int                 `json:"post_id"`
+	Action static.PostFavouriteAction `json:"action" validate:"required,oneof=favourite unfavourite"`
+	PostID int                        `json:"post_id"`
 }
