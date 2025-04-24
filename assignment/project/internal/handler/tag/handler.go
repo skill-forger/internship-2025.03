@@ -30,7 +30,8 @@ func NewHandler(route string, tagSvc svc.Tag) hdl.Tag {
 // RegisterRoutes registers the handler routes and returns the server.HandlerRegistry
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
-		Route: h.route,
+		Route:           h.route,
+		IsAuthenticated: true,
 		Register: func(group *echo.Group) {
 			group.POST("", h.Create)
 			group.GET("", h.List)
@@ -89,7 +90,7 @@ func (h *handler) Create(c echo.Context) error {
 	var req ct.CreateTagRequest
 
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, "Invalid request")
+		return c.JSON(http.StatusUnprocessableEntity, err)
 	}
 
 	if len(strings.TrimSpace(req.Name)) == 0 {

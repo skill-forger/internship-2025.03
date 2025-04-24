@@ -50,7 +50,7 @@ func (r *repository) Delete(id int) error {
 	return r.db.Delete(&model.Tag{}, id).Error
 }
 
-// check if the tag is used in any post
+// HasPosts check if the tag is used in any post
 func (r *repository) HasPosts(id int) (bool, error) {
 	var count int64
 	err := r.db.Table("post_tag").Where("tag_id = ?", id).Count(&count).Error
