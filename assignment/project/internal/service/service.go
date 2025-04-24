@@ -19,3 +19,6 @@ type Tag interface {
 	Create(string) (*ct.TagDetailResponse, error)
 	List() (*ct.ListTagResponse, error)
 }
+
+type Comment interface {
+}

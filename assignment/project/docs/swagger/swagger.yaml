@@ -20,6 +20,53 @@ definitions:
       user_id:
         type: integer
     type: object
+  contract.ChildCommentResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      parentCommentID:
+        type: integer
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/contract.SimpleProfileResponse'
+    type: object
+  contract.CommentDetailResponse:
+    properties:
+      child_comments:
+        items:
+          $ref: '#/definitions/contract.ChildCommentResponse'
+        type: array
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      post:
+        $ref: '#/definitions/contract.SimplePostResponse'
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/contract.SimpleProfileResponse'
+    type: object
+  contract.CreateCommentRequest:
+    properties:
+      content:
+        type: string
+      parentCommentID:
+        type: integer
+      post_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - content
+    type: object
   contract.CreatePostRequest:
     properties:
       body:
@@ -53,6 +100,15 @@ definitions:
       status:
         type: string
     type: object
+  contract.ListCommentResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/contract.CommentDetailResponse'
+        type: array
+      paging:
+        $ref: '#/definitions/contract.Paging'
+    type: object
   contract.ListPostResponse:
     properties:
       posts:
@@ -73,6 +129,15 @@ definitions:
         items:
           $ref: '#/definitions/contract.TagDetailResponse'
         type: array
+    type: object
+  contract.Paging:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
     type: object
   contract.PostFavouriteRequest:
     properties:
@@ -159,6 +224,51 @@ definitions:
       user_id:
         type: integer
     type: object
+  contract.SimpleCommentResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      parentCommentID:
+        type: integer
+      post:
+        $ref: '#/definitions/contract.SimplePostResponse'
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/contract.SimpleProfileResponse'
+    type: object
+  contract.SimplePostResponse:
+    properties:
+      id:
+        type: integer
+      slug:
+        type: string
+      tags:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+    type: object
+  contract.SimpleProfileResponse:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      profile_image:
+        type: string
+    type: object
   contract.TagDetailResponse:
     properties:
       created_at:
@@ -169,6 +279,13 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  contract.UpdateCommentRequest:
+    properties:
+      content:
+        type: string
+    required:
+    - content
     type: object
   contract.UpdatePostRequest:
     properties:
@@ -240,6 +357,119 @@ paths:
       summary: Signs In user into the system
       tags:
       - authentication
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Reader/Blogger can view all comments in the blog posts
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of posts per page
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: postID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListCommentResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Get all comments for a post
+      tags:
+      - comment
+    post:
+      consumes:
+      - application/json
+      description: Blogger can make a new comment/ Blogger can reply to another comment
+        (with parentCMTID in request body)
+      parameters:
+      - description: Create Comment Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.SimpleCommentResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Create a new comment
+      tags:
+      - comment
+  /comments/{commentId}:
+    delete:
+      consumes:
+      - application/json
+      description: Blogger can delete their comment
+      parameters:
+      - description: comment ID
+        in: path
+        name: commentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Delete a comment
+      tags:
+      - comment
+    put:
+      consumes:
+      - application/json
+      description: Blogger can update their comment
+      parameters:
+      - description: Update Comment Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.UpdateCommentRequest'
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.SimpleCommentResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: update a comment
+      tags:
+      - comment
   /favorites/bloggers:
     get:
       consumes:

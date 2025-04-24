@@ -28,6 +28,14 @@ type PostResponse struct {
 	UpdatedAt   string               `json:"updated_at,omitempty"`
 }
 
+// SimplePostResponse defines the structure of a simple post response
+type SimplePostResponse struct {
+	ID    int    `json:"id,omitempty"`
+	Title string `json:"title,omitempty"`
+	Slug  string `json:"slug,omitempty"`
+	Tags  []int  `json:"tags,omitempty"`
+}
+
 // ListPostResponse defines the summary information of a blog post used in list endpoints,
 type ListPostResponse struct {
 	Posts []*PostResponse `json:"posts"`

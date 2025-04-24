@@ -1,0 +1,71 @@
+package contract
+
+// CommentDetailResponse defines the structure of a single comment
+// with all child comments returned in the API response.
+type CommentDetailResponse struct {
+	ID            int                     `json:"id,omitempty"`
+	Content       string                  `json:"content,omitempty"`
+	User          SimpleProfileResponse   `json:"user,omitempty"`
+	Post          SimplePostResponse      `json:"post,omitempty"`
+	ChildComments []*ChildCommentResponse `json:"child_comments" `
+	CreatedAt     string                  `json:"created_at,omitempty"`
+	UpdatedAt     string                  `json:"updated_at,omitempty"`
+}
+
+// ChildCommentResponse defines the structure of a single child comment returned .
+type ChildCommentResponse struct {
+	ID              int                   `json:"id,omitempty"`
+	Content         string                `json:"content,omitempty"`
+	ParentCommentID *int                  `json:"parentCommentID,omitempty"`
+	User            SimpleProfileResponse `json:"user,omitempty"`
+	CreatedAt       string                `json:"created_at,omitempty"`
+	UpdatedAt       string                `json:"updated_at,omitempty"`
+}
+
+// Paging response returned in the list parent comments API response
+type Paging struct {
+	Page     int `json:"page" `
+	PageSize int `json:"page_size" `
+	Total    int `json:"total" `
+}
+
+// ListCommentResponse wraps a list of comments that are
+// returned when fetching all comments for a post.
+type ListCommentResponse struct {
+	Comments []*CommentDetailResponse `json:"comments"`
+	Paging   Paging                   `json:"paging"`
+}
+
+// ListCommentRequest defines the query parameters for retrieving comments.
+type ListCommentRequest struct {
+	PostID   int `query:"post_id" validate:"required"`
+	Page     int `query:"page"`      // Page number
+	PageSize int `query:"page_size"` // Number of posts per page
+}
+
+// CreateCommentRequest defines the expected payload when
+// a user wants to create a new comment.
+type CreateCommentRequest struct {
+	Content         string `json:"content" validate:"required"`
+	UserID          int    `json:"user_id"`
+	PostID          int    `json:"post_id"`
+	ParentCommentID *int   `json:"parentCommentID,omitempty"`
+}
+
+// SimpleCommentResponse defines the structure of a simple comment
+// response without child comments used for create and update API.
+type SimpleCommentResponse struct {
+	ID              int                   `json:"id,omitempty"`
+	Content         string                `json:"content,omitempty"`
+	User            SimpleProfileResponse `json:"user,omitempty"`
+	Post            SimplePostResponse    `json:"post,omitempty"`
+	ParentCommentID *int                  `json:"parentCommentID,omitempty"`
+	CreatedAt       string                `json:"created_at,omitempty"`
+	UpdatedAt       string                `json:"updated_at,omitempty"`
+}
+
+// UpdateCommentRequest defines the expected payload when
+// a user wants to update an exist comment.
+type UpdateCommentRequest struct {
+	Content string `json:"content" validate:"required"`
+}

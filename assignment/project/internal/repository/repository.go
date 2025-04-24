@@ -18,3 +18,6 @@ type Tag interface {
 	Read(int) (*model.Tag, error)
 	Select() ([]*model.Tag, error)
 }
+
+type Comment interface {
+}

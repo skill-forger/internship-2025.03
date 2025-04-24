@@ -34,3 +34,13 @@ type BloggerFollowRequest struct {
 	Action static.BloggerFollowAction `json:"action" validate:"required,oneof=follow unfollow"`
 	UserID int                        `json:"user_id"`
 }
+
+// SimpleProfileResponse defines the structure of a simple profile response
+type SimpleProfileResponse struct {
+	ID           int    `json:"id,omitempty"`
+	FirstName    string `json:"first_name,omitempty"`
+	LastName     string `json:"last_name,omitempty"`
+	Email        string `json:"email,omitempty"`
+	Pseudonym    string `json:"display_name,omitempty"`
+	ProfileImage string `json:"profile_image,omitempty"`
+}
