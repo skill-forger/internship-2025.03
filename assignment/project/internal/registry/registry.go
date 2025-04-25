@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	swagger "github.com/swaggo/echo-swagger"
 	_ "golang-project/docs/swagger"
+	"golang-project/internal/registry/comment"
 	"gorm.io/gorm"
 
 	"golang-project/internal/handler"
@@ -50,6 +51,7 @@ func initResourceHandlers(db *gorm.DB) []handler.ResourceHandler {
 		authentication.NewRegistry("/auth", db),
 		profile.NewRegistry("/profile", db),
 		tag.NewRegistry("/tags", db),
-		favourite.NewRegistry("/favorites",db),
+		favourite.NewRegistry("/favorites", db),
+		comment.NewRegistry("/comments", db),
 	}
 }

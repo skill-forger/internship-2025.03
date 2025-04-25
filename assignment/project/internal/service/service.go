@@ -19,3 +19,6 @@ type Tag interface {
 	Delete(int) error
 	List() (*ct.ListTagResponse, error)
 }
+
+type Comment interface {
+}
