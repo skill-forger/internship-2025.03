@@ -60,12 +60,39 @@ definitions:
           $ref: '#/definitions/contract.PostResponse'
         type: array
     type: object
+  contract.ListProfileResponse:
+    properties:
+      bloggers:
+        items:
+          $ref: '#/definitions/contract.ProfileResponse'
+        type: array
+    type: object
   contract.ListTagResponse:
     properties:
       tags:
         items:
           $ref: '#/definitions/contract.TagDetailResponse'
         type: array
+    type: object
+  contract.PostFavouriteRequest:
+    properties:
+      action:
+        allOf:
+        - $ref: '#/definitions/static.PostFavouriteAction'
+        enum:
+        - favourite
+        - unfavourite
+      post_id:
+        type: integer
+    required:
+    - action
+    type: object
+  contract.PostFavouriteStatusResponse:
+    properties:
+      is_favourite:
+        type: boolean
+      post_id:
+        type: integer
     type: object
   contract.PostResponse:
     properties:
@@ -80,9 +107,7 @@ definitions:
       slug:
         type: string
       tags:
-        items:
-          $ref: '#/definitions/contract.TagDetailResponse'
-        type: array
+        $ref: '#/definitions/contract.ListTagResponse'
       title:
         type: string
       updated_at:
@@ -151,11 +176,27 @@ definitions:
         type: boolean
       tags:
         items:
-          $ref: '#/definitions/contract.TagDetailResponse'
+          type: integer
         type: array
       title:
         type: string
     type: object
+  static.BloggerFollowAction:
+    enum:
+    - follow
+    - unfollow
+    type: string
+    x-enum-varnames:
+    - Follow
+    - Unfollow
+  static.PostFavouriteAction:
+    enum:
+    - favourite
+    - unfavourite
+    type: string
+    x-enum-varnames:
+    - Favourite
+    - Unfavourite
 host: localhost:3000
 info:
   contact:
@@ -197,6 +238,118 @@ paths:
       summary: Signs In user into the system
       tags:
       - authentication
+  /favorites/bloggers:
+    get:
+      consumes:
+      - application/json
+      description: Blogger can view all the bloggers from their following list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListProfileResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View all followed bloggers
+      tags:
+      - favourite
+    put:
+      consumes:
+      - application/json
+      description: Blogger can add/remove blogger from their following list
+      parameters:
+      - description: Follow/unfollow action with user ID
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.BloggerFollowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.BloggerFollowStatusResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Add/remove blogger from following list
+      tags:
+      - favourite
+  /favorites/bloggers/posts:
+    get:
+      consumes:
+      - application/json
+      description: Blogger can view all the posts of the following bloggers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View posts from followed bloggers
+      tags:
+      - favourite
+  /favorites/posts:
+    get:
+      consumes:
+      - application/json
+      description: Blogger can view all posts from their favourite list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View favourite posts
+      tags:
+      - favourite
+    put:
+      consumes:
+      - application/json
+      description: Blogger can add/remove a post from their favourite list
+      parameters:
+      - description: Add/remove post from favourites action with post ID
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.PostFavouriteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.PostFavouriteStatusResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Add/remove post from favourite list
+      tags:
+      - favourite
   /health:
     get:
       consumes:
@@ -424,7 +577,7 @@ paths:
       summary: Create a new tag
       tags:
       - tag
-  /tags/:tagId:
+  /tags/{id}:
     delete:
       consumes:
       - application/json
@@ -432,7 +585,7 @@ paths:
       parameters:
       - description: Tag ID
         in: path
-        name: tagId
+        name: id
         required: true
         type: integer
       produces:
