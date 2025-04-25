@@ -19,3 +19,6 @@ type Tag interface {
 	HasPosts(int) (bool, error)
 	Select() ([]*model.Tag, error)
 }
+
+type Comment interface {
+}
