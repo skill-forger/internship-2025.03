@@ -2,6 +2,7 @@ package tag
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -29,7 +30,8 @@ func NewHandler(route string, tagSvc svc.Tag) hdl.Tag {
 // RegisterRoutes registers the handler routes and returns the server.HandlerRegistry
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
-		Route: h.route,
+		Route:           h.route,
+		IsAuthenticated: true,
 		Register: func(group *echo.Group) {
 			group.POST("", h.Create)
 			group.GET("", h.List)
@@ -88,7 +90,7 @@ func (h *handler) Create(c echo.Context) error {
 	var req ct.CreateTagRequest
 
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusUnprocessableEntity, "Invalid request")
+		return c.JSON(http.StatusUnprocessableEntity, err)
 	}
 
 	if len(strings.TrimSpace(req.Name)) == 0 {
@@ -111,10 +113,20 @@ func (h *handler) Create(c echo.Context) error {
 // @Accept      json
 // @Produce     json
 // @Security    BearerToken
-// @Param       tagId  path     int  true  "Tag ID"
+// @Param       id  path     int  true  "Tag ID"
 // @Success     204 "No Content"
 // @Failure     400 {object} error
-// @Router      /tags/:tagId [delete]
+// @Router      /tags/{id} [delete]
 func (h *handler) Delete(e echo.Context) error {
-	return nil
+	id, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, "Invalid tag ID")
+	}
+
+	err = h.tagSvc.Delete(id)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, "Unable to delete tag")
+	}
+
+	return e.NoContent(http.StatusNoContent)
 }

@@ -12,9 +12,10 @@ type User interface {
 	ReadByEmail(string) (*model.User, error)
 }
 
-// Tag represents the repository actions to the tag table
 type Tag interface {
 	Insert(*model.Tag) error
 	Read(int) (*model.Tag, error)
+	Delete(int) error
+	HasPosts(int) (bool, error)
 	Select() ([]*model.Tag, error)
 }
