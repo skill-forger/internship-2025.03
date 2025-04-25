@@ -72,6 +72,15 @@ type Favourite interface {
 	ListPosts(echo.Context) error
 }
 
+// Comment represents all comment resource handler
+type Comment interface {
+	ResourceHandler
+	Create(echo.Context) error
+	List(echo.Context) error
+	Update(echo.Context) error
+	Delete(echo.Context) error
+}
+
 // GetContextUser returns the authenticated user in echo Context
 func GetContextUser(e echo.Context) (*ct.ContextUser, error) {
 	ctxUser, ok := e.Get("user").(*ct.ContextUser)

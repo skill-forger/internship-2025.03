@@ -22,3 +22,6 @@ type Tag interface {
 	SelectByPost(int) ([]*model.Tag, error)
 	SelectUserByPost(int) (*model.User, error)
 }
+
+type Comment interface {
+}

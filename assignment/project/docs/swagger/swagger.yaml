@@ -20,6 +20,53 @@ definitions:
       user_id:
         type: integer
     type: object
+  contract.ChildCommentResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      parentCommentID:
+        type: integer
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/contract.ProfileResponse'
+    type: object
+  contract.CommentResponse:
+    properties:
+      child_comments:
+        items:
+          $ref: '#/definitions/contract.ChildCommentResponse'
+        type: array
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      parentCommentID:
+        type: integer
+      post:
+        $ref: '#/definitions/contract.PostResponse'
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/contract.ProfileResponse'
+    type: object
+  contract.CreateCommentRequest:
+    properties:
+      content:
+        type: string
+      parentCommentID:
+        type: integer
+      post_id:
+        type: integer
+    required:
+    - content
+    type: object
   contract.CreatePostRequest:
     properties:
       body:
@@ -53,11 +100,27 @@ definitions:
       status:
         type: string
     type: object
+  contract.ListCommentResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/contract.CommentResponse'
+        type: array
+      paging:
+        $ref: '#/definitions/contract.Paging'
+    type: object
   contract.ListPostResponse:
     properties:
       posts:
         items:
           $ref: '#/definitions/contract.PostResponse'
+        type: array
+    type: object
+  contract.ListProfileResponse:
+    properties:
+      bloggers:
+        items:
+          $ref: '#/definitions/contract.ProfileResponse'
         type: array
     type: object
   contract.ListTagResponse:
@@ -66,6 +129,35 @@ definitions:
         items:
           $ref: '#/definitions/contract.TagDetailResponse'
         type: array
+    type: object
+  contract.Paging:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  contract.PostFavouriteRequest:
+    properties:
+      action:
+        allOf:
+        - $ref: '#/definitions/static.PostFavouriteAction'
+        enum:
+        - favourite
+        - unfavourite
+      post_id:
+        type: integer
+    required:
+    - action
+    type: object
+  contract.PostFavouriteStatusResponse:
+    properties:
+      is_favourite:
+        type: boolean
+      post_id:
+        type: integer
     type: object
   contract.PostResponse:
     properties:
@@ -143,6 +235,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  contract.UpdateCommentRequest:
+    properties:
+      content:
+        type: string
+    required:
+    - content
+    type: object
   contract.UpdatePostRequest:
     properties:
       body:
@@ -151,11 +250,27 @@ definitions:
         type: boolean
       tags:
         items:
-          $ref: '#/definitions/contract.TagDetailResponse'
+          type: integer
         type: array
       title:
         type: string
     type: object
+  static.BloggerFollowAction:
+    enum:
+    - follow
+    - unfollow
+    type: string
+    x-enum-varnames:
+    - Follow
+    - Unfollow
+  static.PostFavouriteAction:
+    enum:
+    - favourite
+    - unfavourite
+    type: string
+    x-enum-varnames:
+    - Favourite
+    - Unfavourite
 host: localhost:3000
 info:
   contact:
@@ -197,6 +312,231 @@ paths:
       summary: Signs In user into the system
       tags:
       - authentication
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Reader/Blogger can view all comments in the blog posts
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Number of posts per page
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: postID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListCommentResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Get all comments for a post
+      tags:
+      - comment
+    post:
+      consumes:
+      - application/json
+      description: Blogger can make a new comment/ Blogger can reply to another comment
+        (with parentCMTID in request body)
+      parameters:
+      - description: Create Comment Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.CommentResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Create a new comment
+      tags:
+      - comment
+  /comments/{commentId}:
+    delete:
+      consumes:
+      - application/json
+      description: Blogger can delete their comment
+      parameters:
+      - description: comment ID
+        in: path
+        name: commentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Delete a comment
+      tags:
+      - comment
+    put:
+      consumes:
+      - application/json
+      description: Blogger can update their comment
+      parameters:
+      - description: Update Comment Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.UpdateCommentRequest'
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.CommentResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: update a comment
+      tags:
+      - comment
+  /favorites/bloggers:
+    get:
+      consumes:
+      - application/json
+      description: Blogger can view all the bloggers from their following list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListProfileResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View all followed bloggers
+      tags:
+      - favourite
+    put:
+      consumes:
+      - application/json
+      description: Blogger can add/remove blogger from their following list
+      parameters:
+      - description: Follow/unfollow action with user ID
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.BloggerFollowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.BloggerFollowStatusResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Add/remove blogger from following list
+      tags:
+      - favourite
+  /favorites/bloggers/posts:
+    get:
+      consumes:
+      - application/json
+      description: Blogger can view all the posts of the following bloggers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View posts from followed bloggers
+      tags:
+      - favourite
+  /favorites/posts:
+    get:
+      consumes:
+      - application/json
+      description: Blogger can view all posts from their favourite list
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View favourite posts
+      tags:
+      - favourite
+    put:
+      consumes:
+      - application/json
+      description: Blogger can add/remove a post from their favourite list
+      parameters:
+      - description: Add/remove post from favourites action with post ID
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.PostFavouriteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.PostFavouriteStatusResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Add/remove post from favourite list
+      tags:
+      - favourite
   /health:
     get:
       consumes:
@@ -424,30 +764,6 @@ paths:
       summary: Create a new tag
       tags:
       - tag
-  /tags/:tagId:
-    delete:
-      consumes:
-      - application/json
-      description: Blogger can delete a tag that does not contain any blog
-      parameters:
-      - description: Tag ID
-        in: path
-        name: tagId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema: {}
-      security:
-      - BearerToken: []
-      summary: Delete a tag
-      tags:
-      - tag
   /tags/:tagId/posts:
     get:
       consumes:
@@ -471,6 +787,30 @@ paths:
           description: Bad Request
           schema: {}
       summary: Get all posts for a tag
+      tags:
+      - tag
+  /tags/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Blogger can delete a tag that does not contain any blog
+      parameters:
+      - description: Tag ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Delete a tag
       tags:
       - tag
 securityDefinitions:

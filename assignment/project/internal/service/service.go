@@ -20,3 +20,6 @@ type Tag interface {
 	List() (*ct.ListTagResponse, error)
 	ListPosts(int) (*ct.ListPostResponse, error)
 }
+
+type Comment interface {
+}
