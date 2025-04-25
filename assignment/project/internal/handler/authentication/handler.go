@@ -36,6 +36,7 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 }
 
 // SignIn handles the authentication request via predefined credentials
+//
 //	@Summary		Signs In user into the system
 //	@Description	Authenticates user via predefined credentials and return JWT Token
 //	@Tags			authentication
@@ -57,4 +58,34 @@ func (h *handler) SignIn(e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusOK, response)
+}
+
+// SignUp handles the request to register a new user
+//
+//	@Summary      Register a new user
+//	@Description  Reader can sign up to become a blogger
+//	@Tags         authentication
+//	@Accept       json
+//	@Produce      json
+//	@Param        request  body      ct.SignUpRequest  true  "Sign up request"
+//	@Success      200      {object}  ct.SignUpResponse
+//	@Failure      400      {object}  error
+//	@Router       /auth/sign-up [post]
+func (h *handler) SignUp(e echo.Context) error {
+	return nil
+}
+
+// VerifyEmail handles the request to verify email address
+//
+//	@Summary		Verify email address
+//	@Description	Blogger can verify their email address upon signing up
+//	@Tags			authentication
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		ct.VerifyEmailRequest	true	"Email verification request"
+//	@Success		200		{object}	ct.VerifyEmailResponse
+//	@Failure		400		{object}	error
+//	@Router			/auth/verify [post]
+func (h *handler) VerifyEmail(e echo.Context) error {
+	return nil
 }
