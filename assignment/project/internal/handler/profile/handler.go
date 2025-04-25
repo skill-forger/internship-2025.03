@@ -30,7 +30,11 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		Route:           h.route,
 		IsAuthenticated: true,
 		Register: func(group *echo.Group) {
-			group.GET("", h.Get)
+			group.GET("/:userId", h.Get)
+			group.GET("/posts", h.ListPosts)
+			group.GET("/posts/:postId", h.GetPost)
+			group.PUT("", h.Update)
+			group.PUT("/change-password", h.ChangePassword)
 		},
 	}
 }
@@ -60,17 +64,33 @@ func (h *handler) Get(e echo.Context) error {
 	return e.JSON(http.StatusOK, response)
 }
 
-// ListDraftPosts returns the list of draft posts of the current blogger
+// ListPosts returns all posts (published and draft) of the current blogger
 //
-//	@Summary      View all blogger's draft posts
-//	@Description  Blogger can view all their draft posts
+//	@Summary      View all blogger's posts
+//	@Description  Blogger can view all their posts. Use query parameters to filter (e.g., is_published=false to view drafts).
 //	@Tags         profile
 //	@Produce      json
 //	@Security     BearerToken
+//	@Param        is_published  query     bool   false  "Filter by status post"
 //	@Success      200  {object}   contract.ListPostResponse
 //	@Failure      401  {object}  error
-//	@Router       /profile/drafts [get]
-func (h *handler) ListDraftPosts(e echo.Context) error {
+//	@Router       /profile/posts [get]
+func (h *handler) ListPosts(e echo.Context) error {
+	return nil
+}
+
+// GetPost returns the details of a specific post (published or draft) of the current blogger
+//
+//	@Summary      View a specific blogger's post
+//	@Description  Blogger can view the detail of their own post, whether it's published or draft
+//	@Tags         profile
+//	@Produce      json
+//	@Security     BearerToken
+//	@Param        postId  path      int  true  "Post ID"
+//	@Success      200     {object}  contract.PostResponse
+//	@Failure      404     {object}  error
+//	@Router       /profile/posts/{postId} [get]
+func (h *handler) GetPost(e echo.Context) error {
 	return nil
 }
 

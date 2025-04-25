@@ -717,6 +717,82 @@ paths:
       summary: Respond profile detail information
       tags:
       - profile
+  /profile/change-password:
+    put:
+      consumes:
+      - application/json
+      description: Blogger can change their password
+      parameters:
+      - description: Change password request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ChangePasswordResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Change blogger password
+      tags:
+      - profile
+  /profile/posts:
+    get:
+      description: Blogger can view all their posts. Use query parameters to filter
+        (e.g., is_published=false to view drafts).
+      parameters:
+      - description: Filter by status post
+        in: query
+        name: is_published
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "401":
+          description: Unauthorized
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View all blogger's posts
+      tags:
+      - profile
+  /profile/posts/{postId}:
+    get:
+      description: Blogger can view the detail of their own post, whether it's published
+        or draft
+      parameters:
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.PostResponse'
+        "404":
+          description: Not Found
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View a specific blogger's post
+      tags:
+      - profile
   /tags:
     get:
       consumes:
