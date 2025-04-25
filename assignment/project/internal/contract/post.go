@@ -19,15 +19,15 @@ type PostDetailResponse struct {
 
 // PostResponse defines the full details of a blog post returned by the post detail API,
 type PostResponse struct {
-	ID          int                  `json:"id,omitempty"`
-	Title       string               `json:"title,omitempty"`
-	Body        string               `json:"body,omitempty"`
-	Slug        string               `json:"slug,omitempty"`
-	IsPublished bool                 `json:"is_published,omitempty"`
-	User        ProfileResponse      `json:"user,omitempty"`
-	Tags        []*TagDetailResponse `json:"tags,omitempty"`
-	CreatedAt   string               `json:"created_at,omitempty"`
-	UpdatedAt   string               `json:"updated_at,omitempty"`
+	ID          int             `json:"id,omitempty"`
+	Title       string          `json:"title,omitempty"`
+	Body        string          `json:"body,omitempty"`
+	Slug        string          `json:"slug,omitempty"`
+	IsPublished bool            `json:"is_published,omitempty"`
+	User        ProfileResponse `json:"user,omitempty"`
+	Tags        ListTagResponse `json:"tags,omitempty"`
+	CreatedAt   string          `json:"created_at,omitempty"`
+	UpdatedAt   string          `json:"updated_at,omitempty"`
 }
 
 // ListPostResponse defines the summary information of a blog post used in list endpoints,
