@@ -6,6 +6,7 @@ import (
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
 	"golang-project/static"
+
 	"gorm.io/gorm"
 )
 
@@ -63,4 +64,32 @@ func (s *service) List() (*ct.ListTagResponse, error) {
 	}
 
 	return prepareListTagResponse(tags), nil
+}
+
+// ListPosts executes all posts retrieval logic by tag id
+func (s *service) ListPosts(id int) (*ct.ListPostResponse, error) {
+	posts, err := s.tagRepo.SelectPost(id)
+	if err != nil {
+		return nil, err
+	}
+
+	users := make([]*model.User, 0, len(posts))
+	tagsLists := make([][]*model.Tag, 0, len(posts))
+	for _, post := range posts {
+		// Get all the tags associated with the post
+		tagsList, err := s.tagRepo.SelectByPost(post.ID)
+		if err != nil {
+			return nil, err
+		}
+		tagsLists = append(tagsLists, tagsList)
+
+		// Get the user who created the post
+		user, err := s.tagRepo.SelectUserByPost(post.ID)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return prepareListPostResponse(posts, users, tagsLists), nil
 }

@@ -18,4 +18,7 @@ type Tag interface {
 	Delete(int) error
 	HasPosts(int) (bool, error)
 	Select() ([]*model.Tag, error)
+	SelectPost(int) ([]*model.Post, error)
+	SelectByPost(int) ([]*model.Tag, error)
+	SelectUserByPost(int) (*model.User, error)
 }
