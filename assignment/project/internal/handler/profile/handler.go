@@ -36,6 +36,7 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 }
 
 // Get   handles the profile detail request
+//
 //	@Summary		Respond profile detail information
 //	@Description	Respond profile detail information
 //	@Tags			profile
@@ -57,4 +58,50 @@ func (h *handler) Get(e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusOK, response)
+}
+
+// ListDraftPosts returns the list of draft posts of the current blogger
+//
+//	@Summary      View all blogger's draft posts
+//	@Description  Blogger can view all their draft posts
+//	@Tags         profile
+//	@Produce      json
+//	@Security     BearerToken
+//	@Success      200  {object}   contract.ListPostResponse
+//	@Failure      401  {object}  error
+//	@Router       /profile/drafts [get]
+func (h *handler) ListDraftPosts(e echo.Context) error {
+	return nil
+}
+
+// Update handles the request to update blogger profile information
+//
+//	@Summary      Update blogger profile
+//	@Description  Blogger can update their profile information
+//	@Tags         profile
+//	@Accept       json
+//	@Produce      json
+//	@Param        request  body      contract.UpdateProfileRequest  true  "Update profile request"
+//	@Security     BearerToken
+//	@Success      200      {object}  contract.ProfileResponse
+//	@Failure      400      {object}  error
+//	@Router       /profile [put]
+func (h *handler) Update(e echo.Context) error {
+	return nil
+}
+
+// ChangePassword handles the request to change blogger password
+//
+//	@Summary      Change blogger password
+//	@Description  Blogger can change their password
+//	@Tags         profile
+//	@Accept       json
+//	@Produce      json
+//	@Param        request  body      contract.ChangePasswordRequest  true  "Change password request"
+//	@Security     BearerToken
+//	@Success      200      {object}  contract.ChangePasswordResponse
+//	@Failure      400      {object}  error
+//	@Router       /profile/change-password [put]
+func (h *handler) ChangePassword(e echo.Context) error {
+	return nil
 }
