@@ -5,6 +5,8 @@ import (
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
+	"golang-project/static"
+	"gorm.io/gorm"
 )
 
 // service represents the implementation of service.Tag
@@ -30,6 +32,27 @@ func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
 	}
 
 	return prepareTagResponse(tag), nil
+}
+
+// Delete a tag
+func (s *service) Delete(id int) error {
+	_, err := s.tagRepo.Read(id)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return static.ErrTagNotFound
+		}
+		return static.ErrReadTagID
+	}
+
+	hasPosts, err := s.tagRepo.HasPosts(id)
+	if err != nil {
+		return err
+	}
+	if hasPosts {
+		return static.ErrHasPosts
+	}
+
+	return s.tagRepo.Delete(id)
 }
 
 // List executes all tags retrieval logic

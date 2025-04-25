@@ -61,3 +61,19 @@ func (r *repository) SelectPost(id int) ([]*model.Post, error) {
 func (r *repository) Insert(tag *model.Tag) error {
 	return r.db.Create(tag).Error
 }
+
+// Delete tags that are not used in any post
+func (r *repository) Delete(id int) error {
+	return r.db.Delete(&model.Tag{}, id).Error
+}
+
+// HasPosts check if the tag is used in any post
+func (r *repository) HasPosts(id int) (bool, error) {
+	var count int64
+	err := r.db.Table("post_tag").Where("tag_id = ?", id).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+
+}

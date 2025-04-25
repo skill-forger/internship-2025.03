@@ -52,6 +52,26 @@ type Tag interface {
 	ListPosts(echo.Context) error
 }
 
+// Post represents all Post resource handler
+type Post interface {
+	ResourceHandler
+	Create(echo.Context) error
+	Get(echo.Context) error
+	List(echo.Context) error
+	Update(echo.Context) error
+	Delete(echo.Context) error
+}
+
+// Favourite represents all favourite resource handler
+type Favourite interface {
+	ResourceHandler
+	UpdateBlogger(echo.Context) error
+	ListBloggers(echo.Context) error
+	ListBloggerPosts(echo.Context) error
+	UpdatePost(echo.Context) error
+	ListPosts(echo.Context) error
+}
+
 // GetContextUser returns the authenticated user in echo Context
 func GetContextUser(e echo.Context) (*ct.ContextUser, error) {
 	ctxUser, ok := e.Get("user").(*ct.ContextUser)
