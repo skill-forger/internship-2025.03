@@ -39,14 +39,15 @@ func prepareListTagResponse(o []*model.Tag) *ct.ListTagResponse {
 }
 
 // preparePostResponse transforms post model to response DTO
-func preparePostResponse(o *model.Post) *ct.PostDetailResponse {
-	data := &ct.PostDetailResponse{
+func preparePostResponse(o *model.Post, u *model.User, t []*model.Tag) *ct.PostResponse {
+	data := &ct.PostResponse{
 		ID:          o.ID,
 		Title:       o.Title,
 		Body:        o.Body,
 		Slug:        o.Slug,
 		IsPublished: o.IsPublished,
-		UserID:      o.UserID,
+		User:        *prepareProfileResponse(u),
+		Tags:        *prepareListTagResponse(t),
 	}
 
 	if o.CreatedAt != nil {
@@ -61,13 +62,36 @@ func preparePostResponse(o *model.Post) *ct.PostDetailResponse {
 }
 
 // prepareListPostResponse transforms the data and returns the List Post Response
-func prepareListPostResponse(o []*model.Post) *ct.ListPostResponse {
+func prepareListPostResponse(o []*model.Post, u []*model.User, t [][]*model.Tag) *ct.ListPostResponse {
 	data := &ct.ListPostResponse{
-		Posts: make([]*ct.PostDetailResponse, 0, len(o)),
+		Posts: make([]*ct.PostResponse, 0, len(o)),
 	}
 
-	for _, post := range o {
-		data.Posts = append(data.Posts, preparePostResponse(post))
+	for i := 0; i < len(o); i++ {
+		data.Posts = append(data.Posts, preparePostResponse(o[i], u[i], t[i]))
+	}
+
+	return data
+}
+
+// prepareProfileResponse transforms user model to response DTO
+func prepareProfileResponse(o *model.User) *ct.ProfileResponse {
+	data := &ct.ProfileResponse{
+		ID:           o.ID,
+		FirstName:    o.FirstName,
+		LastName:     o.LastName,
+		Email:        o.Email,
+		Pseudonym:    o.Pseudonym,
+		Biography:    o.Biography,
+		ProfileImage: o.ProfileImage,
+	}
+
+	if o.CreatedAt != nil {
+		data.CreatedAt = o.CreatedAt.Format(time.RFC3339)
+	}
+
+	if o.UpdatedAt != nil {
+		data.UpdatedAt = o.UpdatedAt.Format(time.RFC3339)
 	}
 
 	return data
