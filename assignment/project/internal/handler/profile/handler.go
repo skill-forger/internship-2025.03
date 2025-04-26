@@ -46,10 +46,10 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Tags			profile
 //	@Accept			json
 //	@Produce		json
-//	@Security		BearerToken
+//	@Param			userId	path		int	true	"User ID"
 //	@Success		200	{object}	contract.ProfileResponse
 //	@Failure		400	{object}	error
-//	@Router			/profile [get]
+//	@Router			/profile/{userId} [get]
 func (h *handler) Get(e echo.Context) error {
 	ctxUser, err := hdl.GetContextUser(e)
 	if err != nil {

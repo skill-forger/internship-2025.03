@@ -34,3 +34,23 @@ type BloggerFollowRequest struct {
 	Action static.BloggerFollowAction `json:"action" validate:"required,oneof=follow unfollow"`
 	UserID int                        `json:"user_id"`
 }
+
+// UpdateProfileRequest defines the payload for updating a user's profile information.
+type UpdateProfileRequest struct {
+	FirstName    string `json:"first_name,omitempty"`
+	LastName     string `json:"last_name,omitempty"`
+	Pseudonym    string `json:"pseudonym,omitempty"`
+	ProfileImage string `json:"profile_image,omitempty"`
+	Biography    string `json:"biography,omitempty"`
+}
+
+// ChangePasswordRequest defines the payload required to change a user's password.
+type ChangePasswordRequest struct {
+	CurrentPassword    string `json:"current_password" validate:"required"`
+	NewPassword        string `json:"new_password" validate:"required,min=8"`
+	ConfirmNewPassword string `json:"confirm_new_password" validate:"eqfield=NewPassword"`
+}
+
+type ChangePasswordResponse struct {
+	Message string `json:"message"`
+}

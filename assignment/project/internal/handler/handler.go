@@ -35,6 +35,8 @@ type ResourceHandler interface {
 type Authentication interface {
 	ResourceHandler
 	SignIn(echo.Context) error
+	SignUp(echo.Context) error
+	VerifyEmail(echo.Context) error
 }
 
 // Profile represents all profile resource handler
