@@ -41,8 +41,8 @@ type Authentication interface {
 type Profile interface {
 	ResourceHandler
 	Get(echo.Context) error
-	ListPosts(echo.Context) error
-	GetPost(echo.Context) error
+	ListBloggerPosts(echo.Context) error
+	GetPostDetail(echo.Context) error
 	Update(echo.Context) error
 	ChangePassword(echo.Context) error
 }

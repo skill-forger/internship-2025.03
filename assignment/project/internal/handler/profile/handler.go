@@ -31,8 +31,8 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		IsAuthenticated: true,
 		Register: func(group *echo.Group) {
 			group.GET("/:userId", h.Get)
-			group.GET("/posts", h.ListPosts)
-			group.GET("/posts/:postId", h.GetPost)
+			group.GET("/posts", h.ListBloggerPosts)
+			group.GET("/posts/:postId", h.GetPostDetail)
 			group.PUT("", h.Update)
 			group.PUT("/change-password", h.ChangePassword)
 		},
@@ -64,7 +64,7 @@ func (h *handler) Get(e echo.Context) error {
 	return e.JSON(http.StatusOK, response)
 }
 
-// ListPosts returns all posts (published and draft) of the current blogger
+// ListBloggerPosts returns all posts (published and draft) of the current blogger
 //
 //	@Summary      View all blogger's posts
 //	@Description  Blogger can view all their posts. Use query parameters to filter (e.g., is_published=false to view drafts).
@@ -75,11 +75,11 @@ func (h *handler) Get(e echo.Context) error {
 //	@Success      200  {object}   contract.ListPostResponse
 //	@Failure      401  {object}  error
 //	@Router       /profile/posts [get]
-func (h *handler) ListPosts(e echo.Context) error {
+func (h *handler) ListBloggerPosts(e echo.Context) error {
 	return nil
 }
 
-// GetPost returns the details of a specific post (published or draft) of the current blogger
+// GetPostDetail returns the details of a specific post (published or draft) of the current blogger
 //
 //	@Summary      View a specific blogger's post
 //	@Description  Blogger can view the detail of their own post, whether it's published or draft
@@ -90,7 +90,7 @@ func (h *handler) ListPosts(e echo.Context) error {
 //	@Success      200     {object}  contract.PostResponse
 //	@Failure      404     {object}  error
 //	@Router       /profile/posts/{postId} [get]
-func (h *handler) GetPost(e echo.Context) error {
+func (h *handler) GetPostDetail(e echo.Context) error {
 	return nil
 }
 
