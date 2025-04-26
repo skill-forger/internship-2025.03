@@ -31,6 +31,8 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 		Route: h.route,
 		Register: func(group *echo.Group) {
 			group.POST("/sign-in", h.SignIn)
+			group.POST("/sign-up", h.SignUp)
+			group.POST("/verify", h.VerifyEmail)
 		},
 	}
 }
