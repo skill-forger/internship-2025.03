@@ -35,12 +35,18 @@ type ResourceHandler interface {
 type Authentication interface {
 	ResourceHandler
 	SignIn(echo.Context) error
+	SignUp(echo.Context) error
+	VerifyEmail(echo.Context) error
 }
 
 // Profile represents all profile resource handler
 type Profile interface {
 	ResourceHandler
 	Get(echo.Context) error
+	ListBloggerPosts(echo.Context) error
+	GetPostDetail(echo.Context) error
+	Update(echo.Context) error
+	ChangePassword(echo.Context) error
 }
 
 // Tag represents all tag resource handler

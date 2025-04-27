@@ -5,6 +5,8 @@
 - `POST /auth/sign-up` - Reader can sign up to become a blogger
 - `POST /auth/sign-in` - Blogger can sign in to the blogging website
 - `GET /profile/{:userId}` - Reader/Blogger can view other blogger profile information
+- `GET /profile/posts` - Blogger can view all of their posts (both published and draft).
+- `GET /profile/posts/{:postId}`- Blogger can view the details of a specific post (published or draft).
 - `PUT /profile` - Blogger can update their profile information
 - `PUT /profile/change-password` - Blogger can change their account password
 - `POST /auth/verify` - Blogger can verify their email address upon signing up

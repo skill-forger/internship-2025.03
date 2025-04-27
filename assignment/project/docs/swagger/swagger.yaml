@@ -20,6 +20,24 @@ definitions:
       user_id:
         type: integer
     type: object
+  contract.ChangePasswordRequest:
+    properties:
+      confirm_new_password:
+        type: string
+      current_password:
+        type: string
+      new_password:
+        minLength: 8
+        type: string
+    required:
+    - current_password
+    - new_password
+    type: object
+  contract.ChangePasswordResponse:
+    properties:
+      message:
+        type: string
+    type: object
   contract.ChildCommentResponse:
     properties:
       content:
@@ -224,6 +242,28 @@ definitions:
       user_id:
         type: integer
     type: object
+  contract.SignUpRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    type: object
+  contract.SignUpResponse:
+    properties:
+      message:
+        type: string
+    type: object
   contract.TagDetailResponse:
     properties:
       created_at:
@@ -253,6 +293,31 @@ definitions:
           type: integer
         type: array
       title:
+        type: string
+    type: object
+  contract.UpdateProfileRequest:
+    properties:
+      biography:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      profile_image:
+        type: string
+      pseudonym:
+        type: string
+    type: object
+  contract.VerifyEmailRequest:
+    properties:
+      code:
+        type: integer
+    required:
+    - code
+    type: object
+  contract.VerifyEmailResponse:
+    properties:
+      message:
         type: string
     type: object
   static.BloggerFollowAction:
@@ -310,6 +375,56 @@ paths:
           description: Bad Request
           schema: {}
       summary: Signs In user into the system
+      tags:
+      - authentication
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Reader can sign up to become a blogger
+      parameters:
+      - description: Sign up request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.SignUpResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Register a new user
+      tags:
+      - authentication
+  /auth/verify:
+    post:
+      consumes:
+      - application/json
+      description: Blogger can verify their email address upon signing up
+      parameters:
+      - description: Email verification request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.VerifyEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.VerifyEmailResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Verify email address
       tags:
       - authentication
   /comments:
@@ -698,10 +813,17 @@ paths:
       tags:
       - post
   /profile:
-    get:
+    put:
       consumes:
       - application/json
-      description: Respond profile detail information
+      description: Blogger can update their profile information
+      parameters:
+      - description: Update profile request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.UpdateProfileRequest'
       produces:
       - application/json
       responses:
@@ -714,7 +836,107 @@ paths:
           schema: {}
       security:
       - BearerToken: []
+      summary: Update blogger profile
+      tags:
+      - profile
+  /profile/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Respond profile detail information
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ProfileResponse'
+        "400":
+          description: Bad Request
+          schema: {}
       summary: Respond profile detail information
+      tags:
+      - profile
+  /profile/change-password:
+    put:
+      consumes:
+      - application/json
+      description: Blogger can change their password
+      parameters:
+      - description: Change password request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/contract.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ChangePasswordResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: Change blogger password
+      tags:
+      - profile
+  /profile/posts:
+    get:
+      description: Blogger can view all their posts. Use query parameters to filter
+        (e.g., is_published=false to view drafts).
+      parameters:
+      - description: Filter by status post
+        in: query
+        name: is_published
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "401":
+          description: Unauthorized
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View all blogger's posts
+      tags:
+      - profile
+  /profile/posts/{postId}:
+    get:
+      description: Blogger can view the detail of their own post, whether it's published
+        or draft
+      parameters:
+      - description: Post ID
+        in: path
+        name: postId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.PostResponse'
+        "404":
+          description: Not Found
+          schema: {}
+      security:
+      - BearerToken: []
+      summary: View a specific blogger's post
       tags:
       - profile
   /tags:
