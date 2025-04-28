@@ -1,6 +1,10 @@
 package post
 
 import (
+	ct "golang-project/internal/contract"
+	svc "golang-project/internal/service"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 
 	hdl "golang-project/internal/handler"
@@ -9,20 +13,22 @@ import (
 
 // handler represents the implementation of handler.Post
 type handler struct {
-	route string
+	route   string
+	postSvc svc.Post
 }
 
 // NewHandler returns a new implementation of handler.Post
-func NewHandler(route string) hdl.Post {
+func NewHandler(route string, postSvc svc.Post) hdl.Post {
 	return &handler{
-		route: route,
+		route:   route,
+		postSvc: postSvc,
 	}
 }
 
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
-		Route:           h.route,
-		IsAuthenticated: true,
+		Route: h.route,
+		//IsAuthenticated: true,
 		Register: func(group *echo.Group) {
 			group.GET("", h.List)
 			group.GET("/:postId", h.Get)
@@ -75,8 +81,48 @@ func (h *handler) List(e echo.Context) error {
 //	@Success		200		{object}	contract.PostResponse
 //	@Failure		400		{object}	error
 //	@Router			/posts [post]
-func (h *handler) Create(e echo.Context) error {
-	return nil
+func (h *handler) Create(c echo.Context) error {
+	req := new(ct.CreatePostRequest)
+	if err := c.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	// Manual validation
+	if req.Title == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "Title is required")
+	}
+
+	if req.Body == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "Body is required")
+	}
+
+	// You can add more validation rules as needed
+	if len(req.Title) > 255 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Title is too long (maximum 255 characters)")
+	}
+
+	// Get user ID from JWT token
+	//user := c.Get("user")
+	//if user == nil {
+	//	return echo.NewHTTPError(http.StatusUnauthorized, "Authorization required")
+	//}
+
+	// Get the user ID from the ContextUser
+	//contextUser, ok := user.(*ct.ContextUser)
+	//if !ok {
+	//	return echo.NewHTTPError(http.StatusInternalServerError, "Invalid user context")
+	//}
+
+	// Set the user ID in the request
+	//req.UserID = contextUser.ID
+
+	// Call service to create post
+	res, err := h.postSvc.Create(req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusCreated, res)
 }
 
 // Update handles the request to update an existing post

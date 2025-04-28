@@ -19,3 +19,11 @@ type Tag interface {
 	HasPosts(int) (bool, error)
 	Select() ([]*model.Tag, error)
 }
+
+type Post interface {
+	Insert(*model.Post) (*model.Post, error)
+	GenerateSlug(string) (string, error)
+	AddTag(int, int) error
+	GetTags(int) ([]*model.Tag, error)
+	AddPostTag(int, int) error
+}
