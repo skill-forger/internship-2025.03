@@ -7,6 +7,12 @@ import (
 	"golang-project/internal/model"
 )
 
+type postData struct {
+	postdata *model.Post
+	userdata *model.User
+	tagsdata []*model.Tag
+}
+
 // prepareTagResponse transforms tag model to response DTO
 func prepareTagResponse(o *model.Tag) *ct.TagDetailResponse {
 	data := &ct.TagDetailResponse{
@@ -62,13 +68,43 @@ func preparePostResponse(o *model.Post, u *model.User, t []*model.Tag) *ct.PostR
 }
 
 // prepareListPostResponse transforms the data and returns the List Post Response
-func prepareListPostResponse(o []*model.Post, u []*model.User, t [][]*model.Tag) *ct.ListPostResponse {
+func prepareListPostResponse(p []*model.Post, pt []*model.PostTag, t []*model.Tag, u []*model.User) *ct.ListPostResponse {
 	data := &ct.ListPostResponse{
-		Posts: make([]*ct.PostResponse, 0, len(o)),
+		Posts: make([]*ct.PostResponse, 0, len(p)),
 	}
 
-	for i := 0; i < len(o); i++ {
-		data.Posts = append(data.Posts, preparePostResponse(o[i], u[i], t[i]))
+	postMap := make(map[int]*postData, len(p))
+	tagMap := make(map[int]*model.Tag, len(t))
+
+	// Build Tag Map
+	for _, tag := range t {
+		tagMap[tag.ID] = tag
+	}
+
+	// Build Post Map
+	for _, post := range p {
+		postMap[post.ID] = &postData{
+			postdata: post,
+		}
+
+		for _, user := range u {
+			if post.UserID == user.ID {
+				postMap[post.ID].userdata = user
+				break
+			}
+		}
+	}
+
+	for _, ptItem := range pt {
+		if postData, ok := postMap[ptItem.PostID]; ok {
+			if tag, exists := tagMap[ptItem.TagID]; exists {
+				postData.tagsdata = append(postData.tagsdata, tag)
+			}
+		}
+	}
+
+	for _, postData := range postMap {
+		data.Posts = append(data.Posts, preparePostResponse(postData.postdata, postData.userdata, postData.tagsdata))
 	}
 
 	return data

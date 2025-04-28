@@ -17,15 +17,27 @@ func NewRepository(db *gorm.DB) repo.Tag {
 	return &repository{db: db}
 }
 
-// Select finds and returns all not deleted tag models
-func (r *repository) Select() ([]*model.Tag, error) {
+// Select finds and returns all not deleted tag models by tag IDs
+// If the id parameter is nil, it will return all tags
+
+func (r *repository) Select(id []int) ([]*model.Tag, error) {
 	var result []*model.Tag
 
-	query := r.db.Model(&model.Tag{}).Find(&result)
+	query := r.db.Model(&model.Tag{})
+
+	if id != nil {
+		query.Where("id IN (?)", id)
+	}
+
+	query.Find(&result)
 
 	if err := query.Error; err != nil {
 		return nil, err
 	}
+
+	// for _, r := range result {
+	// 	fmt.Printf("Tag ID: %d, Name: %s\n", r.ID, r.Name)
+	// }
 
 	return result, nil
 }
@@ -48,14 +60,12 @@ func (r *repository) SelectPost(id int) ([]*model.Post, error) {
 	return result, nil
 }
 
-// SelectByPost finds and returns all not deleted tag models by post id
-func (r *repository) SelectByPost(id int) ([]*model.Tag, error) {
-	var result []*model.Tag
+// SelectPost finds and returns all post_tag models by post ids
+func (r *repository) SelectPostTag(id []int) ([]*model.PostTag, error) {
+	var result []*model.PostTag
 
-	query := r.db.Model(&model.Tag{}).
-		Joins("JOIN post_tag ON tags.id = post_tag.tag_id").
-		Where("post_tag.post_id = ?", id).
-		Where("tags.deleted_at IS NULL").
+	query := r.db.Table("post_tag").
+		Where("post_id IN (?)", id).
 		Find(&result)
 
 	if err := query.Error; err != nil {
@@ -65,15 +75,13 @@ func (r *repository) SelectByPost(id int) ([]*model.Tag, error) {
 	return result, nil
 }
 
-// SelectUserByPost finds and returns the not deleted user model by post id
-func (r *repository) SelectUserByPost(id int) (*model.User, error) {
-	var result *model.User
+// SelectUser finds and returns the not deleted user models user ids
+func (r *repository) SelectUser(ids []int) ([]*model.User, error) {
+	var result []*model.User
 
 	query := r.db.Model(&model.User{}).
-		Joins("JOIN posts ON users.id = posts.user_id").
-		Where("users.deleted_at IS NULL").
-		Where("posts.id = ?", id).
-		First(&result)
+		Where("id IN (?)", ids).
+		Find(&result)
 
 	if err := query.Error; err != nil {
 		return nil, err

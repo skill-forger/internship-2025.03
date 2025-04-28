@@ -58,7 +58,7 @@ func (s *service) Delete(id int) error {
 
 // List executes all tags retrieval logic
 func (s *service) List() (*ct.ListTagResponse, error) {
-	tags, err := s.tagRepo.Select()
+	tags, err := s.tagRepo.Select(nil) // If the postIDs parameter is nil, it will return all tags
 	if err != nil {
 		return nil, err
 	}
@@ -68,28 +68,47 @@ func (s *service) List() (*ct.ListTagResponse, error) {
 
 // ListPosts executes all posts retrieval logic by tag id
 func (s *service) ListPosts(id int) (*ct.ListPostResponse, error) {
-	posts, err := s.tagRepo.SelectPost(id)
-	if err != nil {
-		return nil, err
+	//Select posts by tag id
+	posts, errPosts := s.tagRepo.SelectPost(id)
+	if errPosts != nil {
+		return nil, errPosts
 	}
 
-	users := make([]*model.User, 0, len(posts))
-	tagsLists := make([][]*model.Tag, 0, len(posts))
+	// make a list of posts ID
+	postIDs := make([]int, 0, len(posts))
 	for _, post := range posts {
-		// Get all the tags associated with the post
-		tagsList, err := s.tagRepo.SelectByPost(post.ID)
-		if err != nil {
-			return nil, err
-		}
-		tagsLists = append(tagsLists, tagsList)
-
-		// Get the user who created the post
-		user, err := s.tagRepo.SelectUserByPost(post.ID)
-		if err != nil {
-			return nil, err
-		}
-		users = append(users, user)
+		postIDs = append(postIDs, post.ID)
 	}
 
-	return prepareListPostResponse(posts, users, tagsLists), nil
+	// Select all post_tags by list of posts ID
+	post_tags, errPostTags := s.tagRepo.SelectPostTag(postIDs)
+	if errPostTags != nil {
+		return nil, errPostTags
+	}
+
+	// make a list of tags ID
+	tagIDs := make([]int, 0, len(post_tags))
+	for _, post_tag := range post_tags {
+		tagIDs = append(tagIDs, post_tag.TagID)
+	}
+
+	// Select all tags by list of tags ID
+	tags, errTags := s.tagRepo.Select(tagIDs)
+	if errTags != nil {
+		return nil, errTags
+	}
+
+	// make a list of users ID
+	userIDs := make([]int, 0, len(posts))
+	for _, post := range posts {
+		userIDs = append(userIDs, post.UserID)
+	}
+
+	// Select all users by list of posts ID
+	users, errUsers := s.tagRepo.SelectUser(userIDs)
+	if errUsers != nil {
+		return nil, errUsers
+	}
+
+	return prepareListPostResponse(posts, post_tags, tags, users), nil
 }
