@@ -23,3 +23,7 @@ type Tag interface {
 
 type Comment interface {
 }
+
+type Post interface {
+	Create(*ct.CreatePostRequest, int) (*ct.PostResponse, error)
+}

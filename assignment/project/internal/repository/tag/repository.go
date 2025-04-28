@@ -113,5 +113,4 @@ func (r *repository) HasPosts(id int) (bool, error) {
 		return false, err
 	}
 	return count > 0, nil
-
 }

@@ -25,3 +25,11 @@ type Tag interface {
 
 type Comment interface {
 }
+
+type Post interface {
+	Insert(*model.Post) (*model.Post, error)
+	GenerateSlug(string) string
+	GetTags(int) ([]*model.Tag, error)
+	AddPostTag(int, int) error
+	InsertManyPostTags([]*model.PostTag) error
+}

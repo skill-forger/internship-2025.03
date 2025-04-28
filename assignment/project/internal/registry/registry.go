@@ -1,9 +1,10 @@
 package registry
 
 import (
+	_ "golang-project/docs/swagger"
+
 	"github.com/labstack/echo/v4"
 	swagger "github.com/swaggo/echo-swagger"
-	_ "golang-project/docs/swagger"
 	"golang-project/internal/registry/comment"
 	"gorm.io/gorm"
 
@@ -11,6 +12,7 @@ import (
 	"golang-project/internal/registry/authentication"
 	"golang-project/internal/registry/favourite"
 	"golang-project/internal/registry/health"
+	"golang-project/internal/registry/post"
 	"golang-project/internal/registry/profile"
 	"golang-project/internal/registry/tag"
 	"golang-project/server"
@@ -52,6 +54,7 @@ func initResourceHandlers(db *gorm.DB) []handler.ResourceHandler {
 		profile.NewRegistry("/profile", db),
 		tag.NewRegistry("/tags", db),
 		favourite.NewRegistry("/favorites", db),
+		post.NewRegistry("/posts", db),
 		comment.NewRegistry("/comments", db),
 	}
 }
