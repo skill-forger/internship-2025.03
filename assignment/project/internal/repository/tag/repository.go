@@ -35,10 +35,6 @@ func (r *repository) Select(id []int) ([]*model.Tag, error) {
 		return nil, err
 	}
 
-	// for _, r := range result {
-	// 	fmt.Printf("Tag ID: %d, Name: %s\n", r.ID, r.Name)
-	// }
-
 	return result, nil
 }
 
