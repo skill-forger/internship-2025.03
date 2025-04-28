@@ -31,7 +31,7 @@ func NewHandler(route string, tagSvc svc.Tag) hdl.Tag {
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
 		Route:           h.route,
-		IsAuthenticated: false,
+		IsAuthenticated: true,
 		Register: func(group *echo.Group) {
 			group.POST("", h.Create)
 			group.GET("", h.List)
