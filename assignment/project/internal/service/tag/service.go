@@ -74,10 +74,12 @@ func (s *service) ListPosts(id int) (*ct.ListPostResponse, error) {
 		return nil, errPosts
 	}
 
-	// make a list of posts ID
+	// make a list of posts ID & user IDs
 	postIDs := make([]int, 0, len(posts))
+	userIDs := make([]int, 0, len(posts))
 	for _, post := range posts {
 		postIDs = append(postIDs, post.ID)
+		userIDs = append(userIDs, post.UserID)
 	}
 
 	// Select all post_tags by list of posts ID
@@ -96,12 +98,6 @@ func (s *service) ListPosts(id int) (*ct.ListPostResponse, error) {
 	tags, errTags := s.tagRepo.Select(tagIDs)
 	if errTags != nil {
 		return nil, errTags
-	}
-
-	// make a list of users ID
-	userIDs := make([]int, 0, len(posts))
-	for _, post := range posts {
-		userIDs = append(userIDs, post.UserID)
 	}
 
 	// Select all users by list of posts ID
