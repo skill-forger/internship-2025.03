@@ -1,21 +1,29 @@
 package post
 
 import (
+	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 
 	hdl "golang-project/internal/handler"
+	svc "golang-project/internal/service"
 	"golang-project/server"
 )
 
 // handler represents the implementation of handler.Post
 type handler struct {
-	route string
+	route   string
+	postSvc svc.Post
 }
 
 // NewHandler returns a new implementation of handler.Post
-func NewHandler(route string) hdl.Post {
+func NewHandler(route string, postSvc svc.Post) hdl.Post {
 	return &handler{
-		route: route,
+		route:   route,
+		postSvc: postSvc,
 	}
 }
 
@@ -40,12 +48,34 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Tags			post
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerToken
 //	@Param			postId	path		int	true	"Post ID"
 //	@Success		200		{object}	contract.PostResponse
 //	@Failure		400		{object}	error
 //	@Router			/posts/{postId} [get]
 func (h *handler) Get(e echo.Context) error {
-	return nil
+	// Get post ID from URL param
+	postID := e.Param("postId")
+	if postID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "Post ID is required")
+	}
+
+	// Convert ID from string to int
+	id, err := strconv.Atoi(postID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid post ID")
+	}
+
+	// Get data from service
+	response, err := h.postSvc.GetByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "Post not found")
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error retrieving post")
+	}
+
+	return e.JSON(http.StatusOK, response)
 }
 
 // List handles the request to retrieve all published posts
@@ -55,6 +85,7 @@ func (h *handler) Get(e echo.Context) error {
 //	@Tags			post
 //	@Accept			json
 //	@Produce		json
+//	@Security		BearerToken
 //	@Param			filter	query		contract.ListPostRequest	false	"Filtering parameters"
 //	@Success		200		{object}	contract.ListPostResponse
 //	@Failure		400		{object}	error

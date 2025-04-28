@@ -26,6 +26,10 @@ type Tag interface {
 type Comment interface {
 }
 
+type Post interface {
+	Read(int) (*model.Post, error)
+}
+
 // Favourite represents the repository actions for managing user follows and post favorites
 type Favourite interface {
 	// User following operations
