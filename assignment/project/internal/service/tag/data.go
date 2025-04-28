@@ -53,7 +53,7 @@ func preparePostResponse(o *model.Post, u *model.User, t []*model.Tag) *ct.PostR
 		Slug:        o.Slug,
 		IsPublished: o.IsPublished,
 		User:        prepareProfileResponse(u),
-		Tags:        prepareListTagResponse(t),
+		//Tags:        prepareListTagResponse(t),
 	}
 
 	if o.CreatedAt != nil {

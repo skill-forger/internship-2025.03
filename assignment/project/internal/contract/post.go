@@ -12,9 +12,10 @@ type PostResponse struct {
 	Slug        string           `json:"slug,omitempty"`
 	IsPublished bool             `json:"is_published,omitempty"`
 	User        *ProfileResponse `json:"user,omitempty"`
-	Tags        *ListTagResponse `json:"tags,omitempty"`
-	CreatedAt   string           `json:"created_at,omitempty"`
-	UpdatedAt   string           `json:"updated_at,omitempty"`
+	//Tags        *ListTagResponse `json:"tags,omitempty"`
+	Tags      []*TagDetailResponse
+	CreatedAt string `json:"created_at,omitempty"`
+	UpdatedAt string `json:"updated_at,omitempty"`
 }
 
 // ListPostResponse defines the summary information of a blog post used in list endpoints,

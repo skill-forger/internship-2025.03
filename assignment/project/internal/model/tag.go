@@ -4,4 +4,5 @@ package model
 type Tag struct {
 	BaseModel
 	Name string
+	Posts []*Post `gorm:"many2many:post_tag"`
 }

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	ct "golang-project/internal/contract"
 	"golang-project/internal/model"
 )
 
@@ -24,4 +25,5 @@ type Tag interface {
 }
 
 type Comment interface {
+	SelectComment(request *ct.ListCommentRequest) ([]*model.Comment, int64, error)
 }

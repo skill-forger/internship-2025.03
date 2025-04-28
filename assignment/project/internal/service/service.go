@@ -22,4 +22,5 @@ type Tag interface {
 }
 
 type Comment interface {
+	ListComments(*ct.ListCommentRequest) (*ct.ListCommentResponse, error)
 }
