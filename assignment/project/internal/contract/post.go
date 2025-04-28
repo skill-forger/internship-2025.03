@@ -24,7 +24,7 @@ type ListPostResponse struct {
 
 // CreatePostRequest represents the required and optional data needed to create a new blog post.
 type CreatePostRequest struct {
-	UserID      int    `json:"user_id"`
+	//UserID      int    `json:"user_id"`
 	IsPublished bool   `json:"is_published,omitempty" default:"false"`
 	Title       string `json:"title" validate:"required"`
 	Body        string `json:"body" validate:"required"`
