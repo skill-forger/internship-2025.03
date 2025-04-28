@@ -17,10 +17,10 @@ type Tag interface {
 	Read(int) (*model.Tag, error)
 	Delete(int) error
 	HasPosts(int) (bool, error)
-	Select() ([]*model.Tag, error)
+	Select([]int) ([]*model.Tag, error)
 	SelectPost(int) ([]*model.Post, error)
-	SelectByPost(int) ([]*model.Tag, error)
-	SelectUserByPost(int) (*model.User, error)
+	SelectPostTag([]int) ([]*model.PostTag, error)
+	SelectUser([]int) ([]*model.User, error)
 }
 
 type Comment interface {
