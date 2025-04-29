@@ -7,19 +7,22 @@ import (
 
 	"golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
+	svc "golang-project/internal/service"
 	"golang-project/server"
 	"golang-project/static"
 )
 
 // handler represents the implementation of handler.Favourite
 type handler struct {
-	route string
+	route        string
+	favouriteSvc svc.Favourite
 }
 
 // NewHandler returns a new implementation of handler.Favourite
-func NewHandler(route string) hdl.Favourite {
+func NewHandler(route string, favouriteSvc svc.Favourite) hdl.Favourite {
 	return &handler{
-		route: route,
+		route:        route,
+		favouriteSvc: favouriteSvc,
 	}
 }
 
@@ -58,12 +61,41 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 		})
 	}
 
-	// Placeholder implementation
-	isFollowing := req.Action == static.Follow
-	return e.JSON(http.StatusOK, &contract.BloggerFollowStatusResponse{
-		UserID:      req.UserID,
-		IsFollowing: isFollowing,
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]string{
+			"error": "Unauthorized",
+		})
+	}
+
+	isFollow := req.Action == static.Follow
+	resp, err := h.favouriteSvc.FollowUser(ctxUser.ID, req.UserID, isFollow)
+	if err != nil {
+		switch err {
+		case static.ErrUserNotFound:
+			return e.JSON(http.StatusNotFound, map[string]string{
+				"error": "User not found",
+			})
+		case static.ErrSelfFollow:
+			return e.JSON(http.StatusBadRequest, map[string]string{
+				"error": "Cannot follow yourself",
+			})
+		case static.ErrAlreadyFollowing:
+			return e.JSON(http.StatusBadRequest, map[string]string{
+				"error": "Already following this user",
+			})
+		case static.ErrNotFollowing:
+			return e.JSON(http.StatusBadRequest, map[string]string{
+				"error": "Not following this user",
+			})
+		default:
+			return e.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Failed to update following status",
+			})
+		}
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }
 
 // ListBloggers handles the request to get all bloggers from following list
@@ -78,10 +110,28 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 //	@Failure		400	{object}	error
 //	@Router			/favorites/bloggers [get]
 func (h *handler) ListBloggers(e echo.Context) error {
-	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.ListProfileResponse{
-		Bloggers: []*contract.ProfileResponse{},
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]string{
+			"error": "Unauthorized",
+		})
+	}
+
+	resp, err := h.favouriteSvc.ListFollowers(ctxUser.ID)
+	if err != nil {
+		switch err {
+		case static.ErrUserNotFound:
+			return e.JSON(http.StatusNotFound, map[string]string{
+				"error": "User not found",
+			})
+		default:
+			return e.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Failed to retrieve followed bloggers",
+			})
+		}
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }
 
 // ListBloggerPosts handles the request to get all posts from followed bloggers
@@ -96,10 +146,28 @@ func (h *handler) ListBloggers(e echo.Context) error {
 //	@Failure		400	{object}	error
 //	@Router			/favorites/bloggers/posts [get]
 func (h *handler) ListBloggerPosts(e echo.Context) error {
-	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.ListPostResponse{
-		Posts: []*contract.PostResponse{},
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]string{
+			"error": "Unauthorized",
+		})
+	}
+
+	resp, err := h.favouriteSvc.ListFollowerPosts(ctxUser.ID)
+	if err != nil {
+		switch err {
+		case static.ErrUserNotFound:
+			return e.JSON(http.StatusNotFound, map[string]string{
+				"error": "User not found",
+			})
+		default:
+			return e.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Failed to retrieve posts from followed bloggers",
+			})
+		}
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }
 
 // UpdatePost handles adding/removing a post from favourite list
@@ -122,12 +190,34 @@ func (h *handler) UpdatePost(e echo.Context) error {
 		})
 	}
 
-	// Placeholder implementation
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]string{
+			"error": "Unauthorized",
+		})
+	}
+
 	isFavourite := req.Action == static.Favourite
-	return e.JSON(http.StatusOK, &contract.PostFavouriteStatusResponse{
-		PostID:      req.PostID,
-		IsFavourite: isFavourite,
-	})
+	resp, err := h.favouriteSvc.FavouritePost(ctxUser.ID, req.PostID, isFavourite)
+	if err != nil {
+		switch err {
+		case static.ErrUserNotFound:
+			return e.JSON(http.StatusNotFound, map[string]string{
+				"error": "User not found",
+			})
+		default:
+			if err.Error() == "record not found" {
+				return e.JSON(http.StatusNotFound, map[string]string{
+					"error": "Post not found",
+				})
+			}
+			return e.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Failed to update favourite status",
+			})
+		}
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }
 
 // ListPosts handles the request to get all posts from favourite list
@@ -142,8 +232,26 @@ func (h *handler) UpdatePost(e echo.Context) error {
 //	@Failure		400	{object}	error
 //	@Router			/favorites/posts [get]
 func (h *handler) ListPosts(e echo.Context) error {
-	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.ListPostResponse{
-		Posts: []*contract.PostResponse{},
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]string{
+			"error": "Unauthorized",
+		})
+	}
+
+	resp, err := h.favouriteSvc.ListFavourites(ctxUser.ID)
+	if err != nil {
+		switch err {
+		case static.ErrUserNotFound:
+			return e.JSON(http.StatusNotFound, map[string]string{
+				"error": "User not found",
+			})
+		default:
+			return e.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Failed to retrieve favourite posts",
+			})
+		}
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }

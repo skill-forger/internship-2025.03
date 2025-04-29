@@ -22,3 +22,15 @@ type Tag interface {
 
 type Comment interface {
 }
+
+// Favourite represents the service logic of Favourite features
+type Favourite interface {
+	// User following operations
+	FollowUser(userID, targetUserID int, isFollow bool) (*ct.BloggerFollowStatusResponse, error)
+	ListFollowers(userID int) (*ct.ListProfileResponse, error)
+	ListFollowerPosts(userID int) (*ct.ListPostResponse, error)
+
+	// Post favorite operations
+	FavouritePost(userID, postID int, isFavourite bool) (*ct.PostFavouriteStatusResponse, error)
+	ListFavourites(userID int) (*ct.ListPostResponse, error)
+}
