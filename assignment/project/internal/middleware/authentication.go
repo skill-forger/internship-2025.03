@@ -17,7 +17,10 @@ import (
 
 // Authentication provides the middleware for any API requires user authentication
 func Authentication(registries []server.HandlerRegistry) echo.MiddlewareFunc {
-	pathSkipper := mapPathSkipper(registries)
+	pathSkipper := map[string]bool{}
+	if len(registries) > 0 {
+		pathSkipper = mapPathSkipper(registries)
+	}
 
 	return echoJwt.WithConfig(echoJwt.Config{
 		Skipper: func(c echo.Context) bool {
