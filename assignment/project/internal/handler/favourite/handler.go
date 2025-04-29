@@ -7,19 +7,22 @@ import (
 
 	"golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
+	svc "golang-project/internal/service"
 	"golang-project/server"
 	"golang-project/static"
 )
 
 // handler represents the implementation of handler.Favourite
 type handler struct {
-	route string
+	route        string
+	favouriteSvc svc.Favourite
 }
 
 // NewHandler returns a new implementation of handler.Favourite
-func NewHandler(route string) hdl.Favourite {
+func NewHandler(route string, favouriteSvc svc.Favourite) hdl.Favourite {
 	return &handler{
-		route: route,
+		route:        route,
+		favouriteSvc: favouriteSvc,
 	}
 }
 
@@ -78,10 +81,26 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 //	@Failure		400	{object}	error
 //	@Router			/favorites/bloggers [get]
 func (h *handler) ListBloggers(e echo.Context) error {
-	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.ListProfileResponse{
-		Bloggers: []*contract.ProfileResponse{},
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]string{
+			"error": "Unauthorized",
+		})
+	}
+
+	resp, err := h.favouriteSvc.ListFollowingUsers(ctxUser.ID)
+	if err != nil {
+		if err == static.ErrUserNotFound {
+			return e.JSON(http.StatusNotFound, map[string]string{
+				"error": "User not found",
+			})
+		}
+		return e.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to retrieve followed bloggers",
+		})
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }
 
 // ListBloggerPosts handles the request to get all posts from followed bloggers
