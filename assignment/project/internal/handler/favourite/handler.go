@@ -104,6 +104,18 @@ func (h *handler) ListBloggers(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, resp)
 }
+
+// ListBloggerPosts handles the request to get all posts from followed bloggers
+//
+//	@Summary		View posts from followed bloggers
+//	@Description	Blogger can view all the posts of the following bloggers
+//	@Tags			favourite
+//	@Accept			json
+//	@Produce		json
+//	@Security		BearerToken
+//	@Success		200	{object}	contract.ListPostResponse
+//	@Failure		400	{object}	error
+//	@Router			/favorites/bloggers/posts [get]
 func (h *handler) ListBloggerPosts(e echo.Context) error {
 	// Placeholder implementation
 	return e.JSON(http.StatusOK, &contract.ListPostResponse{

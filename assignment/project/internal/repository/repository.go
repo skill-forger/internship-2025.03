@@ -25,3 +25,10 @@ type Tag interface {
 
 type Comment interface {
 }
+
+// Favourite represents the repository actions for managing user follows and post favorites
+type Favourite interface {
+	// User following operations
+	IsFollowing(userID, followUserID int) (bool, error)
+	SelectFollowed(userID int) ([]*model.User, error)
+}
