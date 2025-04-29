@@ -88,18 +88,16 @@ func (h *handler) ListBloggers(e echo.Context) error {
 		})
 	}
 
-	resp, err := h.favouriteSvc.ListFollowers(ctxUser.ID)
+	resp, err := h.favouriteSvc.ListFollowingUsers(ctxUser.ID)
 	if err != nil {
-		switch err {
-		case static.ErrUserNotFound:
+		if err == static.ErrUserNotFound {
 			return e.JSON(http.StatusNotFound, map[string]string{
 				"error": "User not found",
 			})
-		default:
-			return e.JSON(http.StatusInternalServerError, map[string]string{
-				"error": "Failed to retrieve followed bloggers",
-			})
 		}
+		return e.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to retrieve followed bloggers",
+		})
 	}
 
 	return e.JSON(http.StatusOK, resp)

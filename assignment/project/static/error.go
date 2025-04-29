@@ -9,5 +9,4 @@ var (
 
 	// Favourite errors - User following
 	ErrUserNotFound = errors.New("error user id not found")
-	ErrReadUserID   = errors.New("error get user detail")
 )

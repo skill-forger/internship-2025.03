@@ -30,5 +30,5 @@ type Comment interface {
 type Favourite interface {
 	// User following operations
 	IsFollowing(userID, followUserID int) (bool, error)
-	SelectFollowed(userID int) ([]*model.User, error)
+	SelectFollowing(userID int) ([]*model.User, error)
 }

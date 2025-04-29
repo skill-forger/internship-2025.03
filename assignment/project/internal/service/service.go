@@ -27,11 +27,11 @@ type Comment interface {
 // Favourite represents the service logic of Favourite features
 type Favourite interface {
 	// User following operations
-	FollowUser(userID, targetUserID int, isFollow bool) (*ct.BloggerFollowStatusResponse, error)
-	ListFollowers(userID int) (*ct.ListProfileResponse, error)
-	ListFollowerPosts(userID int) (*ct.ListPostResponse, error)
+	Follow(userID, targetUserID int, isFollow bool) (*ct.BloggerFollowStatusResponse, error)
+	ListFollowingUsers(userID int) (*ct.ListProfileResponse, error)
+	ListUserPosts(userID int) (*ct.ListPostResponse, error)
 
 	// Post favorite operations
-	FavouritePost(userID, postID int, isFavourite bool) (*ct.PostFavouriteStatusResponse, error)
-	ListFavourites(userID int) (*ct.ListPostResponse, error)
+	Favourite(userID, postID int, isFavourite bool) (*ct.PostFavouriteStatusResponse, error)
+	ListFavouritePosts(userID int) (*ct.ListPostResponse, error)
 }

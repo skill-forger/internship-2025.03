@@ -17,14 +17,13 @@ func NewRepository(db *gorm.DB) repo.Favourite {
 	return &repository{db: db}
 }
 
-
 // IsFollowing checks if user is following followUser
 func (r *repository) IsFollowing(userID, followUserID int) (bool, error) {
 	return false, nil
 }
 
-// SelectFollowed returns all users that the given user is following
-func (r *repository) SelectFollowed(userID int) ([]*model.User, error) {
+// SelectFollowing returns all users that the given user is following
+func (r *repository) SelectFollowing(userID int) ([]*model.User, error) {
 	var users []*model.User
 	err := r.db.Table("users").
 		Joins("JOIN follow_user ON users.id = follow_user.follow_user_id").
@@ -32,4 +31,3 @@ func (r *repository) SelectFollowed(userID int) ([]*model.User, error) {
 		Find(&users).Error
 	return users, err
 }
-
