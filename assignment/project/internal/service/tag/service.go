@@ -23,7 +23,7 @@ func NewService(tagRepo repo.Tag) svc.Tag {
 }
 
 // Create a new tag
-func (s *service) Create(name string) (*ct.TagDetailResponse, error) {
+func (s *service) Create(name string) (*ct.TagResponse, error) {
 	tag := &model.Tag{
 		Name: name,
 	}
@@ -63,7 +63,7 @@ func (s *service) List() (*ct.ListTagResponse, error) {
 		return nil, err
 	}
 
-	return prepareListTagResponse(tags), nil
+	return &ct.ListTagResponse{Tags: prepareListTagResponse(tags)}, nil
 }
 
 // ListPosts executes all posts retrieval logic by tag id

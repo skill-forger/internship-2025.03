@@ -1,7 +1,7 @@
 package contract
 
-// TagDetailResponse specifies the data and types for tag API response
-type TagDetailResponse struct {
+// TagResponse specifies the data and types for tag API response
+type TagResponse struct {
 	ID        int    `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
 	CreatedAt string `json:"created_at,omitempty"`
@@ -10,7 +10,7 @@ type TagDetailResponse struct {
 
 // ListTagResponse specifies the data and types for list tag API response
 type ListTagResponse struct {
-	Tags []*TagDetailResponse `json:"tags"`
+	Tags []*TagResponse `json:"tags,omitempty"`
 }
 
 // CreateTagRequest specifies the data and types for tag API request
