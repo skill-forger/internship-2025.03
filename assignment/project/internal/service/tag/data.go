@@ -14,8 +14,8 @@ type postData struct {
 }
 
 // prepareTagResponse transforms tag model to response DTO
-func prepareTagResponse(o *model.Tag) *ct.TagDetailResponse {
-	data := &ct.TagDetailResponse{
+func prepareTagResponse(o *model.Tag) *ct.TagResponse {
+	data := &ct.TagResponse{
 		ID:   o.ID,
 		Name: o.Name,
 	}
@@ -32,13 +32,11 @@ func prepareTagResponse(o *model.Tag) *ct.TagDetailResponse {
 }
 
 // prepareListTagResponse transforms the data and returns the List Tag Response
-func prepareListTagResponse(o []*model.Tag) *ct.ListTagResponse {
-	data := &ct.ListTagResponse{
-		Tags: make([]*ct.TagDetailResponse, 0, len(o)),
-	}
+func prepareListTagResponse(o []*model.Tag) []*ct.TagResponse {
+	data := make([]*ct.TagResponse, 0, len(o))
 
 	for _, tag := range o {
-		data.Tags = append(data.Tags, prepareTagResponse(tag))
+		data = append(data, prepareTagResponse(tag))
 	}
 
 	return data
