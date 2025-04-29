@@ -35,11 +35,9 @@ func (s *service) GetByID(id int) (*ct.PostResponse, error) {
 	response.User = prepareProfileResponse(post.User)
 
 	// Add tags data
-	response.Tags = &ct.ListTagResponse{
-		Tags: make([]*ct.TagDetailResponse, len(post.Tags)),
-	}
+	response.Tags = make([]*ct.TagResponse, len(post.Tags))
 	for i, tag := range post.Tags {
-		response.Tags.Tags[i] = prepareTagDetailResponse(tag)
+		response.Tags[i] = prepareTagDetailResponse(tag)
 	}
 
 	return response, nil

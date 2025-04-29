@@ -28,12 +28,12 @@ func preparePostResponse(post *model.Post) *ct.PostResponse {
 	return data
 }
 
-// prepareTagDetailResponse transform model.Tag to contract.TagDetailResponse
-func prepareTagDetailResponse(tag *model.Tag) *ct.TagDetailResponse {
+// prepareTagDetailResponse transform model.Tag to contract.TagResponse
+func prepareTagDetailResponse(tag *model.Tag) *ct.TagResponse {
 	if tag == nil {
 		return nil
 	}
-	return &ct.TagDetailResponse{
+	return &ct.TagResponse{
 		ID:   tag.ID,
 		Name: tag.Name,
 	}
