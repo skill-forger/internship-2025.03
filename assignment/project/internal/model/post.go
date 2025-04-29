@@ -8,4 +8,6 @@ type Post struct {
 	Slug        string
 	IsPublished bool
 	UserID      int
+	User        *User  `gorm:"foreignKey:UserID"`
+	Tags        []*Tag `gorm:"many2many:post_tag"`
 }

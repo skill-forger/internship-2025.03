@@ -24,6 +24,10 @@ type Tag interface {
 type Comment interface {
 }
 
+type Post interface {
+	GetByID(int) (*ct.PostResponse, error)
+}
+
 // Favourite represents the service logic of Favourite features
 type Favourite interface {
 	// User following operations
