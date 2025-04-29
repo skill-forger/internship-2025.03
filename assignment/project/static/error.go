@@ -9,4 +9,10 @@ var (
 
 	// Favourite errors - User following
 	ErrUserNotFound = errors.New("error user id not found")
+
+	// Post errors
+	ErrInsertPost           = errors.New("error creating post")
+	ErrTagNotFoundOrDeleted = errors.New("error one or more tags not found or deleted")
+	ErrInsertPostTags       = errors.New("error creating post tag")
+	ErrFetchPostDetail      = errors.New("error fetching post detail")
 )

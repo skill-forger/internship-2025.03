@@ -2,8 +2,10 @@ package post
 
 import (
 	"errors"
+	ct "golang-project/internal/contract"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -106,8 +108,36 @@ func (h *handler) List(e echo.Context) error {
 //	@Success		200		{object}	contract.PostResponse
 //	@Failure		400		{object}	error
 //	@Router			/posts [post]
-func (h *handler) Create(e echo.Context) error {
-	return nil
+func (h *handler) Create(c echo.Context) error {
+	req := new(ct.CreatePostRequest)
+	if err := c.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if len(strings.TrimSpace(req.Title)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Title is required")
+	}
+
+	if len(strings.TrimSpace(req.Body)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Body is required")
+	}
+
+	if len(req.Title) > 255 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Title is too long (maximum 255 characters)")
+	}
+
+	// Lấy userID từ context (JWT)
+	ctxUser, err := hdl.GetContextUser(c)
+	if err != nil {
+		return err
+	}
+
+	res, err := h.postSvc.Create(req, ctxUser.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
 
 // Update handles the request to update an existing post
