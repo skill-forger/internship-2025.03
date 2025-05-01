@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 
@@ -74,7 +75,21 @@ func (h *handler) SignIn(e echo.Context) error {
 //	@Failure      400      {object}  error
 //	@Router       /auth/sign-up [post]
 func (h *handler) SignUp(e echo.Context) error {
-	return nil
+	var req ct.SignUpRequest
+
+	if err := e.Bind(&req); err != nil {
+		return e.JSON(http.StatusUnprocessableEntity, err)
+	}
+
+	if len(strings.TrimSpace(req.Email)) == 0 || len(strings.TrimSpace(req.Password)) == 0 || len(strings.TrimSpace(req.LastName)) == 0 || len(strings.TrimSpace(req.FirstName)) == 0 {
+		return e.JSON(http.StatusUnprocessableEntity, "All fields are required")
+	}
+
+	message, err := h.authSvc.SignUp(&req)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, "Unable to create user")
+	}
+	return e.JSON(http.StatusOK, message)
 }
 
 // VerifyEmail handles the request to verify email address

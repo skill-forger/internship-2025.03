@@ -45,7 +45,19 @@ func (r *repository) ReadByEmail(email string) (*model.User, error) {
 
 // Insert performs insert action into user table
 func (r *repository) Insert(o *model.User) (*model.User, error) {
-	return nil, nil
+	if err := r.db.Create(o).Error; err != nil {
+		return nil, err
+	}
+	return o, nil
+}
+
+// GetUserByEmail finds and returns the user model by email
+func (r *repository) GetUserByEmail(email string) (*model.User, error) {
+	var u model.User
+	if err := r.db.Where("email = ?", email).First(&u).Error; err != nil {
+		return nil, err
+	}
+	return &u, nil
 }
 
 // Update performs update action into user table
