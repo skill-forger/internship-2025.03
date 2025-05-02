@@ -1,6 +1,7 @@
 package authentication
 
 import (
+	"golang-project/static"
 	"net/http"
 	"strings"
 
@@ -85,11 +86,23 @@ func (h *handler) SignUp(e echo.Context) error {
 		return e.JSON(http.StatusUnprocessableEntity, "All fields are required")
 	}
 
-	message, err := h.authSvc.SignUp(&req)
+	resp, err := h.authSvc.SignUp(&req)
 	if err != nil {
-		return e.JSON(http.StatusBadRequest, "Unable to create user")
+		// Xử lý lỗi cụ thể
+		switch err {
+		case static.ErrEmailAlreadyExists:
+			return e.JSON(http.StatusBadRequest, "Email already exists")
+		case static.ErrInvalidEmail:
+			return e.JSON(http.StatusBadRequest, "Invalid email format")
+		case static.ErrPasswordHashingFailed:
+			return e.JSON(http.StatusInternalServerError, "Password hashing failed")
+		case static.ErrSaveUserFailed:
+			return e.JSON(http.StatusInternalServerError, "Could not save user to database")
+		default:
+			return e.JSON(http.StatusInternalServerError, err.Error())
+		}
 	}
-	return e.JSON(http.StatusOK, message)
+	return e.JSON(http.StatusOK, resp)
 }
 
 // VerifyEmail handles the request to verify email address

@@ -64,3 +64,14 @@ func (r *repository) GetUserByEmail(email string) (*model.User, error) {
 func (r *repository) Update(o *model.User) (*model.User, error) {
 	return nil, nil
 }
+
+// FindPseudonymLike finds and returns all same pseudonym
+func (r *repository) FindPseudonymLike(basePseudonym string) ([]string, error) {
+	var pseu []string
+	pattern := basePseudonym + "%"
+	query := r.db.Model(&model.User{}).Where("`pseudonym` LIKE ?", pattern).Pluck("pseudonym", &pseu)
+	if err := query.Error; err != nil {
+		return nil, err
+	}
+	return pseu, nil
+}

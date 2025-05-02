@@ -11,6 +11,7 @@ type User interface {
 	Insert(*model.User) (*model.User, error)
 	Update(*model.User) (*model.User, error)
 	ReadByEmail(string) (*model.User, error)
+	FindPseudonymLike(basePseudonym string) ([]string, error)
 }
 
 type Tag interface {

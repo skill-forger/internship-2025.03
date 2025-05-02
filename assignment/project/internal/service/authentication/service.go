@@ -2,6 +2,8 @@ package authentication
 
 import (
 	"net/mail"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -15,6 +17,8 @@ import (
 	"golang-project/static"
 	"golang-project/util/hashing"
 )
+
+var nameRegexp = regexp.MustCompile(`^[\p{L}][\p{L}\s\-']*$`)
 
 // service represents the implementation of service.Authentication
 type service struct {
@@ -82,6 +86,11 @@ func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 		return nil, static.ErrInvalidEmail
 	}
 
+	// Validate fname and lname
+	if err := validateName(r.FirstName); err != nil {
+		return nil, err
+	}
+
 	// Hash the password
 	hashedPassword, err := s.hash.Generate([]byte(r.Password))
 	if err != nil {
@@ -94,6 +103,7 @@ func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 		Password:   string(hashedPassword),
 		FirstName:  r.FirstName,
 		LastName:   r.LastName,
+		Pseudonym:  r.Email,
 		IsVerified: false, // User will need to verify email
 	}
 
@@ -106,4 +116,13 @@ func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 	return &ct.SignUpResponse{
 		Message: "User registration successful. Please verify your email.",
 	}, nil
+}
+
+// validateName
+func validateName(n string) error {
+	n = strings.TrimSpace(n)
+	if !nameRegexp.MatchString(n) {
+		return static.ErrInvalidName
+	}
+	return nil
 }
