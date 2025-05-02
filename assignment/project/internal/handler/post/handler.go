@@ -13,6 +13,7 @@ import (
 	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
 	"golang-project/server"
+	"golang-project/static"
 )
 
 // handler represents the implementation of handler.Post
@@ -88,7 +89,6 @@ func (h *handler) Get(e echo.Context) error {
 //	@Param			filter	query		contract.ListPostRequest	false	"Filtering parameters"
 //	@Success		200		{object}	contract.ListPostResponse
 //	@Failure		400		{object}	error
-//	@Failure		404		{object}	error
 //	@Router			/posts [get]
 func (h *handler) List(e echo.Context) error {
 	// Get filter from query params
@@ -99,21 +99,16 @@ func (h *handler) List(e echo.Context) error {
 
 	// Set default pagination if not provided
 	if filter.Page <= 0 {
-		filter.Page = 1
+		filter.Page = static.Pagination.DefaultPage
 	}
 	if filter.PageSize <= 0 {
-		filter.PageSize = 10
+		filter.PageSize = static.Pagination.DefaultPageSize
 	}
 
 	// Get data from service
 	response, err := h.postSvc.List(&filter)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error retrieving posts")
-	}
-
-	// Check if any posts were found
-	if len(response.Posts) == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, "No posts found")
 	}
 
 	return e.JSON(http.StatusOK, response)

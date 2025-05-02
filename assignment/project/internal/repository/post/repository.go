@@ -1,11 +1,14 @@
 package post
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 
 	"golang-project/internal/contract"
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
+	"golang-project/util/pagination"
 )
 
 // repository represents the implementation of repository.Post
@@ -36,7 +39,7 @@ func (r *repository) Read(id int) (*model.Post, error) {
 }
 
 // SelectAll retrieves all posts from the database with optional filters
-func (r *repository) SelectAll(filter *contract.ListPostRequest) ([]*model.Post, error) {
+func (r *repository) Select(filter *contract.ListPostRequest) ([]*model.Post, error) {
 	var posts []*model.Post
 
 	query := r.db.Model(&model.Post{}).
@@ -47,11 +50,13 @@ func (r *repository) SelectAll(filter *contract.ListPostRequest) ([]*model.Post,
 	// Apply filters if provided
 	if filter != nil {
 		if filter.Title != "" {
-			query = query.Where("title LIKE ?", "%"+filter.Title+"%")
+			title := fmt.Sprintf("%%%s%%", filter.Title)
+			query = query.Where("title LIKE ?", title)
 		}
 		if filter.Pseudonym != "" {
+			pseudonym := fmt.Sprintf("%%%s%%", filter.Pseudonym)
 			query = query.Joins("JOIN users ON posts.user_id = users.id").
-				Where("users.pseudonym LIKE ?", "%"+filter.Pseudonym+"%")
+				Where("users.pseudonym LIKE ?", pseudonym)
 		}
 		if filter.Tag != "" {
 			query = query.Joins("JOIN post_tag ON posts.id = post_tag.post_id").
@@ -62,7 +67,7 @@ func (r *repository) SelectAll(filter *contract.ListPostRequest) ([]*model.Post,
 
 	// Apply pagination
 	if filter != nil && filter.Page > 0 && filter.PageSize > 0 {
-		offset := (filter.Page - 1) * filter.PageSize
+		offset := pagination.CalculateOffset(filter.Page, filter.PageSize)
 		query = query.Offset(offset).Limit(filter.PageSize)
 	}
 

@@ -29,7 +29,7 @@ type Comment interface {
 
 type Post interface {
 	Read(int) (*model.Post, error)
-	SelectAll(filter *contract.ListPostRequest) ([]*model.Post, error)
+	Select(filter *contract.ListPostRequest) ([]*model.Post, error)
 }
 
 // Favourite represents the repository actions for managing user follows and post favorites

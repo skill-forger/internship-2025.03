@@ -45,7 +45,7 @@ func (s *service) GetByID(id int) (*ct.PostResponse, error) {
 
 // List executes the Post list retrieval logic
 func (s *service) List(filter *ct.ListPostRequest) (*ct.ListPostResponse, error) {
-	posts, err := s.postRepo.SelectAll(filter)
+	posts, err := s.postRepo.Select(filter)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (s *service) List(filter *ct.ListPostRequest) (*ct.ListPostResponse, error)
 	responses := make([]*ct.PostResponse, len(posts))
 	for i, post := range posts {
 		response := preparePostResponse(post)
-		
+
 		// Add user data
 		response.User = prepareProfileResponse(post.User)
 
