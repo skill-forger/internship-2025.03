@@ -10,9 +10,12 @@ import (
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
+	"golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
+	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
 	"golang-project/server"
+	"golang-project/static"
 )
 
 // handler represents the implementation of handler.Post
@@ -31,14 +34,13 @@ func NewHandler(route string, postSvc svc.Post) hdl.Post {
 
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
-		Route:           h.route,
-		IsAuthenticated: true,
+		Route: h.route,
 		Register: func(group *echo.Group) {
 			group.GET("", h.List)
 			group.GET("/:postId", h.Get)
-			group.POST("", h.Create)
-			group.PUT("/:postId", h.Update)
-			group.DELETE("/:postId", h.Delete)
+			group.POST("", h.Create, middleware.Authentication(nil))
+			group.PUT("/:postId", h.Update, middleware.Authentication(nil))
+			group.DELETE("/:postId", h.Delete, middleware.Authentication(nil))
 		},
 	}
 }
@@ -50,7 +52,6 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Tags			post
 //	@Accept			json
 //	@Produce		json
-//	@Security		BearerToken
 //	@Param			postId	path		int	true	"Post ID"
 //	@Success		200		{object}	contract.PostResponse
 //	@Failure		400		{object}	error
@@ -87,13 +88,32 @@ func (h *handler) Get(e echo.Context) error {
 //	@Tags			post
 //	@Accept			json
 //	@Produce		json
-//	@Security		BearerToken
 //	@Param			filter	query		contract.ListPostRequest	false	"Filtering parameters"
 //	@Success		200		{object}	contract.ListPostResponse
 //	@Failure		400		{object}	error
 //	@Router			/posts [get]
 func (h *handler) List(e echo.Context) error {
-	return nil
+	// Get filter from query params
+	filter := contract.ListPostRequest{}
+	if err := e.Bind(&filter); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid filter parameters")
+	}
+
+	// Set default pagination if not provided
+	if filter.Page <= 0 {
+		filter.Page = static.Pagination.DefaultPage
+	}
+	if filter.PageSize <= 0 {
+		filter.PageSize = static.Pagination.DefaultPageSize
+	}
+
+	// Get data from service
+	response, err := h.postSvc.List(&filter)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error retrieving posts")
+	}
+
+	return e.JSON(http.StatusOK, response)
 }
 
 // Create handles the request to create a new post

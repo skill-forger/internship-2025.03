@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"golang-project/internal/contract"
 	"golang-project/internal/model"
 )
 
@@ -10,6 +11,7 @@ type User interface {
 	Insert(*model.User) (*model.User, error)
 	Update(*model.User) (*model.User, error)
 	ReadByEmail(string) (*model.User, error)
+	ReadByCondition(condition map[string]interface{}, preloads ...string) (*model.Post, error)
 }
 
 type Tag interface {
@@ -33,6 +35,7 @@ type Post interface {
 	FindSlugsLike(string) ([]string, error)
 	GetTags(int) ([]*model.Tag, error)
 	ReadByCondition(map[string]interface{}, ...string) (*model.Post, error)
+	Select(filter *contract.ListPostRequest) ([]*model.Post, error)
 }
 
 // Favourite represents the repository actions for managing user follows and post favorites

@@ -27,57 +27,6 @@ func NewService(postRepo repo.Post, userRepo repo.User, tagRepo repo.Tag) svc.Po
 	}
 }
 
-// Create executes the logic to create a new blog post
-func (s *service) Create(req *ct.CreatePostRequest, userID int) (*ct.PostResponse, error) {
-	// Create slug based on title
-	slug := s.generateSlug(req.Title)
-
-	// Prepare post data
-	post := &model.Post{
-		Title:       req.Title,
-		Body:        req.Body,
-		Slug:        slug,
-		IsPublished: req.IsPublished,
-		UserID:      userID,
-	}
-
-	// Get tags if provided
-	var tagIDs []int
-	if len(req.Tags) > 0 {
-		tags, err := s.tagRepo.Select(req.Tags)
-		if err != nil || len(tags) != len(req.Tags) {
-			return nil, static.ErrTagNotFoundOrDeleted
-		}
-		tagIDs = req.Tags // Lưu lại để thêm liên kết sau khi tạo post
-	}
-
-	// Insert post with prepared data
-	res, err := s.postRepo.Insert(post)
-	if err != nil {
-		return nil, static.ErrInsertPost
-	}
-
-	// Add Post-Tag associations if needed
-	if len(tagIDs) > 0 {
-		if err := s.postRepo.AddPostTags(res.ID, tagIDs); err != nil {
-			return nil, static.ErrInsertPostTags
-		}
-	}
-
-	// Fetch post with all related data in a single query
-	fullPost, err := s.postRepo.ReadByCondition(
-		map[string]interface{}{"id": res.ID},
-		"User", "Tags",
-	)
-	if err != nil {
-		return nil, static.ErrFetchPostDetail
-	}
-
-	// Prepare response (user, tags)
-	response := preparePostResponse(fullPost)
-	return response, nil
-}
-
 // GetByID executes the Post detail retrieval logic
 func (s *service) GetByID(id int) (*ct.PostResponse, error) {
 	post, err := s.postRepo.Read(id)
@@ -126,4 +75,32 @@ func (s *service) generateSlug(title string) string {
 		}
 	}
 	return fmt.Sprintf("%s-%d", baseSlug, maxSuffix+1)
+}
+
+// List executes the Post list retrieval logic
+func (s *service) List(filter *ct.ListPostRequest) (*ct.ListPostResponse, error) {
+	posts, err := s.postRepo.Select(filter)
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]*ct.PostResponse, len(posts))
+	for i, post := range posts {
+		response := preparePostResponse(post)
+
+		// Add user data
+		response.User = prepareProfileResponse(post.User)
+
+		// Add tags data
+		response.Tags = make([]*ct.TagResponse, len(post.Tags))
+		for j, tag := range post.Tags {
+			response.Tags[j] = prepareTagDetailResponse(tag)
+		}
+
+		responses[i] = response
+	}
+
+	return &ct.ListPostResponse{
+		Posts: responses,
+	}, nil
 }
