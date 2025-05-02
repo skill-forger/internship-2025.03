@@ -42,6 +42,7 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 }
 
 // List handles the request to get all tags
+//
 //	@Summary		Get all tags
 //	@Description	Readers/Bloggers can view all blog tags
 //	@Tags			tag
@@ -61,6 +62,7 @@ func (h *handler) List(e echo.Context) error {
 }
 
 // ListPosts handles the request to get all posts for a tag
+//
 //	@Summary		Get all posts for a tag
 //	@Description	Readers/Bloggers can view all blog posts belong to a particular tag
 //	@Tags			tag
@@ -93,7 +95,7 @@ func (h *handler) ListPosts(e echo.Context) error {
 //	@Produce		json
 //	@Security		BearerToken
 //	@Param			request	body		contract.CreateTagRequest	true	"Create Tag Request"
-//	@Success		200		{object}	contract.TagDetailResponse	"Tag created successfully"
+//	@Success		200		{object}	contract.TagResponse	"Tag created successfully"
 //	@Failure		400		{object}	string						"Invalid request"
 //	@Failure		422		{object}	string						"Unprocessable entity"
 //	@Router			/tags [post]
@@ -118,6 +120,7 @@ func (h *handler) Create(c echo.Context) error {
 }
 
 // Delete handles the request to delete a tag
+//
 //	@Summary		Delete a tag
 //	@Description	Blogger can delete a tag that does not contain any blog
 //	@Tags			tag
