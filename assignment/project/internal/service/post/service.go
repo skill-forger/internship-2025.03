@@ -42,3 +42,31 @@ func (s *service) GetByID(id int) (*ct.PostResponse, error) {
 
 	return response, nil
 }
+
+// List executes the Post list retrieval logic
+func (s *service) List(filter *ct.ListPostRequest) (*ct.ListPostResponse, error) {
+	posts, err := s.postRepo.SelectAll(filter)
+	if err != nil {
+		return nil, err
+	}
+
+	responses := make([]*ct.PostResponse, len(posts))
+	for i, post := range posts {
+		response := preparePostResponse(post)
+		
+		// Add user data
+		response.User = prepareProfileResponse(post.User)
+
+		// Add tags data
+		response.Tags = make([]*ct.TagResponse, len(post.Tags))
+		for j, tag := range post.Tags {
+			response.Tags[j] = prepareTagDetailResponse(tag)
+		}
+
+		responses[i] = response
+	}
+
+	return &ct.ListPostResponse{
+		Posts: responses,
+	}, nil
+}

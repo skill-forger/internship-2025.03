@@ -19,7 +19,8 @@ type PostResponse struct {
 
 // ListPostResponse defines the summary information of a blog post used in list endpoints,
 type ListPostResponse struct {
-	Posts []*PostResponse `json:"posts"`
+	Posts   []*PostResponse `json:"posts"`
+	Message string          `json:"message,omitempty"`
 }
 
 // CreatePostRequest represents the required and optional data needed to create a new blog post.
@@ -44,8 +45,8 @@ type ListPostRequest struct {
 	Tag       string `query:"tag"`
 	Pseudonym string `query:"pseudonym"`
 	Title     string `query:"title"`
-	Page      int    `query:"page"`      // Page number
-	PageSize  int    `query:"page_size"` // Number of posts per page
+	Page      int    `query:"page"`     // Page number
+	PageSize  int    `query:"pageSize"` // Number of posts per page
 }
 
 // PostFavouriteStatusResponse represents the response when a user marks/unmarks a post as favourite,
