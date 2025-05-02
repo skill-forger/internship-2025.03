@@ -114,8 +114,8 @@ func (r *repository) ReadByCondition(condition map[string]interface{}, preloads 
 	}
 
 	// Apply conditions
-	for field, value := range condition {
-		query = query.Where(field+" = ?", value)
+	if len(condition) > 0 {
+		query = query.Where(condition)
 	}
 
 	// Execute query

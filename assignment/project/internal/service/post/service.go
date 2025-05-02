@@ -73,16 +73,8 @@ func (s *service) Create(req *ct.CreatePostRequest, userID int) (*ct.PostRespons
 		return nil, static.ErrFetchPostDetail
 	}
 
-	// Prepare response with all data
+	// Prepare response (user, tags)
 	response := preparePostResponse(fullPost)
-	response.User = prepareProfileResponse(fullPost.User)
-
-	// Create tag responses
-	response.Tags = make([]*ct.TagResponse, len(fullPost.Tags))
-	for i, tag := range fullPost.Tags {
-		response.Tags[i] = prepareTagDetailResponse(tag)
-	}
-
 	return response, nil
 }
 

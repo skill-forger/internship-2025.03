@@ -7,8 +7,12 @@ import (
 	"golang-project/internal/model"
 )
 
-// preparePostResponse transforms the data and returns the Post Response
+// preparePostResponse transforms the model.Post and returns the Post Response
 func preparePostResponse(post *model.Post) *ct.PostResponse {
+	if post == nil {
+		return nil
+	}
+
 	data := &ct.PostResponse{
 		ID:          post.ID,
 		Title:       post.Title,
@@ -20,9 +24,19 @@ func preparePostResponse(post *model.Post) *ct.PostResponse {
 	if post.CreatedAt != nil {
 		data.CreatedAt = post.CreatedAt.Format(time.RFC3339)
 	}
-
 	if post.UpdatedAt != nil {
 		data.UpdatedAt = post.UpdatedAt.Format(time.RFC3339)
+	}
+
+	// Convert user
+	data.User = prepareProfileResponse(post.User)
+
+	// Convert tags
+	if post.Tags != nil {
+		data.Tags = make([]*ct.TagResponse, len(post.Tags))
+		for i, tag := range post.Tags {
+			data.Tags[i] = prepareTagDetailResponse(tag)
+		}
 	}
 
 	return data
