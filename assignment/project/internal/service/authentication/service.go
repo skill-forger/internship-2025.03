@@ -1,9 +1,6 @@
 package authentication
 
 import (
-	"net/mail"
-	"regexp"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -17,8 +14,6 @@ import (
 	"golang-project/static"
 	"golang-project/util/hashing"
 )
-
-var nameRegexp = regexp.MustCompile(`^[\p{L}][\p{L}\s\-']*$`)
 
 // service represents the implementation of service.Authentication
 type service struct {
@@ -78,17 +73,12 @@ func (s *service) generateToken(user *model.User) (string, error) {
 func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 	// Check if email already exists
 	existingUser, err := s.userRepo.ReadByEmail(r.Email)
-	if err == nil && existingUser != nil {
+	if err == nil && existingUser == nil {
+
+	} else if err != nil {
+		return nil, static.ErrCheckEmailFailed
+	} else if existingUser != nil {
 		return nil, static.ErrEmailAlreadyExists
-	}
-
-	if _, err := mail.ParseAddress(r.Email); err != nil {
-		return nil, static.ErrInvalidEmail
-	}
-
-	// Validate fname and lname
-	if err := validateName(r.FirstName); err != nil {
-		return nil, err
 	}
 
 	// Hash the password
@@ -115,14 +105,6 @@ func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 
 	return &ct.SignUpResponse{
 		Message: "User registration successful. Please verify your email.",
+		User:    user,
 	}, nil
-}
-
-// validateName
-func validateName(n string) error {
-	n = strings.TrimSpace(n)
-	if !nameRegexp.MatchString(n) {
-		return static.ErrInvalidName
-	}
-	return nil
 }
