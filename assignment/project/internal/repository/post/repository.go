@@ -38,7 +38,7 @@ func (r *repository) Read(id int) (*model.Post, error) {
 	return &result, nil
 }
 
-// SelectAll retrieves all posts from the database with optional filters
+// Select retrieves all posts from the database with optional filters
 func (r *repository) Select(filter *contract.ListPostRequest) ([]*model.Post, error) {
 	var posts []*model.Post
 
