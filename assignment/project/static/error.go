@@ -16,4 +16,5 @@ var (
 	ErrInvalidEmail          = errors.New("error invalid email format")
 	ErrPasswordHashingFailed = errors.New("error hashing password")
 	ErrSaveUserFailed        = errors.New("error saving user to database")
+	ErrInvalidName           = errors.New("error invalid name format")
 )
