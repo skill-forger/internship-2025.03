@@ -1,10 +1,14 @@
 package post
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 
+	"golang-project/internal/contract"
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
+	"golang-project/util/pagination"
 )
 
 // repository represents the implementation of repository.Post
@@ -23,6 +27,7 @@ func (r *repository) Read(id int) (*model.Post, error) {
 
 	query := r.db.Model(&model.Post{}).
 		Preload("User").
+		Preload("Tags", "deleted_at IS NULL").
 		Where("id = ? AND is_published = ?", id, true).
 		First(&result)
 
@@ -30,28 +35,46 @@ func (r *repository) Read(id int) (*model.Post, error) {
 		return nil, err
 	}
 
-	// Get tags for the post
-	tags, err := r.GetTags(id)
-	if err != nil {
-		return nil, err
-	}
-	result.Tags = tags
-
 	return &result, nil
 }
 
-// GetTags retrieves all tags associated with a post
-func (r *repository) GetTags(postID int) ([]*model.Tag, error) {
-	var tags []*model.Tag
+// Select retrieves all posts from the database with optional filters
+func (r *repository) Select(filter *contract.ListPostRequest) ([]*model.Post, error) {
+	var posts []*model.Post
 
-	err := r.db.Table("tags").
-		Joins("JOIN post_tag ON tags.id = post_tag.tag_id").
-		Where("post_tag.post_id = ? AND tags.deleted_at IS NULL", postID).
-		Find(&tags).Error
+	query := r.db.Model(&model.Post{}).
+		Preload("User").
+		Preload("Tags", "deleted_at IS NULL").
+		Where("is_published = ?", true)
 
+	// Apply filters if provided
+	if filter != nil {
+		if filter.Title != "" {
+			title := fmt.Sprintf("%%%s%%", filter.Title)
+			query = query.Where("title LIKE ?", title)
+		}
+		if filter.Pseudonym != "" {
+			pseudonym := fmt.Sprintf("%%%s%%", filter.Pseudonym)
+			query = query.Joins("JOIN users ON posts.user_id = users.id").
+				Where("users.pseudonym LIKE ?", pseudonym)
+		}
+		if filter.Tag != "" {
+			query = query.Joins("JOIN post_tag ON posts.id = post_tag.post_id").
+				Joins("JOIN tags ON post_tag.tag_id = tags.id").
+				Where("tags.name = ? AND tags.deleted_at IS NULL", filter.Tag)
+		}
+	}
+
+	// Apply pagination
+	if filter != nil && filter.Page > 0 && filter.PageSize > 0 {
+		offset := pagination.CalculateOffset(filter.Page, filter.PageSize)
+		query = query.Offset(offset).Limit(filter.PageSize)
+	}
+
+	err := query.Find(&posts).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return tags, nil
+	return posts, nil
 }

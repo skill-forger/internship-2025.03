@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"golang-project/internal/contract"
 	"golang-project/internal/model"
 )
 
@@ -28,6 +29,7 @@ type Comment interface {
 
 type Post interface {
 	Read(int) (*model.Post, error)
+	Select(filter *contract.ListPostRequest) ([]*model.Post, error)
 }
 
 // Favourite represents the repository actions for managing user follows and post favorites
