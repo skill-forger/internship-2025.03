@@ -51,27 +51,7 @@ func (r *repository) Insert(o *model.User) (*model.User, error) {
 	return o, nil
 }
 
-// GetUserByEmail finds and returns the user model by email
-func (r *repository) GetUserByEmail(email string) (*model.User, error) {
-	var u model.User
-	if err := r.db.Where("email = ?", email).First(&u).Error; err != nil {
-		return nil, err
-	}
-	return &u, nil
-}
-
 // Update performs update action into user table
 func (r *repository) Update(o *model.User) (*model.User, error) {
 	return nil, nil
-}
-
-// FindPseudonymLike finds and returns all same pseudonym
-func (r *repository) FindPseudonymLike(basePseudonym string) ([]string, error) {
-	var pseu []string
-	pattern := basePseudonym + "%"
-	query := r.db.Model(&model.User{}).Where("`pseudonym` LIKE ?", pattern).Pluck("pseudonym", &pseu)
-	if err := query.Error; err != nil {
-		return nil, err
-	}
-	return pseu, nil
 }
