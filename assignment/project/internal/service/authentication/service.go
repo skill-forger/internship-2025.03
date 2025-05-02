@@ -104,7 +104,7 @@ func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 		FirstName:  r.FirstName,
 		LastName:   r.LastName,
 		Pseudonym:  r.Email,
-		IsVerified: false, // User will need to verify email
+		IsVerified: false,
 	}
 
 	// Save to database
