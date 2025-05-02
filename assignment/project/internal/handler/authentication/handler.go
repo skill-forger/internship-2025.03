@@ -1,7 +1,6 @@
 package authentication
 
 import (
-	"golang-project/static"
 	"net/http"
 	"strings"
 
@@ -88,19 +87,7 @@ func (h *handler) SignUp(e echo.Context) error {
 
 	resp, err := h.authSvc.SignUp(&req)
 	if err != nil {
-		// Xử lý lỗi cụ thể
-		switch err {
-		case static.ErrEmailAlreadyExists:
-			return e.JSON(http.StatusBadRequest, "Email already exists")
-		case static.ErrInvalidEmail:
-			return e.JSON(http.StatusBadRequest, "Invalid email format")
-		case static.ErrPasswordHashingFailed:
-			return e.JSON(http.StatusInternalServerError, "Password hashing failed")
-		case static.ErrSaveUserFailed:
-			return e.JSON(http.StatusInternalServerError, "Could not save user to database")
-		default:
-			return e.JSON(http.StatusInternalServerError, err.Error())
-		}
+		return e.JSON(http.StatusBadRequest, err.Error())
 	}
 	return e.JSON(http.StatusOK, resp)
 }
