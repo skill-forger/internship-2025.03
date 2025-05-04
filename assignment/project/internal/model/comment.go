@@ -7,4 +7,7 @@ type Comment struct {
 	PostID          int
 	UserID          int
 	ParentCommentID *int
+	User            *User      `gorm:"foreignKey:UserID"`
+	Post            *Post      `gorm:"foreignKey:PostID"`
+	ChildComments   []*Comment `gorm:"foreignKey:ParentCommentID"`
 }

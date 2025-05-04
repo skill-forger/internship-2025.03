@@ -2,10 +2,12 @@ package comment
 
 import (
 	"github.com/labstack/echo/v4"
-
+	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
 	svc "golang-project/internal/service"
 	"golang-project/server"
+	"golang-project/static"
+	"net/http"
 )
 
 // handler represents the implementation of hdl.Comment
@@ -46,7 +48,30 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 // @Failure     400 {object} error
 // @Router      /comments [get]
 func (h *handler) List(e echo.Context) error {
-	return nil
+
+	// Get filter from query params
+	var req ct.ListCommentRequest
+
+	if err := e.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request parameters")
+	}
+
+	// Set default pagination if not provided
+	if req.Page <= 0 {
+		req.Page = static.Pagination.DefaultPage
+	}
+
+	if req.PageSize <= 0 {
+		req.PageSize = static.Pagination.DefaultPageSize
+	}
+
+	// Get data with pagination from service
+	response, err := h.commentSvc.List(&req)
+	if err != nil {
+		return err
+	}
+
+	return e.JSON(http.StatusOK, response)
 }
 
 // Update handles the request to update a comment

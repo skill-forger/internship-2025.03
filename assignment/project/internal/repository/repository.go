@@ -25,6 +25,7 @@ type Tag interface {
 }
 
 type Comment interface {
+	Select(request *contract.ListCommentRequest) ([]*model.Comment, int64, error)
 }
 
 type Post interface {
