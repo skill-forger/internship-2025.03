@@ -8,7 +8,7 @@ type CommentResponse struct {
 	User            *ProfileResponse        `json:"user,omitempty"`
 	Post            *PostResponse           `json:"post,omitempty"`
 	ChildComments   []*ChildCommentResponse `json:"child_comments,omitempty" `
-	ParentCommentID *int                    `json:"parentCommentID,omitempty"`
+	ParentCommentID *int                    `json:"parent_comment_id,omitempty"`
 	CreatedAt       string                  `json:"created_at,omitempty"`
 	UpdatedAt       string                  `json:"updated_at,omitempty"`
 }
@@ -17,7 +17,7 @@ type CommentResponse struct {
 type ChildCommentResponse struct {
 	ID              int              `json:"id,omitempty"`
 	Content         string           `json:"content,omitempty"`
-	ParentCommentID *int             `json:"parentCommentID,omitempty"`
+	ParentCommentID *int             `json:"parent_comment_id,omitempty"`
 	User            *ProfileResponse `json:"user,omitempty"`
 	CreatedAt       string           `json:"created_at,omitempty"`
 	UpdatedAt       string           `json:"updated_at,omitempty"`
@@ -39,9 +39,9 @@ type ListCommentResponse struct {
 
 // ListCommentRequest defines the query parameters for retrieving comments.
 type ListCommentRequest struct {
-	PostID   int `query:"post_id" validate:"required"`
-	Page     int `query:"page"`      // Page number
-	PageSize int `query:"page_size"` // Number of posts per page
+	PostID   int `json:"post_id" query:"post_id" validate:"required"`
+	Page     int `json:"page" query:"page"`           // Page number
+	PageSize int `json:"page_size" query:"page_size"` // Number of posts per page
 }
 
 // CreateCommentRequest defines the expected payload when
@@ -49,7 +49,7 @@ type ListCommentRequest struct {
 type CreateCommentRequest struct {
 	Content         string `json:"content" validate:"required"`
 	PostID          int    `json:"post_id"`
-	ParentCommentID *int   `json:"parentCommentID,omitempty"`
+	ParentCommentID *int   `json:"parent_comment_id,omitempty"`
 }
 
 // UpdateCommentRequest defines the expected payload when
