@@ -39,7 +39,44 @@ func (s *service) ListFollowingUsers(userID int) (*ct.ListProfileResponse, error
 
 // Follow handles follow/unfollow operations
 func (s *service) Follow(userID, targetUserID int, isFollow bool) (*ct.BloggerFollowStatusResponse, error) {
-	return nil, nil
+	// Check if target user exists
+	_, err := s.userRepo.Read(targetUserID)
+	if err != nil {
+		return nil, static.ErrUserNotFound
+	}
+
+	// Prevent self-following
+	if userID == targetUserID {
+		return nil, static.ErrSelfFollow
+	}
+
+	// Check current follow status
+	isFollowing, err := s.favouriteRepo.IsFollowing(userID, targetUserID)
+	if err != nil {
+		return nil, static.ErrReadFollowStatus
+	}
+
+	// Handle follow/unfollow based on current status
+	if isFollow {
+		if isFollowing {
+			return nil, static.ErrAlreadyFollowing
+		}
+		err = s.favouriteRepo.Follow(userID, targetUserID)
+	} else {
+		if !isFollowing {
+			return nil, static.ErrNotFollowing
+		}
+		err = s.favouriteRepo.Unfollow(userID, targetUserID)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &ct.BloggerFollowStatusResponse{
+		UserID:      targetUserID,
+		IsFollowing: isFollow,
+	}, nil
 }
 
 // ListUserPosts returns all posts from bloggers that a user is following
