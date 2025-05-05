@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -165,7 +166,31 @@ func (h *handler) Create(e echo.Context) error {
 //	@Failure		400		{object}	error
 //	@Router			/posts/{postId} [put]
 func (h *handler) Update(e echo.Context) error {
-	return nil
+	var req contract.UpdatePostRequest
+
+	postId, err := strconv.Atoi(e.Param("postId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, static.ErrInvalidPostID)
+	}
+
+	if err := e.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	if len(strings.TrimSpace(req.Title)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, static.ErrPostTitleRequired)
+	}
+
+	if len(strings.TrimSpace(req.Body)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, static.ErrPostBodyRequired)
+	}
+
+	updatePost, err := h.postSvc.Update(postId, &req, req.Tags)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	return e.JSON(http.StatusOK, updatePost)
 }
 
 // Delete handles the request to delete a post

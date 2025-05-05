@@ -37,7 +37,8 @@ type Post interface {
 	FindSlugsLike(string) ([]string, error)
 	GetTags(int) ([]*model.Tag, error)
 	ReadByCondition(map[string]interface{}, ...string) (*model.Post, error)
-	Select(filter *contract.ListPostRequest) ([]*model.Post, error)
+	Select(*contract.ListPostRequest) ([]*model.Post, error)
+	Update(*model.Post) error
 }
 
 // Favourite represents the repository actions for managing user follows and post favorites

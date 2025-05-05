@@ -169,3 +169,8 @@ func (r *repository) ReadByCondition(condition map[string]interface{}, preloads 
 
 	return &post, nil
 }
+
+// Update updates the post model in the database
+func (r *repository) Update(post *model.Post) error {
+	return r.db.Save(post).Error
+}
