@@ -55,7 +55,7 @@ func (h *handler) Get(e echo.Context) error {
 	// Get user ID from URL param
 	userID := e.Param("userId")
 	if userID == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "user ID is required")
+		return echo.NewHTTPError(http.StatusBadRequest, "User ID is required")
 	}
 
 	// Convert ID from string to int
@@ -66,7 +66,7 @@ func (h *handler) Get(e echo.Context) error {
 
 	response, err := h.profileSvc.GetByID(id)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error retrieving user profile")
 	}
 
 	return e.JSON(http.StatusOK, response)
