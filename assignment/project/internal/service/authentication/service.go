@@ -73,11 +73,11 @@ func (s *service) generateToken(user *model.User) (string, error) {
 func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 	// Check if email already exists
 	existingUser, err := s.userRepo.ReadByEmail(r.Email)
-	if err == nil && existingUser == nil {
-
-	} else if err != nil {
+	if err != nil {
 		return nil, static.ErrCheckEmailFailed
-	} else if existingUser != nil {
+	}
+	
+	if existingUser != nil {
 		return nil, static.ErrEmailAlreadyExists
 	}
 
@@ -104,7 +104,6 @@ func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 	}
 
 	return &ct.SignUpResponse{
-		Message: "User registration successful. Please verify your email.",
-		User:    user,
+		User: user,
 	}, nil
 }

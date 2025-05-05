@@ -20,7 +20,6 @@ func prepareSignInResponse(o *m.User, token string) *ct.SignInResponse {
 
 func prepareSignUpResponse(o *m.User) *ct.SignUpResponse {
 	return &ct.SignUpResponse{
-		Message: "User account created successfully",
-		User:    o,
+		User: o,
 	}
 }
