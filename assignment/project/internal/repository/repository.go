@@ -30,6 +30,11 @@ type Comment interface {
 
 type Post interface {
 	Read(int) (*model.Post, error)
+	Insert(*model.Post) (*model.Post, error)
+	AddPostTags(int, []int) error
+	FindSlugsLike(string) ([]string, error)
+	GetTags(int) ([]*model.Tag, error)
+	ReadByCondition(map[string]interface{}, ...string) (*model.Post, error)
 	Select(filter *contract.ListPostRequest) ([]*model.Post, error)
 }
 

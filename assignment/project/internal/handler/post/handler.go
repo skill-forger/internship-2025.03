@@ -14,6 +14,7 @@ import (
 	svc "golang-project/internal/service"
 	"golang-project/server"
 	"golang-project/static"
+	"golang-project/util/validator"
 )
 
 // handler represents the implementation of handler.Post
@@ -127,7 +128,27 @@ func (h *handler) List(e echo.Context) error {
 //	@Failure		400		{object}	error
 //	@Router			/posts [post]
 func (h *handler) Create(e echo.Context) error {
-	return nil
+	req := new(contract.CreatePostRequest)
+	if err := e.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	//Validate request
+	if err := validator.ValidatePost(req); err != nil {
+		return err
+	}
+
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	res, err := h.postSvc.Create(req, ctxUser.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error creating post")
+	}
+
+	return e.JSON(http.StatusOK, res)
 }
 
 // Update handles the request to update an existing post

@@ -18,4 +18,10 @@ var (
 	ErrSaveUserFailed        = errors.New("error saving user to database")
 	ErrInvalidName           = errors.New("error invalid name format")
 	ErrCheckEmailFailed      = errors.New("error checking email failed")
+
+	// Post errors
+	ErrInsertPost           = errors.New("error creating post")
+	ErrTagNotFoundOrDeleted = errors.New("error one or more tags not found or deleted")
+	ErrInsertPostTags       = errors.New("error creating post tag")
+	ErrFetchPostDetail      = errors.New("error fetching post detail")
 )
