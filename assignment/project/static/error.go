@@ -6,4 +6,9 @@ var (
 	ErrReadTagID   = errors.New("error get tag detail")
 	ErrHasPosts    = errors.New("error delete tag because it has associated posts")
 	ErrTagNotFound = errors.New("error tag id not found")
+
+	ErrInvalidPostID     = errors.New("error invalid post id")
+	ErrPostTitleRequired = errors.New("error published post required title")
+	ErrPostBodyRequired  = errors.New("error published post required body")
+	ErrPostInvalidField  = errors.New("error invalid field")
 )

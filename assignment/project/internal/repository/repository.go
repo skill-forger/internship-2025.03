@@ -23,5 +23,14 @@ type Tag interface {
 	SelectUser([]int) ([]*model.User, error)
 }
 
+type Post interface {
+	Read(int) (*model.Post, error)
+	Update(*model.Post) error
+	SelectPostTag([]int) ([]*model.PostTag, error)
+	DeletePostTag([]*model.PostTag) error
+	InsertPostTag([]*model.PostTag) error
+	UpdatePostTag(int, []int) ([]*model.PostTag, error)
+}
+
 type Comment interface {
 }

@@ -5,3 +5,7 @@ type PostTag struct {
 	TagID  int
 	PostID int
 }
+
+func (PostTag) TableName() string {
+	return "post_tag"
+}

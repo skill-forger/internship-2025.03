@@ -21,5 +21,9 @@ type Tag interface {
 	ListPosts(int) (*ct.ListPostResponse, error)
 }
 
+type Post interface {
+	Update(int, *ct.UpdatePostRequest, []int) (*ct.PostResponse, error)
+}
+
 type Comment interface {
 }

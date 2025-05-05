@@ -1,28 +1,37 @@
 package post
 
 import (
+	"net/http"
+	"strconv"
+	"strings"
+
 	"github.com/labstack/echo/v4"
 
+	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
+	svc "golang-project/internal/service"
 	"golang-project/server"
+	"golang-project/static"
 )
 
 // handler represents the implementation of handler.Post
 type handler struct {
-	route string
+	route   string
+	postSvc svc.Post
 }
 
 // NewHandler returns a new implementation of handler.Post
-func NewHandler(route string) hdl.Post {
+func NewHandler(route string, postSvc svc.Post) hdl.Post {
 	return &handler{
-		route: route,
+		route:   route,
+		postSvc: postSvc,
 	}
 }
 
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
 		Route:           h.route,
-		IsAuthenticated: true,
+		IsAuthenticated: false,
 		Register: func(group *echo.Group) {
 			group.GET("", h.List)
 			group.GET("/:postId", h.Get)
@@ -93,7 +102,31 @@ func (h *handler) Create(e echo.Context) error {
 //	@Failure		400		{object}	error
 //	@Router			/posts/{postId} [put]
 func (h *handler) Update(e echo.Context) error {
-	return nil
+	var req ct.UpdatePostRequest
+
+	postId, err := strconv.Atoi(e.Param("postId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, static.ErrInvalidPostID)
+	}
+
+	if err := e.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	if len(strings.TrimSpace(req.Title)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, static.ErrPostTitleRequired)
+	}
+
+	if len(strings.TrimSpace(req.Body)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, static.ErrPostBodyRequired)
+	}
+
+	updatePost, err := h.postSvc.Update(postId, &req, req.Tags)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	return e.JSON(http.StatusOK, updatePost)
 }
 
 // Delete handles the request to delete a post
