@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
+	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
 	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
@@ -115,7 +116,22 @@ func (h *handler) GetPostDetail(e echo.Context) error {
 //	@Failure      400      {object}  error
 //	@Router       /profile [put]
 func (h *handler) Update(e echo.Context) error {
-	return nil
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	var request ct.UpdateProfileRequest
+	if err := e.Bind(&request); err != nil {
+		return err
+	}
+
+	response, err := h.profileSvc.Update(ctxUser.ID, &request)
+	if err != nil {
+		return err
+	}
+
+	return e.JSON(http.StatusOK, response)
 }
 
 // ChangePassword handles the request to change blogger password

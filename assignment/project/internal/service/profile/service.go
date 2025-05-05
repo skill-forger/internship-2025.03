@@ -27,3 +27,36 @@ func (s *service) GetByID(id int) (*ct.ProfileResponse, error) {
 
 	return prepareProfileResponse(user), nil
 }
+
+// Update executes the profile update logic
+func (s *service) Update(id int, req *ct.UpdateProfileRequest) (*ct.ProfileResponse, error) {
+	user, err := s.userRepo.Read(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update user fields
+	if req.FirstName != "" {
+		user.FirstName = req.FirstName
+	}
+	if req.LastName != "" {
+		user.LastName = req.LastName
+	}
+	if req.Pseudonym != "" {
+		user.Pseudonym = req.Pseudonym
+	}
+	if req.ProfileImage != "" {
+		user.ProfileImage = req.ProfileImage
+	}
+	if req.Biography != "" {
+		user.Biography = req.Biography
+	}
+
+	// Save updated user
+	updatedUser, err := s.userRepo.Update(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareProfileResponse(updatedUser), nil
+}

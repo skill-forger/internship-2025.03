@@ -1,6 +1,8 @@
 package user
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 
 	"golang-project/internal/model"
@@ -53,5 +55,20 @@ func (r *repository) Insert(o *model.User) (*model.User, error) {
 
 // Update performs update action into user table
 func (r *repository) Update(o *model.User) (*model.User, error) {
-	return nil, nil
+	updates := map[string]interface{}{
+		"first_name":    o.FirstName,
+		"last_name":     o.LastName,
+		"pseudonym":     o.Pseudonym,
+		"profile_image": o.ProfileImage,
+		"biography":     o.Biography,
+		"updated_at":    time.Now(),
+	}
+
+	query := r.db.Model(&model.User{}).Where("id = ?", o.ID).Updates(updates)
+
+	if err := query.Error; err != nil {
+		return nil, err
+	}
+
+	return o, nil
 }
