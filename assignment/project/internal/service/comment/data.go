@@ -91,6 +91,10 @@ func prepareCommentResponse(comment *model.Comment) *ct.CommentResponse {
 		Content: comment.Content,
 	}
 
+	if comment.ParentCommentID != nil {
+		data.ParentCommentID = comment.ParentCommentID
+	}
+
 	if comment.CreatedAt != nil {
 		data.CreatedAt = comment.CreatedAt.Format(time.RFC3339)
 	}

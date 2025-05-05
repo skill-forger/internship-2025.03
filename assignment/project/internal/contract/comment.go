@@ -48,7 +48,7 @@ type ListCommentRequest struct {
 // a user wants to create a new comment.
 type CreateCommentRequest struct {
 	Content         string `json:"content" validate:"required"`
-	PostID          int    `json:"post_id"`
+	PostID          int    `json:"post_id" validate:"required"`
 	ParentCommentID *int   `json:"parent_comment_id,omitempty"`
 }
 

@@ -1,15 +1,14 @@
 package registry
 
 import (
-	_ "golang-project/docs/swagger"
-	"golang-project/internal/registry/comment"
-
 	"github.com/labstack/echo/v4"
 	swagger "github.com/swaggo/echo-swagger"
 	"gorm.io/gorm"
 
+	_ "golang-project/docs/swagger"
 	"golang-project/internal/handler"
 	"golang-project/internal/registry/authentication"
+	"golang-project/internal/registry/comment"
 	"golang-project/internal/registry/favourite"
 	"golang-project/internal/registry/health"
 	"golang-project/internal/registry/post"

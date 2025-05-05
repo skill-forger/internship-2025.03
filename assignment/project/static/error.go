@@ -29,4 +29,7 @@ var (
 	ErrTagNotFoundOrDeleted = errors.New("error one or more tags not found or deleted")
 	ErrInsertPostTags       = errors.New("error creating post tag")
 	ErrFetchPostDetail      = errors.New("error fetching post detail")
+
+	// Post errors
+	ErrPostNotFound = errors.New("error post not found")
 )
