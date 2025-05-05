@@ -34,5 +34,4 @@ func (s service) List(req *ct.ListCommentRequest) (*ct.ListCommentResponse, erro
 	}
 
 	return prepareListCommentResponse(comments, pagingResponse), nil
-
 }

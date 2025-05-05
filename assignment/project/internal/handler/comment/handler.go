@@ -2,7 +2,7 @@ package comment
 
 import (
 	"net/http"
-	
+
 	"github.com/labstack/echo/v4"
 
 	ct "golang-project/internal/contract"
@@ -50,7 +50,6 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 // @Failure     400 {object} error
 // @Router      /comments [get]
 func (h *handler) List(e echo.Context) error {
-
 	// Get filter from query params
 	var req ct.ListCommentRequest
 
