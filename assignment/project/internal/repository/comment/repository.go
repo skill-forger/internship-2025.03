@@ -1,11 +1,12 @@
 package comment
 
 import (
+	"gorm.io/gorm"
+
 	ct "golang-project/internal/contract"
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
 	"golang-project/util/pagination"
-	"gorm.io/gorm"
 )
 
 // repository represents the implementation of repository.Comment
