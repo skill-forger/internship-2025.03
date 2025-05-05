@@ -7,7 +7,9 @@ import (
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
 	"golang-project/static"
+	"net/http"
 
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -58,7 +60,7 @@ func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (
 	}
 	// Prevent self-following
 	if userID == targetUserID {
-		return nil, static.ErrSelfFollow
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "Cannot follow yourself")
 	}
 	// Check current follow status
 	isFollowing, err := s.favouriteRepo.IsFollowing(userID, targetUserID)
@@ -77,7 +79,7 @@ func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (
 		err = s.favouriteRepo.Follow(follow)
 	} else {
 		if !isFollowing {
-			return nil, static.ErrNotFollowing
+			return nil, echo.NewHTTPError(http.StatusBadRequest, "Not following this user")
 		}
 		err = s.favouriteRepo.Unfollow(userID, targetUserID)
 	}
