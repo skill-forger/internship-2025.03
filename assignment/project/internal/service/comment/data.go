@@ -20,7 +20,6 @@ func prepareListTagResponse(o []*model.Tag) []*ct.TagResponse {
 
 // preparePostResponse converts a model.Post to ct.PostResponse
 func preparePostResponse(post *model.Post) *ct.PostResponse {
-
 	postResp := &ct.PostResponse{
 		ID:          post.ID,
 		Title:       post.Title,
@@ -44,7 +43,6 @@ func preparePostResponse(post *model.Post) *ct.PostResponse {
 
 // prepareProfileResponse converts a model.User to ct.ProfileResponse
 func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
-
 	return &ct.ProfileResponse{
 		ID:           user.ID,
 		FirstName:    user.FirstName,
@@ -60,36 +58,14 @@ func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
 
 // prepareTagResponse converts a model.Tag to ct.TagResponse
 func prepareTagResponse(tag *model.Tag) *ct.TagResponse {
-
 	return &ct.TagResponse{
 		ID:   tag.ID,
 		Name: tag.Name,
 	}
 }
 
-// prepareParentCommentResponse converts a model.Comment to ct.CommentResponse
-func prepareParentCommentResponse(o *model.Comment,
-	u *model.User,
-	p *model.Post) *ct.CommentResponse {
-
-	data := &ct.CommentResponse{
-		ID:              o.ID,
-		Content:         o.Content,
-		ParentCommentID: o.ParentCommentID,
-		CreatedAt:       o.CreatedAt.Format(time.RFC3339),
-		UpdatedAt:       o.UpdatedAt.Format(time.RFC3339),
-		User:            prepareProfileResponse(u),
-		Post:            preparePostResponse(p),
-	}
-
-	return data
-}
-
 // prepareChildCommentResponse converts a model.Comment to ct.CommentResponse
-func prepareChildCommentResponse(o *model.Comment,
-	u *model.User,
-) *ct.ChildCommentResponse {
-
+func prepareChildCommentResponse(o *model.Comment, u *model.User) *ct.ChildCommentResponse {
 	data := &ct.ChildCommentResponse{
 		ID:              o.ID,
 		Content:         o.Content,
@@ -134,13 +110,11 @@ func prepareCommentResponse(comment *model.Comment) *ct.CommentResponse {
 	}
 
 	// Add child comments if available
-	if comment.ChildComments != nil && len(comment.ChildComments) > 0 {
-		data.ChildComments = make([]*ct.ChildCommentResponse, 0, len(comment.ChildComments))
-		for _, child := range comment.ChildComments {
-			childResp := prepareChildCommentResponse(child, child.User)
-			if childResp != nil {
-				data.ChildComments = append(data.ChildComments, childResp)
-			}
+	data.ChildComments = make([]*ct.ChildCommentResponse, 0, len(comment.ChildComments))
+	for _, child := range comment.ChildComments {
+		childResp := prepareChildCommentResponse(child, child.User)
+		if childResp != nil {
+			data.ChildComments = append(data.ChildComments, childResp)
 		}
 	}
 
@@ -149,7 +123,6 @@ func prepareCommentResponse(comment *model.Comment) *ct.CommentResponse {
 
 // prepareListCommentResponse converts a slice of model.Comment to ct.ListCommentResponse
 func prepareListCommentResponse(comments []*model.Comment, paging ct.Paging) *ct.ListCommentResponse {
-
 	response := &ct.ListCommentResponse{
 		Comments: make([]*ct.CommentResponse, 0, len(comments)),
 		Paging:   paging,
