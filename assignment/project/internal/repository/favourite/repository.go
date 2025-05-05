@@ -38,11 +38,7 @@ func (r *repository) SelectFollowing(userID int) ([]*model.User, error) {
 }
 
 // Follow adds a follow relationship between user and followUser
-func (r *repository) Follow(userID, followUserID int) error {
-	follow := &model.FollowUser{
-		UserID:       userID,
-		FollowUserID: followUserID,
-	}
+func (r *repository) Follow(follow *model.FollowUser) error {
 	return r.db.Create(follow).Error
 }
 

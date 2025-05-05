@@ -3,11 +3,11 @@ package favourite
 import (
 	"errors"
 	ct "golang-project/internal/contract"
+	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
-	"net/http"
+	"golang-project/static"
 
-	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -31,52 +31,58 @@ func (s *service) ListFollowingUsers(userID int) (*ct.ListProfileResponse, error
 	_, err := s.userRepo.Read(userID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, echo.NewHTTPError(http.StatusNotFound, "User not found")
+			return nil, static.ErrUserNotFound
 		}
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Database error")
+		return nil, static.ErrDatabaseOperation
 	}
 
 	users, err := s.favouriteRepo.SelectFollowing(userID)
 	if err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Failed to retrieve followed users")
+		return nil, static.ErrDatabaseOperation
 	}
 
 	return prepareListProfileResponse(users), nil
 }
 
 // UpdateFollowStatus handles follow/unfollow operations
-func (s *service) UpdateFollowStatus(userID, targetUserID int, isFollow bool) (*ct.BloggerFollowStatusResponse, error) {
+func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (*ct.BloggerFollowStatusResponse, error) {
+	targetUserID := req.UserID
+	isFollow := req.Action == static.Follow
 	// Check if target user exists
 	_, err := s.userRepo.Read(targetUserID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, echo.NewHTTPError(http.StatusNotFound, "User not found")
+			return nil, static.ErrUserNotFound
 		}
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Database error")
+		return nil, static.ErrDatabaseOperation
 	}
 	// Prevent self-following
 	if userID == targetUserID {
-		return nil, echo.NewHTTPError(http.StatusBadRequest, "Cannot follow yourself")
+		return nil, static.ErrSelfFollow
 	}
 	// Check current follow status
 	isFollowing, err := s.favouriteRepo.IsFollowing(userID, targetUserID)
 	if err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Failed to check follow status")
+		return nil, static.ErrDatabaseOperation
 	}
 	// Handle follow/unfollow based on current status
 	if isFollow {
 		if isFollowing {
-			return nil, echo.NewHTTPError(http.StatusBadRequest, "Already following this user")
+			return nil, static.ErrAlreadyFollowing
 		}
-		err = s.favouriteRepo.Follow(userID, targetUserID)
+		follow := &model.FollowUser{
+			UserID:       userID,
+			FollowUserID: targetUserID,
+		}
+		err = s.favouriteRepo.Follow(follow)
 	} else {
 		if !isFollowing {
-			return nil, echo.NewHTTPError(http.StatusBadRequest, "Not following this user")
+			return nil, static.ErrNotFollowing
 		}
 		err = s.favouriteRepo.Unfollow(userID, targetUserID)
 	}
 	if err != nil {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Failed to update follow status")
+		return nil, static.ErrFollowStatusUpdate
 	}
 	return &ct.BloggerFollowStatusResponse{
 		UserID:      targetUserID,

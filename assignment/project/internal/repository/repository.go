@@ -37,6 +37,6 @@ type Favourite interface {
 	// User following operations
 	IsFollowing(userID, followUserID int) (bool, error)
 	SelectFollowing(userID int) ([]*model.User, error)
-	Follow(userID, followUserID int) error
+	Follow(*model.FollowUser) error
 	Unfollow(userID, followUserID int) error
 }

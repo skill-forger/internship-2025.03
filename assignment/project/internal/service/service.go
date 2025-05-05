@@ -32,10 +32,9 @@ type Post interface {
 // Favourite represents the service logic of Favourite features
 type Favourite interface {
 	// User following operations
-	UpdateFollowStatus(userID, targetUserID int, isFollow bool) (*ct.BloggerFollowStatusResponse, error)
+	UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (*ct.BloggerFollowStatusResponse, error)
 	ListFollowingUsers(userID int) (*ct.ListProfileResponse, error)
 	ListUserPosts(userID int) (*ct.ListPostResponse, error)
-
 	// Post favorite operations
 	Favourite(userID, postID int, isFavourite bool) (*ct.PostFavouriteStatusResponse, error)
 	ListFavouritePosts(userID int) (*ct.ListPostResponse, error)

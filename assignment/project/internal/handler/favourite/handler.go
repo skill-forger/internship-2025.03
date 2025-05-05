@@ -56,22 +56,27 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 func (h *handler) UpdateBlogger(e echo.Context) error {
 	var req contract.BloggerFollowRequest
 	if err := e.Bind(&req); err != nil {
-		return e.JSON(http.StatusBadRequest, map[string]string{
-			"error": "Invalid request payload",
-		})
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
 	}
-
 	ctxUser, err := hdl.GetContextUser(e)
 	if err != nil {
 		return err
 	}
-
-	isFollow := req.Action == static.Follow
-	resp, err := h.favouriteSvc.UpdateFollowStatus(ctxUser.ID, req.UserID, isFollow)
+	resp, err := h.favouriteSvc.UpdateFollowStatus(ctxUser.ID, &req)
 	if err != nil {
-		return err
+		switch err {
+		case static.ErrUserNotFound:
+			return echo.NewHTTPError(http.StatusNotFound, "User not found")
+		case static.ErrSelfFollow:
+			return echo.NewHTTPError(http.StatusBadRequest, "Cannot follow yourself")
+		case static.ErrAlreadyFollowing:
+			return echo.NewHTTPError(http.StatusBadRequest, "Already following this user")
+		case static.ErrNotFollowing:
+			return echo.NewHTTPError(http.StatusBadRequest, "Not following this user")
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update follow status")
+		}
 	}
-
 	return e.JSON(http.StatusOK, resp)
 }
 
@@ -95,13 +100,9 @@ func (h *handler) ListBloggers(e echo.Context) error {
 	resp, err := h.favouriteSvc.ListFollowingUsers(ctxUser.ID)
 	if err != nil {
 		if err == static.ErrUserNotFound {
-			return e.JSON(http.StatusNotFound, map[string]string{
-				"error": "User not found",
-			})
+			return echo.NewHTTPError(http.StatusNotFound, "User not found")
 		}
-		return e.JSON(http.StatusInternalServerError, map[string]string{
-			"error": "Failed to retrieve followed bloggers",
-		})
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to retrieve followed bloggers")
 	}
 
 	return e.JSON(http.StatusOK, resp)
