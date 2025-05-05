@@ -2,10 +2,12 @@ package profile
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 
 	hdl "golang-project/internal/handler"
+	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
 	"golang-project/server"
 )
@@ -27,14 +29,13 @@ func NewHandler(route string, profileSvc svc.Profile) hdl.Profile {
 // RegisterRoutes registers the handler routes and returns the server.HandlerRegistry
 func (h *handler) RegisterRoutes() server.HandlerRegistry {
 	return server.HandlerRegistry{
-		Route:           h.route,
-		IsAuthenticated: true,
+		Route: h.route,
 		Register: func(group *echo.Group) {
 			group.GET("/:userId", h.Get)
-			group.GET("/posts", h.ListBloggerPosts)
-			group.GET("/posts/:postId", h.GetPostDetail)
-			group.PUT("", h.Update)
-			group.PUT("/change-password", h.ChangePassword)
+			group.GET("/posts", h.ListBloggerPosts, middleware.Authentication(nil))
+			group.GET("/posts/:postId", h.GetPostDetail, middleware.Authentication(nil))
+			group.PUT("", h.Update, middleware.Authentication(nil))
+			group.PUT("/change-password", h.ChangePassword, middleware.Authentication(nil))
 		},
 	}
 }
@@ -51,12 +52,19 @@ func (h *handler) RegisterRoutes() server.HandlerRegistry {
 //	@Failure		400	{object}	error
 //	@Router			/profile/{userId} [get]
 func (h *handler) Get(e echo.Context) error {
-	ctxUser, err := hdl.GetContextUser(e)
-	if err != nil {
-		return err
+	// Get user ID from URL param
+	userID := e.Param("userId")
+	if userID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "user ID is required")
 	}
 
-	response, err := h.profileSvc.GetByID(ctxUser.ID)
+	// Convert ID from string to int
+	id, err := strconv.Atoi(userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user ID")
+	}
+
+	response, err := h.profileSvc.GetByID(id)
 	if err != nil {
 		return err
 	}
