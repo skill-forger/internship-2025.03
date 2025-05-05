@@ -7,20 +7,20 @@ import (
 	hdl "golang-project/internal/handler/post"
 
 	// repoComment "golang-project/internal/repository/Comment"
-	repoPost "golang-project/internal/repository/post"
-	repoPT "golang-project/internal/repository/posttag"
-	repoTag "golang-project/internal/repository/tag"
-	repoUser "golang-project/internal/repository/user"
+	postRepo "golang-project/internal/repository/post"
+	ptRepo "golang-project/internal/repository/posttag"
+	tagRepo "golang-project/internal/repository/tag"
+	userRepo "golang-project/internal/repository/user"
 	svc "golang-project/internal/service/post"
 )
 
 // NewRegistry returns a new resource handler for tag API
 func NewRegistry(route string, db *gorm.DB) handler.ResourceHandler {
 	return hdl.NewHandler(route, svc.NewService(
-		repoPost.NewRepository(db),
-		repoUser.NewRepository(db),
-		repoTag.NewRepository(db),
-		repoPT.NewRepository(db),
+		postRepo.NewRepository(db),
+		userRepo.NewRepository(db),
+		tagRepo.NewRepository(db),
+		ptRepo.NewRepository(db),
 		// repoComment.NewRepository(db),
 	))
 }
