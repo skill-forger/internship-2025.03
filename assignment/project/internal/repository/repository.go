@@ -11,7 +11,6 @@ type User interface {
 	Insert(*model.User) (*model.User, error)
 	Update(*model.User) (*model.User, error)
 	ReadByEmail(string) (*model.User, error)
-	ReadByCondition(condition map[string]interface{}, preloads ...string) (*model.Post, error)
 }
 
 type Tag interface {

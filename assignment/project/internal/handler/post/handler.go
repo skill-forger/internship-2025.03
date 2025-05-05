@@ -2,20 +2,18 @@ package post
 
 import (
 	"errors"
-	ct "golang-project/internal/contract"
-	"net/http"
-	"strconv"
-	"strings"
-
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
-
 	"golang-project/internal/contract"
+	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
 	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
 	"golang-project/server"
 	"golang-project/static"
+	"golang-project/util/validator"
+	"gorm.io/gorm"
+	"net/http"
+	"strconv"
 )
 
 // handler represents the implementation of handler.Post
@@ -134,16 +132,9 @@ func (h *handler) Create(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if len(strings.TrimSpace(req.Title)) == 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "Title is required")
-	}
-
-	if len(strings.TrimSpace(req.Body)) == 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "Body is required")
-	}
-
-	if len(req.Title) > 255 {
-		return echo.NewHTTPError(http.StatusBadRequest, "Title is too long (maximum 255 characters)")
+	// Validate request
+	if err := validator.ValidatePost(req); err != nil {
+		return err
 	}
 
 	// Lấy userID từ context (JWT)

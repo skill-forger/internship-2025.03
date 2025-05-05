@@ -81,7 +81,7 @@ func (r *repository) AddPostTags(postID int, tagIDs []int) error {
 // FindSlugsLike retrieves all slugs that start with the given baseSlug
 func (r *repository) FindSlugsLike(baseSlug string) ([]string, error) {
 	var slugs []string
-	pattern := baseSlug + "%"
+	pattern := fmt.Sprintf("%s%%", baseSlug)
 	err := r.db.Model(&model.Post{}).Where("slug LIKE ?", pattern).Pluck("slug", &slugs).Error
 	if err != nil {
 		return nil, err

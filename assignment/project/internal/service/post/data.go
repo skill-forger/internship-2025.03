@@ -10,7 +10,7 @@ import (
 // preparePostResponse transforms the model.Post and returns the Post Response
 func preparePostResponse(post *model.Post) *ct.PostResponse {
 	if post == nil {
-		return nil
+		return &ct.PostResponse{}
 	}
 
 	data := &ct.PostResponse{
@@ -32,11 +32,9 @@ func preparePostResponse(post *model.Post) *ct.PostResponse {
 	data.User = prepareProfileResponse(post.User)
 
 	// Convert tags
-	if post.Tags != nil {
-		data.Tags = make([]*ct.TagResponse, len(post.Tags))
-		for i, tag := range post.Tags {
-			data.Tags[i] = prepareTagDetailResponse(tag)
-		}
+	data.Tags = make([]*ct.TagResponse, len(post.Tags))
+	for i, tag := range post.Tags {
+		data.Tags[i] = prepareTagDetailResponse(tag)
 	}
 
 	return data
