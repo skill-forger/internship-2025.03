@@ -1,17 +1,17 @@
 package validator
 
 import (
-	ct "golang-project/internal/contract"
 	"net/mail"
 	"regexp"
 	"strings"
 
+	ct "golang-project/internal/contract"
 	"golang-project/static"
 )
 
 var nameRegexp = regexp.MustCompile(`^[\p{L}][\p{L}\s\-']*$`)
 
-func ValidateUser(request ct.SignUpRequest) error {
+func ValidateSignUpRequest(request ct.SignUpRequest) error {
 	//Validate email
 	if _, err := mail.ParseAddress(request.Email); err != nil {
 		return static.ErrInvalidEmail
