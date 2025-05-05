@@ -30,6 +30,7 @@ type Post interface {
 	GetByID(int) (*ct.PostResponse, error)
 	List(*ct.ListPostRequest) (*ct.ListPostResponse, error)
 	Create(*ct.CreatePostRequest, int) (*ct.PostResponse, error)
+	Update(int, *ct.UpdatePostRequest, []int) (*ct.PostResponse, error)
 }
 
 // Favourite represents the service logic of Favourite features

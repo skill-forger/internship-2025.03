@@ -56,7 +56,7 @@ func (r *repository) SelectPost(id int) ([]*model.Post, error) {
 	return result, nil
 }
 
-// SelectPost finds and returns all post_tag models by post ids
+// SelectPostTag finds and returns all post_tag models by post ids
 func (r *repository) SelectPostTag(id []int) ([]*model.PostTag, error) {
 	var result []*model.PostTag
 
