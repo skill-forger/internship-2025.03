@@ -63,36 +63,13 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 
 	ctxUser, err := hdl.GetContextUser(e)
 	if err != nil {
-		return e.JSON(http.StatusUnauthorized, map[string]string{
-			"error": "Unauthorized",
-		})
+		return err
 	}
 
 	isFollow := req.Action == static.Follow
-	resp, err := h.favouriteSvc.Follow(ctxUser.ID, req.UserID, isFollow)
+	resp, err := h.favouriteSvc.UpdateFollowStatus(ctxUser.ID, req.UserID, isFollow)
 	if err != nil {
-		switch err {
-		case static.ErrUserNotFound:
-			return e.JSON(http.StatusNotFound, map[string]string{
-				"error": "User not found",
-			})
-		case static.ErrSelfFollow:
-			return e.JSON(http.StatusBadRequest, map[string]string{
-				"error": "Cannot follow yourself",
-			})
-		case static.ErrAlreadyFollowing:
-			return e.JSON(http.StatusBadRequest, map[string]string{
-				"error": "Already following this user",
-			})
-		case static.ErrNotFollowing:
-			return e.JSON(http.StatusBadRequest, map[string]string{
-				"error": "Not following this user",
-			})
-		default:
-			return e.JSON(http.StatusInternalServerError, map[string]string{
-				"error": "Failed to update following status",
-			})
-		}
+		return err
 	}
 
 	return e.JSON(http.StatusOK, resp)
@@ -112,9 +89,7 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 func (h *handler) ListBloggers(e echo.Context) error {
 	ctxUser, err := hdl.GetContextUser(e)
 	if err != nil {
-		return e.JSON(http.StatusUnauthorized, map[string]string{
-			"error": "Unauthorized",
-		})
+		return err
 	}
 
 	resp, err := h.favouriteSvc.ListFollowingUsers(ctxUser.ID)
