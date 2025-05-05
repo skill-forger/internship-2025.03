@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 
 	"golang-project/internal/model"
@@ -34,10 +36,13 @@ func (r *repository) Read(id int) (*model.User, error) {
 func (r *repository) ReadByEmail(email string) (*model.User, error) {
 	var result *model.User
 
-	query := r.db.Model(&model.User{}).First(&result, "`email` = ?", email)
+	query := r.db.Model(&model.User{}).First(&result, "email = ?", email)
 
 	if err := query.Error; err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("error checking email '%s': %w", email, err)
 	}
 
 	return result, nil

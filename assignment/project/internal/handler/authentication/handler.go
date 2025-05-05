@@ -1,13 +1,15 @@
 package authentication
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
+
 	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
 	svc "golang-project/internal/service"
 	"golang-project/server"
 	"golang-project/util/validator"
-	"net/http"
 )
 
 // handler represents the implementation of handler.Authentication
@@ -79,15 +81,7 @@ func (h *handler) SignUp(e echo.Context) error {
 		return e.JSON(http.StatusUnprocessableEntity, err)
 	}
 
-	if err := validator.ValidateEmail(req.Email); err != nil {
-		return e.JSON(http.StatusUnprocessableEntity, err)
-	}
-
-	// Validate fname & lname
-	if err := validator.ValidateName(req.FirstName); err != nil {
-		return e.JSON(http.StatusUnprocessableEntity, err)
-	}
-	if err := validator.ValidateName(req.LastName); err != nil {
+	if err := validator.ValidateUser(req); err != nil {
 		return e.JSON(http.StatusUnprocessableEntity, err)
 	}
 
