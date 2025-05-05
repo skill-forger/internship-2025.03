@@ -36,21 +36,7 @@ func (s *service) Update(id int, req *ct.UpdateProfileRequest) (*ct.ProfileRespo
 	}
 
 	// Update user fields
-	if req.FirstName != "" {
-		user.FirstName = req.FirstName
-	}
-	if req.LastName != "" {
-		user.LastName = req.LastName
-	}
-	if req.Pseudonym != "" {
-		user.Pseudonym = req.Pseudonym
-	}
-	if req.ProfileImage != "" {
-		user.ProfileImage = req.ProfileImage
-	}
-	if req.Biography != "" {
-		user.Biography = req.Biography
-	}
+	updateProfileFields(user, req)
 
 	// Save updated user
 	updatedUser, err := s.userRepo.Update(user)

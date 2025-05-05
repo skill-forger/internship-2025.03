@@ -123,12 +123,12 @@ func (h *handler) Update(e echo.Context) error {
 
 	var request ct.UpdateProfileRequest
 	if err := e.Bind(&request); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request data")
 	}
 
 	response, err := h.profileSvc.Update(ctxUser.ID, &request)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update profile")
 	}
 
 	return e.JSON(http.StatusOK, response)
