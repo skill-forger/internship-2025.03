@@ -6,6 +6,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 
 	ct "golang-project/internal/contract"
 	"golang-project/internal/model"
@@ -74,9 +75,11 @@ func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
 	// Check if email already exists
 	existingUser, err := s.userRepo.ReadByEmail(r.Email)
 	if err != nil {
-		return nil, static.ErrCheckEmailFailed
+		if err != gorm.ErrRecordNotFound {
+			return nil, static.ErrCheckEmailFailed
+		}
 	}
-	
+
 	if existingUser != nil {
 		return nil, static.ErrEmailAlreadyExists
 	}

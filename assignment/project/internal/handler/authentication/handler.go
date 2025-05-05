@@ -81,7 +81,7 @@ func (h *handler) SignUp(e echo.Context) error {
 		return e.JSON(http.StatusUnprocessableEntity, err)
 	}
 
-	if err := validator.ValidateUser(req); err != nil {
+	if err := validator.ValidateSignUpRequest(req); err != nil {
 		return e.JSON(http.StatusUnprocessableEntity, err)
 	}
 
