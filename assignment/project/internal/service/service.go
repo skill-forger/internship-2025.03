@@ -7,6 +7,7 @@ import (
 // Authentication represents the service logic of Authentication
 type Authentication interface {
 	SignIn(*ct.SignInRequest) (*ct.SignInResponse, error)
+	SignUp(*ct.SignUpRequest) (*ct.SignUpResponse, error)
 }
 
 // Profile represents the service logic of Profile

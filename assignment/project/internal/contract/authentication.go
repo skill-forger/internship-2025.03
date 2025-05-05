@@ -2,6 +2,7 @@ package contract
 
 import (
 	"github.com/golang-jwt/jwt"
+	"golang-project/internal/model"
 )
 
 // CustomClaim represents the authentication custom claim payload
@@ -41,7 +42,7 @@ type SignUpRequest struct {
 
 // SignUpResponse defines the data returned after successful registration.
 type SignUpResponse struct {
-	Message string `json:"message"`
+	User *model.User `json:"user"`
 }
 
 // VerifyEmailRequest defines the data structure required to verify a user's email.

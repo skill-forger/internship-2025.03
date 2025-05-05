@@ -17,3 +17,9 @@ func prepareSignInResponse(o *m.User, token string) *ct.SignInResponse {
 		ExpiredAfter: viper.GetInt(static.EnvAuthLifeTime),
 	}
 }
+
+func prepareSignUpResponse(o *m.User) *ct.SignUpResponse {
+	return &ct.SignUpResponse{
+		User: o,
+	}
+}

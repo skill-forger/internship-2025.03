@@ -6,6 +6,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 
 	ct "golang-project/internal/contract"
 	"golang-project/internal/model"
@@ -67,4 +68,45 @@ func (s *service) generateToken(user *model.User) (string, error) {
 	}
 
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, customClaim).SignedString(secret)
+}
+
+// SignUp handles the user registration process
+func (s *service) SignUp(r *ct.SignUpRequest) (*ct.SignUpResponse, error) {
+	// Check if email already exists
+	existingUser, err := s.userRepo.ReadByEmail(r.Email)
+	if err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return nil, static.ErrCheckEmailFailed
+		}
+	}
+
+	if existingUser != nil {
+		return nil, static.ErrEmailAlreadyExists
+	}
+
+	// Hash the password
+	hashedPassword, err := s.hash.Generate([]byte(r.Password))
+	if err != nil {
+		return nil, static.ErrPasswordHashingFailed
+	}
+
+	// Create new user
+	user := &model.User{
+		Email:      r.Email,
+		Password:   string(hashedPassword),
+		FirstName:  r.FirstName,
+		LastName:   r.LastName,
+		Pseudonym:  r.Email,
+		IsVerified: false,
+	}
+
+	// Save to database
+	user, err = s.userRepo.Insert(user)
+	if err != nil {
+		return nil, static.ErrSaveUserFailed
+	}
+
+	return &ct.SignUpResponse{
+		User: user,
+	}, nil
 }

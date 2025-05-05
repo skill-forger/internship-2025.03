@@ -34,7 +34,7 @@ func (r *repository) Read(id int) (*model.User, error) {
 func (r *repository) ReadByEmail(email string) (*model.User, error) {
 	var result *model.User
 
-	query := r.db.Model(&model.User{}).First(&result, "`email` = ?", email)
+	query := r.db.Model(&model.User{}).First(&result, "email = ?", email)
 
 	if err := query.Error; err != nil {
 		return nil, err
@@ -45,7 +45,10 @@ func (r *repository) ReadByEmail(email string) (*model.User, error) {
 
 // Insert performs insert action into user table
 func (r *repository) Insert(o *model.User) (*model.User, error) {
-	return nil, nil
+	if err := r.db.Create(o).Error; err != nil {
+		return nil, err
+	}
+	return o, nil
 }
 
 // Update performs update action into user table

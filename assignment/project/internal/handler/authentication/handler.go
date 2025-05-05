@@ -9,6 +9,7 @@ import (
 	hdl "golang-project/internal/handler"
 	svc "golang-project/internal/service"
 	"golang-project/server"
+	"golang-project/util/validator"
 )
 
 // handler represents the implementation of handler.Authentication
@@ -74,7 +75,21 @@ func (h *handler) SignIn(e echo.Context) error {
 //	@Failure      400      {object}  error
 //	@Router       /auth/sign-up [post]
 func (h *handler) SignUp(e echo.Context) error {
-	return nil
+	var req ct.SignUpRequest
+
+	if err := e.Bind(&req); err != nil {
+		return e.JSON(http.StatusUnprocessableEntity, err)
+	}
+
+	if err := validator.ValidateSignUpRequest(req); err != nil {
+		return e.JSON(http.StatusUnprocessableEntity, err)
+	}
+
+	resp, err := h.authSvc.SignUp(&req)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, err.Error())
+	}
+	return e.JSON(http.StatusOK, resp)
 }
 
 // VerifyEmail handles the request to verify email address
