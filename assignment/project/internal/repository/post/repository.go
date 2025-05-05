@@ -78,3 +78,8 @@ func (r *repository) Select(filter *contract.ListPostRequest) ([]*model.Post, er
 
 	return posts, nil
 }
+
+// Update updates the post model in the database
+func (r *repository) Update(post *model.Post) error {
+	return r.db.Save(post).Error
+}
