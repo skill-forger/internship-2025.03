@@ -2,7 +2,12 @@ package post
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
+
 	"golang-project/internal/contract"
 	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
@@ -11,9 +16,6 @@ import (
 	"golang-project/server"
 	"golang-project/static"
 	"golang-project/util/validator"
-	"gorm.io/gorm"
-	"net/http"
-	"strconv"
 )
 
 // handler represents the implementation of handler.Post
