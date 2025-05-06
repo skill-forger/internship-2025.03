@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -166,26 +165,24 @@ func (h *handler) Create(e echo.Context) error {
 //	@Failure		400		{object}	error
 //	@Router			/posts/{postId} [put]
 func (h *handler) Update(e echo.Context) error {
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
 	var req contract.UpdatePostRequest
 
 	postId, err := strconv.Atoi(e.Param("postId"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, static.ErrInvalidPostID)
 	}
+	req.ID = postId
 
 	if err := e.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	if len(strings.TrimSpace(req.Title)) == 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, static.ErrPostTitleRequired)
-	}
-
-	if len(strings.TrimSpace(req.Body)) == 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, static.ErrPostBodyRequired)
-	}
-
-	updatePost, err := h.postSvc.Update(postId, &req, req.Tags)
+	updatePost, err := h.postSvc.Update(ctxUser.ID, &req)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}

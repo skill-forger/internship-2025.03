@@ -3,6 +3,8 @@ package static
 import "errors"
 
 var (
+	ErrUserPermission = errors.New("User do not have permission")
+
 	// Tags errors
 	ErrReadTagID   = errors.New("error get tag detail")
 	ErrHasPosts    = errors.New("error delete tag because it has associated posts")

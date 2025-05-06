@@ -87,3 +87,26 @@ func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
 
 	return data
 }
+
+func prepareUpdateMap(existPost *model.Post, updateReq *ct.UpdatePostRequest) map[string]interface{} {
+	updateMap := make(map[string]interface{})
+
+	if updateReq.Title == "" {
+		updateMap["title"] = existPost.Title
+	} else {
+		updateMap["title"] = updateReq.Title
+	}
+
+	if updateReq.Body == "" {
+		updateMap["body"] = existPost.Body
+	} else {
+		updateMap["body"] = updateReq.Body
+	}
+
+	if updateReq.IsPublished == existPost.IsPublished {
+		updateMap["is_published"] = existPost.IsPublished
+	} else {
+		updateMap["is_published"] = updateReq.IsPublished
+	}
+	return updateMap
+}

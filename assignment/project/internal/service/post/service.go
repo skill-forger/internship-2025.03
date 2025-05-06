@@ -17,24 +17,20 @@ type service struct {
 	postRepo repo.Post
 	userRepo repo.User
 	tagRepo  repo.Tag
-	ptRepo   repo.PostTag
-	// commentRepo repo.Comment
 }
 
 // NewService returns a new implementation of service.Post
-func NewService(postRepo repo.Post, userRepo repo.User, tagRepo repo.Tag, ptRepo repo.PostTag) svc.Post {
+func NewService(postRepo repo.Post, userRepo repo.User, tagRepo repo.Tag) svc.Post {
 	return &service{
 		postRepo: postRepo,
 		userRepo: userRepo,
 		tagRepo:  tagRepo,
-		ptRepo:   ptRepo,
-		// commentRepo: CommentRepo,
 	}
 }
 
 // GetByID executes the Post detail retrieval logic
 func (s *service) GetByID(id int) (*ct.PostResponse, error) {
-	post, err := s.postRepo.Read(id)
+	post, err := s.postRepo.Read(id, 1)
 	if err != nil {
 		return nil, err
 	}
@@ -162,50 +158,36 @@ func (s *service) generateSlug(title string) string {
 }
 
 // Update updates a post by its ID
-func (s *service) Update(id int, updatePost *ct.UpdatePostRequest, tags []int) (*ct.PostResponse, error) {
-	post, err := s.postRepo.Read(id)
+func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.PostResponse, error) {
+	post, err := s.postRepo.Read(updatePost.ID, 2)
 	if err != nil {
 		return nil, err
 	}
 
-	//check if the post is changed
-	isChanged := false
-
-	if updatePost.Title != post.Title {
-		post.Title = updatePost.Title
-		isChanged = true
+	//check ctxUser permission to update
+	if ctxUserID != post.UserID {
+		return nil, static.ErrUserPermission
 	}
 
-	if updatePost.Body != post.Body {
-		post.Body = updatePost.Body
-		isChanged = true
+	tags, err := s.tagRepo.Select(updatePost.Tags)
+	if err != nil {
+		return nil, err
 	}
 
-	if updatePost.IsPublished != post.IsPublished {
-		post.IsPublished = updatePost.IsPublished
-		isChanged = true
+	newPost := prepareUpdateMap(post, updatePost)
+
+	updatePostErr := s.postRepo.Update(post, newPost, tags)
+	if updatePostErr != nil {
+		return nil, updatePostErr
 	}
 
-	if isChanged {
-		updatePostErr := s.postRepo.Update(post)
-		if updatePostErr != nil {
-			return nil, updatePostErr
-		}
-	}
-
-	// Uppdate the post_tag table by inserting and deleting the post_tag models
-	updateTagErr := s.ptRepo.Update(id, tags)
-	if updateTagErr != nil {
-		return nil, updateTagErr
+	// Reload updated post
+	post, err = s.postRepo.Read(updatePost.ID, 2)
+	if err != nil {
+		return nil, err
 	}
 
 	response := preparePostResponse(post)
-
-	// Reload updated post
-	post, err = s.postRepo.Read(id)
-	if err != nil {
-		return nil, err
-	}
 
 	// Add user data
 	response.User = prepareProfileResponse(post.User)
