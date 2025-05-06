@@ -30,8 +30,8 @@ func prepareProfileResponse(o *model.User) *ct.ProfileResponse {
 	return data
 }
 
-// updateProfileFields updates fields of a User model using data from UpdateProfileRequest
-func updateProfileFields(o *model.User, req *ct.UpdateProfileRequest) {
+// prepareUpdateProfile updates fields of a User model and prepares the update map
+func prepareUpdateProfile(o *model.User, req *ct.UpdateProfileRequest) map[string]interface{} {
 	if req.FirstName != "" {
 		o.FirstName = req.FirstName
 	}
@@ -45,10 +45,7 @@ func updateProfileFields(o *model.User, req *ct.UpdateProfileRequest) {
 	// ProfileImage & Biography can be empty strings
 	o.ProfileImage = req.ProfileImage
 	o.Biography = req.Biography
-}
 
-// prepareUpdatesMap prepares the map of fields to update
-func prepareUpdatesMap(o *model.User) map[string]interface{} {
 	return map[string]interface{}{
 		"first_name":    o.FirstName,
 		"last_name":     o.LastName,
