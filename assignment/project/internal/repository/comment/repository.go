@@ -72,3 +72,14 @@ func (r *repository) Insert(comment *model.Comment) (*model.Comment, error) {
 	}
 	return comment, nil
 }
+
+// Update updates an existing comment in the database
+func (r *repository) Update(comment *model.Comment, updates map[string]interface{}) (*model.Comment, error) {
+	query := r.db.Model(&model.Comment{}).Where("id = ?", comment.ID).Updates(updates)
+
+	if err := query.Error; err != nil {
+		return nil, err
+	}
+
+	return comment, nil
+}

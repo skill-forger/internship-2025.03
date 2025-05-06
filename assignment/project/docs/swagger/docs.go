@@ -164,12 +164,12 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Number of posts per page",
-                        "name": "pageSize",
+                        "name": "page_size",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "name": "postID",
+                        "name": "post_id",
                         "in": "query",
                         "required": true
                     }
@@ -961,6 +961,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Create a new tag with the provided name",
                 "consumes": [
                     "application/json"
@@ -987,7 +992,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Tag created successfully",
                         "schema": {
-                            "$ref": "#/definitions/contract.TagDetailResponse"
+                            "$ref": "#/definitions/contract.TagResponse"
                         }
                     },
                     "400": {
@@ -1001,42 +1006,6 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
-                    }
-                }
-            }
-        },
-        "/tags/:tagId/posts": {
-            "get": {
-                "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all posts for a tag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "tagId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
                     }
                 }
             }
@@ -1071,6 +1040,42 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/tags/{id}/posts": {
+            "get": {
+                "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tag"
+                ],
+                "summary": "Get all posts for a tag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/contract.ListPostResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1153,7 +1158,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "parentCommentID": {
+                "parent_comment_id": {
                     "type": "integer"
                 },
                 "updated_at": {
@@ -1182,7 +1187,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "parentCommentID": {
+                "parent_comment_id": {
                     "type": "integer"
                 },
                 "post": {
@@ -1205,7 +1210,7 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
-                "parentCommentID": {
+                "parent_comment_id": {
                     "type": "integer"
                 },
                 "post_id": {
@@ -1305,7 +1310,7 @@ const docTemplate = `{
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/contract.TagDetailResponse"
+                        "$ref": "#/definitions/contract.TagResponse"
                     }
                 }
             }
@@ -1378,7 +1383,7 @@ const docTemplate = `{
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/contract.TagDetailResponse"
+                        "$ref": "#/definitions/contract.TagResponse"
                     }
                 },
                 "title": {
@@ -1401,9 +1406,6 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
-                "display_name": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -1417,6 +1419,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "profile_image": {
+                    "type": "string"
+                },
+                "pseudonym": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -1483,12 +1488,12 @@ const docTemplate = `{
         "contract.SignUpResponse": {
             "type": "object",
             "properties": {
-                "message": {
-                    "type": "string"
+                "user": {
+                    "$ref": "#/definitions/model.User"
                 }
             }
         },
-        "contract.TagDetailResponse": {
+        "contract.TagResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1571,6 +1576,59 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "biography": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isVerified": {
+                    "type": "boolean"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "profileImage": {
+                    "type": "string"
+                },
+                "pseudonym": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }

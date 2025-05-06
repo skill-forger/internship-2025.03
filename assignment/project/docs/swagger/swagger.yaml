@@ -46,7 +46,7 @@ definitions:
         type: string
       id:
         type: integer
-      parentCommentID:
+      parent_comment_id:
         type: integer
       updated_at:
         type: string
@@ -65,7 +65,7 @@ definitions:
         type: string
       id:
         type: integer
-      parentCommentID:
+      parent_comment_id:
         type: integer
       post:
         $ref: '#/definitions/contract.PostResponse'
@@ -78,7 +78,7 @@ definitions:
     properties:
       content:
         type: string
-      parentCommentID:
+      parent_comment_id:
         type: integer
       post_id:
         type: integer
@@ -145,7 +145,7 @@ definitions:
     properties:
       tags:
         items:
-          $ref: '#/definitions/contract.TagDetailResponse'
+          $ref: '#/definitions/contract.TagResponse'
         type: array
     type: object
   contract.Paging:
@@ -191,7 +191,7 @@ definitions:
         type: string
       tags:
         items:
-          $ref: '#/definitions/contract.TagDetailResponse'
+          $ref: '#/definitions/contract.TagResponse'
         type: array
       title:
         type: string
@@ -206,8 +206,6 @@ definitions:
         type: string
       created_at:
         type: string
-      display_name:
-        type: string
       email:
         type: string
       first_name:
@@ -217,6 +215,8 @@ definitions:
       last_name:
         type: string
       profile_image:
+        type: string
+      pseudonym:
         type: string
       updated_at:
         type: string
@@ -261,10 +261,10 @@ definitions:
     type: object
   contract.SignUpResponse:
     properties:
-      message:
-        type: string
+      user:
+        $ref: '#/definitions/model.User'
     type: object
-  contract.TagDetailResponse:
+  contract.TagResponse:
     properties:
       created_at:
         type: string
@@ -318,6 +318,41 @@ definitions:
   contract.VerifyEmailResponse:
     properties:
       message:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  model.User:
+    properties:
+      biography:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      isVerified:
+        type: boolean
+      lastName:
+        type: string
+      password:
+        type: string
+      profileImage:
+        type: string
+      pseudonym:
+        type: string
+      updatedAt:
         type: string
     type: object
   static.BloggerFollowAction:
@@ -439,10 +474,10 @@ paths:
         type: integer
       - description: Number of posts per page
         in: query
-        name: pageSize
+        name: page_size
         type: integer
       - in: query
-        name: postID
+        name: post_id
         required: true
         type: integer
       produces:
@@ -974,7 +1009,7 @@ paths:
         "200":
           description: Tag created successfully
           schema:
-            $ref: '#/definitions/contract.TagDetailResponse'
+            $ref: '#/definitions/contract.TagResponse'
         "400":
           description: Invalid request
           schema:
@@ -983,32 +1018,9 @@ paths:
           description: Unprocessable entity
           schema:
             type: string
+      security:
+      - BearerToken: []
       summary: Create a new tag
-      tags:
-      - tag
-  /tags/:tagId/posts:
-    get:
-      consumes:
-      - application/json
-      description: Readers/Bloggers can view all blog posts belong to a particular
-        tag
-      parameters:
-      - description: Tag ID
-        in: path
-        name: tagId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/contract.ListPostResponse'
-        "400":
-          description: Bad Request
-          schema: {}
-      summary: Get all posts for a tag
       tags:
       - tag
   /tags/{id}:
@@ -1033,6 +1045,31 @@ paths:
       security:
       - BearerToken: []
       summary: Delete a tag
+      tags:
+      - tag
+  /tags/{id}/posts:
+    get:
+      consumes:
+      - application/json
+      description: Readers/Bloggers can view all blog posts belong to a particular
+        tag
+      parameters:
+      - description: Tag ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/contract.ListPostResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Get all posts for a tag
       tags:
       - tag
 securityDefinitions:

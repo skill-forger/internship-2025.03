@@ -3,6 +3,7 @@ package comment
 import (
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -138,7 +139,36 @@ func (h *handler) Create(e echo.Context) error {
 // @Failure     400 {object} error
 // @Router      /comments/{commentId} [put]
 func (h *handler) Update(e echo.Context) error {
-	return nil
+	// Get comment ID from path parameter
+	commentID, err := strconv.Atoi(e.Param("commentId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid comment ID")
+	}
+
+	// Bind request body
+	req := new(ct.UpdateCommentRequest)
+	if err := e.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body")
+	}
+
+	// Validate content
+	if len(strings.TrimSpace(req.Content)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "content is required")
+	}
+
+	// Get user ID from context
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	// Update comment
+	updatedComment, err := h.commentSvc.Update(req, commentID, ctxUser.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return e.JSON(http.StatusOK, updatedComment)
 }
 
 // Delete handles the request to delete a comment
