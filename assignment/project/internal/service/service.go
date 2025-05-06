@@ -13,6 +13,7 @@ type Authentication interface {
 // Profile represents the service logic of Profile
 type Profile interface {
 	GetByID(int) (*ct.ProfileResponse, error)
+	Update(int, *ct.UpdateProfileRequest) (*ct.ProfileResponse, error)
 }
 
 type Tag interface {
