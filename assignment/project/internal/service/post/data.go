@@ -90,8 +90,8 @@ func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
 	return data
 }
 
-func prepareUpdateMap(updateReq *ct.UpdatePostRequest) map[string]interface{} {
-	updateMap := make(map[string]interface{})
+func prepareUpdateMap(updateReq *ct.UpdatePostRequest) map[string]any {
+	updateMap := make(map[string]any)
 
 	if updateReq.Title != "" {
 		updateMap["title"] = updateReq.Title
