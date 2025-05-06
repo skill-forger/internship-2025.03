@@ -220,9 +220,9 @@ func (s *service) Delete(postID, ctxUserID int) error {
 	}
 
 	//check ctxUser permission to update
-	// if ctxUserID != postID {
-	// 	return static.ErrUserPermission
-	// }
+	if ctxUserID != postID {
+		return static.ErrUserPermission
+	}
 
 	return s.postRepo.Delete(postID)
 }
