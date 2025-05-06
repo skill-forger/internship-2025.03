@@ -90,7 +90,6 @@ func (h *handler) List(e echo.Context) error {
 // @Failure     400 {object} error
 // @Router      /comments [post]
 func (h *handler) Create(e echo.Context) error {
-
 	req := new(ct.CreateCommentRequest)
 
 	if err := e.Bind(req); err != nil {
@@ -114,10 +113,10 @@ func (h *handler) Create(e echo.Context) error {
 	createComment, err := h.commentSvc.Create(req, ctxUser.ID)
 	if err != nil {
 		switch {
-		case errors.Is(err, static.ErrUserNotFound):
-			return echo.NewHTTPError(http.StatusNotFound, static.ErrUserNotFound)
 		case errors.Is(err, static.ErrPostNotFound):
 			return echo.NewHTTPError(http.StatusNotFound, static.ErrPostNotFound)
+		case errors.Is(err, static.ErrCommentNotFound):
+			return echo.NewHTTPError(http.StatusNotFound, static.ErrCommentNotFound)
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}

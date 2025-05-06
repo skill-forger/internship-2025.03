@@ -54,7 +54,11 @@ func (r *repository) Select(request *ct.ListCommentRequest) ([]*model.Comment, i
 // Read finds and returns the comment model by id
 func (r *repository) Read(id int) (*model.Comment, error) {
 	var comment model.Comment
-	err := r.db.First(&comment, id).Error
+	err := r.db.Preload("User").
+		Preload("Post").
+		Preload("ChildComments").
+		Preload("ChildComments.User").
+		First(&comment, id).Error
 	if err != nil {
 		return nil, err
 	}
