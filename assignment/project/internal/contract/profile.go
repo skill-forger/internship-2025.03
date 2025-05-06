@@ -10,7 +10,7 @@ type ProfileResponse struct {
 	FirstName    string `json:"first_name,omitempty"`
 	LastName     string `json:"last_name,omitempty"`
 	Email        string `json:"email,omitempty"`
-	Pseudonym    string `json:"display_name,omitempty"`
+	Pseudonym    string `json:"pseudonym,omitempty"`
 	ProfileImage string `json:"profile_image"`
 	Biography    string `json:"biography"`
 	CreatedAt    string `json:"created_at,omitempty"`
