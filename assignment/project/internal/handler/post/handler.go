@@ -197,5 +197,20 @@ func (h *handler) Update(e echo.Context) error {
 //	@Failure		400		{object}	error
 //	@Router			/posts/{postId} [delete]
 func (h *handler) Delete(e echo.Context) error {
-	return nil
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	postID, err := strconv.Atoi(e.Param("postId"))
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, static.ErrInvalidPostID)
+	}
+
+	err = h.postSvc.Delete(postID, ctxUser.ID)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, static.ErrDeletePost)
+	}
+
+	return e.NoContent(http.StatusNoContent)
 }

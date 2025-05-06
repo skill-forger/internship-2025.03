@@ -38,6 +38,7 @@ type Post interface {
 	Select(*contract.ListPostRequest) ([]*model.Post, error)
 	UpdatePost(*model.Post, map[string]interface{}) error
 	UpdatePostTag(*model.Post, []*model.Tag) error
+	Delete(int) error
 }
 
 // Favourite represents the repository actions for managing user follows and post favorites

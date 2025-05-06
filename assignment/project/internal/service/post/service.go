@@ -209,3 +209,20 @@ func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.P
 
 	return response, nil
 }
+
+// Delete deletes a post by its ID
+func (s *service) Delete(postID, ctxUserID int) error {
+	_, err := s.postRepo.ReadByCondition(map[string]any{
+		"id": postID,
+	})
+	if err != nil {
+		return err
+	}
+
+	//check ctxUser permission to update
+	// if ctxUserID != postID {
+	// 	return static.ErrUserPermission
+	// }
+
+	return s.postRepo.Delete(postID)
+}

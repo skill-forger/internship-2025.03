@@ -12,10 +12,9 @@ var (
 	ErrTagNotFound = errors.New("error tag id not found")
 
 	// Post errors
-	ErrInvalidPostID     = errors.New("error invalid post id")
-	ErrPostTitleRequired = errors.New("error published post required title")
-	ErrPostBodyRequired  = errors.New("error published post required body")
-	ErrInvalidPostField  = errors.New("error invalid field")
+	ErrInvalidPostID = errors.New("error invalid post id")
+	ErrDeletePost    = errors.New("error unable to delete post")
+	ErrPostNotFound  = errors.New("error post not found")
 
 	// Favourite errors - User following
 	ErrUserNotFound = errors.New("error user id not found")
