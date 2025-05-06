@@ -31,20 +31,29 @@ func prepareProfileResponse(o *model.User) *ct.ProfileResponse {
 }
 
 // updateProfileFields updates fields of a User model using data from UpdateProfileRequest
-func updateProfileFields(user *model.User, req *ct.UpdateProfileRequest) {
+func updateProfileFields(o *model.User, req *ct.UpdateProfileRequest) {
 	if req.FirstName != "" {
-		user.FirstName = req.FirstName
+		o.FirstName = req.FirstName
 	}
 	if req.LastName != "" {
-		user.LastName = req.LastName
+		o.LastName = req.LastName
 	}
 	if req.Pseudonym != "" {
-		user.Pseudonym = req.Pseudonym
+		o.Pseudonym = req.Pseudonym
 	}
-	if req.ProfileImage != "" {
-		user.ProfileImage = req.ProfileImage
-	}
-	if req.Biography != "" {
-		user.Biography = req.Biography
+
+	// ProfileImage & Biography can be empty strings
+	o.ProfileImage = req.ProfileImage
+	o.Biography = req.Biography
+}
+
+// prepareUpdatesMap prepares the map of fields to update
+func prepareUpdatesMap(o *model.User) map[string]interface{} {
+	return map[string]interface{}{
+		"first_name":    o.FirstName,
+		"last_name":     o.LastName,
+		"pseudonym":     o.Pseudonym,
+		"profile_image": o.ProfileImage,
+		"biography":     o.Biography,
 	}
 }

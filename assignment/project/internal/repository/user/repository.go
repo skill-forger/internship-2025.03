@@ -52,8 +52,8 @@ func (r *repository) Insert(o *model.User) (*model.User, error) {
 }
 
 // Update performs update action into user table
-func (r *repository) Update(o *model.User) (*model.User, error) {
-	query := r.db.Model(&model.User{}).Where("id = ?", o.ID).Updates(o)
+func (r *repository) Update(o *model.User, updates map[string]interface{}) (*model.User, error) {
+	query := r.db.Model(&model.User{}).Where("id = ?", o.ID).Updates(updates)
 
 	if err := query.Error; err != nil {
 		return nil, err

@@ -38,8 +38,11 @@ func (s *service) Update(id int, req *ct.UpdateProfileRequest) (*ct.ProfileRespo
 	// Update user fields
 	updateProfileFields(user, req)
 
+	// Prepare updates map
+	updates := prepareUpdatesMap(user)
+
 	// Save updated user
-	updatedUser, err := s.userRepo.Update(user)
+	updatedUser, err := s.userRepo.Update(user, updates)
 	if err != nil {
 		return nil, err
 	}
