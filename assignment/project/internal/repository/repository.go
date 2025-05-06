@@ -31,14 +31,14 @@ type Comment interface {
 }
 
 type Post interface {
-	Read(int) (*model.Post, error)
+	Read(int, int) (*model.Post, error)
 	Insert(*model.Post) (*model.Post, error)
 	AddPostTags(int, []int) error
 	FindSlugsLike(string) ([]string, error)
 	GetTags(int) ([]*model.Tag, error)
 	ReadByCondition(map[string]interface{}, ...string) (*model.Post, error)
 	Select(*contract.ListPostRequest) ([]*model.Post, error)
-	Update(*model.Post) error
+	Update(*model.Post, map[string]interface{}, []*model.Tag) error
 }
 
 // Favourite represents the repository actions for managing user follows and post favorites
