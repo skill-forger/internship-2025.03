@@ -7,6 +7,17 @@ import (
 	"golang-project/internal/model"
 )
 
+// prepareCommentModel creates a new comment model from request data
+func prepareCommentModel(request *ct.CreateCommentRequest, userID int, post *model.Post) *model.Comment {
+	return &model.Comment{
+		Content:         request.Content,
+		PostID:          request.PostID,
+		UserID:          userID,
+		ParentCommentID: request.ParentCommentID,
+		Post:            post,
+	}
+}
+
 // prepareListTagResponse transforms the data and returns the List Tag Response
 func prepareListTagResponse(o []*model.Tag) []*ct.TagResponse {
 	data := make([]*ct.TagResponse, 0, len(o))
@@ -64,7 +75,7 @@ func prepareTagResponse(tag *model.Tag) *ct.TagResponse {
 	}
 }
 
-// prepareChildCommentResponse converts a model.Comment to ct.CommentResponse
+// prepareChildCommentResponse converts a model.Comment to ct.ChildCommentResponse
 func prepareChildCommentResponse(o *model.Comment, u *model.User) *ct.ChildCommentResponse {
 	data := &ct.ChildCommentResponse{
 		ID:              o.ID,
@@ -84,11 +95,15 @@ func prepareChildCommentResponse(o *model.Comment, u *model.User) *ct.ChildComme
 	return data
 }
 
-// preparePostResponse transforms the data and returns the Post Response
+// prepareCommentResponse converts a model.Comment to ct.CommentResponse
 func prepareCommentResponse(comment *model.Comment) *ct.CommentResponse {
 	data := &ct.CommentResponse{
 		ID:      comment.ID,
 		Content: comment.Content,
+	}
+
+	if comment.ParentCommentID != nil {
+		data.ParentCommentID = comment.ParentCommentID
 	}
 
 	if comment.CreatedAt != nil {
