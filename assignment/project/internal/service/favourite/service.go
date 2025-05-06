@@ -48,6 +48,7 @@ func (s *service) ListFollowingUsers(userID int) (*ct.ListProfileResponse, error
 func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (*ct.BloggerFollowStatusResponse, error) {
 	targetUserID := req.UserID
 	isFollow := req.Action == static.Follow
+
 	// Check if target user exists
 	_, err := s.userRepo.Read(targetUserID)
 	if err != nil {
@@ -56,20 +57,24 @@ func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (
 		}
 		return nil, static.ErrDatabaseOperation
 	}
+
 	// Prevent self-following
 	if userID == targetUserID {
 		return nil, static.ErrSelfFollow
 	}
+
 	// Check current follow status
 	isFollowing, err := s.favouriteRepo.IsFollowing(userID, targetUserID)
 	if err != nil {
 		return nil, static.ErrDatabaseOperation
 	}
+
 	// Handle follow/unfollow based on current status
 	if isFollow {
 		if isFollowing {
 			return nil, static.ErrAlreadyFollowing
 		}
+
 		follow := &model.FollowUser{
 			UserID:       userID,
 			FollowUserID: targetUserID,
@@ -81,9 +86,11 @@ func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (
 		}
 		err = s.favouriteRepo.Unfollow(userID, targetUserID)
 	}
+
 	if err != nil {
 		return nil, static.ErrFollowStatusUpdate
 	}
+
 	return &ct.BloggerFollowStatusResponse{
 		UserID:      targetUserID,
 		IsFollowing: isFollow,

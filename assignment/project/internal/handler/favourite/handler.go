@@ -58,10 +58,12 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 	if err := e.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
 	}
+
 	ctxUser, err := hdl.GetContextUser(e)
 	if err != nil {
 		return err
 	}
+
 	resp, err := h.favouriteSvc.UpdateFollowStatus(ctxUser.ID, &req)
 	if err != nil {
 		switch err {
@@ -77,6 +79,7 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update follow status")
 		}
 	}
+
 	return e.JSON(http.StatusOK, resp)
 }
 
@@ -102,6 +105,7 @@ func (h *handler) ListBloggers(e echo.Context) error {
 		if err == static.ErrUserNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, "User not found")
 		}
+
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to retrieve followed bloggers")
 	}
 
