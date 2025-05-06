@@ -30,7 +30,7 @@ func NewService(postRepo repo.Post, userRepo repo.User, tagRepo repo.Tag) svc.Po
 
 // GetByID executes the Post detail retrieval logic
 func (s *service) GetByID(id int) (*ct.PostResponse, error) {
-	post, err := s.postRepo.Read(id, 1)
+	post, err := s.postRepo.Read(id)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +159,9 @@ func (s *service) generateSlug(title string) string {
 
 // Update updates a post by its ID
 func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.PostResponse, error) {
-	post, err := s.postRepo.Read(updatePost.ID, 2)
+	post, err := s.postRepo.ReadByCondition(map[string]any{
+		"id": updatePost.ID,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -174,15 +176,22 @@ func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.P
 		return nil, err
 	}
 
-	newPost := prepareUpdateMap(post, updatePost)
+	updateMap := prepareUpdateMap(updatePost)
 
-	updatePostErr := s.postRepo.Update(post, newPost, tags)
+	updatePostErr := s.postRepo.UpdatePost(post, updateMap)
 	if updatePostErr != nil {
 		return nil, updatePostErr
 	}
 
+	updatePostTagErr := s.postRepo.UpdatePostTag(post, tags)
+	if updatePostTagErr != nil {
+		return nil, updatePostTagErr
+	}
+
 	// Reload updated post
-	post, err = s.postRepo.Read(updatePost.ID, 2)
+	post, err = s.postRepo.ReadByCondition(map[string]any{
+		"id": post.ID,
+	}, "User", "Tags")
 	if err != nil {
 		return nil, err
 	}

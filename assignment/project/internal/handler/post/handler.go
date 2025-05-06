@@ -172,12 +172,6 @@ func (h *handler) Update(e echo.Context) error {
 
 	var req contract.UpdatePostRequest
 
-	postId, err := strconv.Atoi(e.Param("postId"))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, static.ErrInvalidPostID)
-	}
-	req.ID = postId
-
 	if err := e.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}

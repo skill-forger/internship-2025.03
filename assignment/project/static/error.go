@@ -3,7 +3,8 @@ package static
 import "errors"
 
 var (
-	ErrUserPermission = errors.New("User do not have permission")
+	// User Permission errors
+	ErrUserPermission = errors.New("error user do not have permission")
 
 	// Tags errors
 	ErrReadTagID   = errors.New("error get tag detail")
@@ -14,7 +15,7 @@ var (
 	ErrInvalidPostID     = errors.New("error invalid post id")
 	ErrPostTitleRequired = errors.New("error published post required title")
 	ErrPostBodyRequired  = errors.New("error published post required body")
-	ErrPostInvalidField  = errors.New("error invalid field")
+	ErrInvalidPostField  = errors.New("error invalid field")
 
 	// Favourite errors - User following
 	ErrUserNotFound = errors.New("error user id not found")

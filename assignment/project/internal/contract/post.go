@@ -32,7 +32,7 @@ type CreatePostRequest struct {
 
 // UpdatePostRequest represents the fields that can be updated in an existing blog post.
 type UpdatePostRequest struct {
-	ID          int
+	ID          int    `param:"postId"`
 	Title       string `json:"title,omitempty"`
 	Body        string `json:"body,omitempty"`
 	Tags        []int  `json:"tags"`
