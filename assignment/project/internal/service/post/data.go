@@ -103,10 +103,6 @@ func prepareUpdateMap(existPost *model.Post, updateReq *ct.UpdatePostRequest) ma
 		updateMap["body"] = updateReq.Body
 	}
 
-	if updateReq.IsPublished == existPost.IsPublished {
-		updateMap["is_published"] = existPost.IsPublished
-	} else {
-		updateMap["is_published"] = updateReq.IsPublished
-	}
+	updateMap["is_published"] = updateReq.IsPublished
 	return updateMap
 }
