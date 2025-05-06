@@ -46,6 +46,7 @@ func prepareTagDetailResponse(tag *model.Tag) *ct.TagResponse {
 	if tag == nil {
 		return nil
 	}
+
 	data := &ct.TagResponse{
 		ID:   tag.ID,
 		Name: tag.Name,
@@ -67,6 +68,7 @@ func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
 	if user == nil {
 		return nil
 	}
+
 	data := &ct.ProfileResponse{
 		ID:           user.ID,
 		FirstName:    user.FirstName,
@@ -88,21 +90,18 @@ func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
 	return data
 }
 
-func prepareUpdateMap(existPost *model.Post, updateReq *ct.UpdatePostRequest) map[string]interface{} {
+func prepareUpdateMap(updateReq *ct.UpdatePostRequest) map[string]interface{} {
 	updateMap := make(map[string]interface{})
 
-	if updateReq.Title == "" {
-		updateMap["title"] = existPost.Title
-	} else {
+	if updateReq.Title != "" {
 		updateMap["title"] = updateReq.Title
 	}
 
-	if updateReq.Body == "" {
-		updateMap["body"] = existPost.Body
-	} else {
+	if updateReq.Body != "" {
 		updateMap["body"] = updateReq.Body
 	}
 
 	updateMap["is_published"] = updateReq.IsPublished
+
 	return updateMap
 }
