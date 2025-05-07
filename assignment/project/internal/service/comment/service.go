@@ -117,3 +117,21 @@ func (s *service) Update(req *ct.UpdateCommentRequest, userID int) (*ct.CommentR
 
 	return prepareCommentResponse(comment), nil
 }
+
+func (s *service) Delete(commentID, ctxUserID int) error {
+	// Read comment
+	comment, err := s.commentRepo.Read(commentID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return static.ErrCommentNotFound
+		}
+		return err
+	}
+
+	// Check if user is the owner of the comment
+	if comment.UserID != ctxUserID {
+		return static.ErrUserPermission
+	}
+
+	return s.commentRepo.Delete(commentID)
+}

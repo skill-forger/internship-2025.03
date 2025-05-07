@@ -29,6 +29,7 @@ type Comment interface {
 	List(*ct.ListCommentRequest) (*ct.ListCommentResponse, error)
 	Create(*ct.CreateCommentRequest, int) (*ct.CommentResponse, error)
 	Update(*ct.UpdateCommentRequest, int) (*ct.CommentResponse, error)
+	Delete(int, int) error
 }
 
 type Post interface {
