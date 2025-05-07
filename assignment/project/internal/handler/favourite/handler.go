@@ -170,8 +170,15 @@ func (h *handler) UpdatePost(e echo.Context) error {
 //	@Failure		400	{object}	error
 //	@Router			/favorites/posts [get]
 func (h *handler) ListPosts(e echo.Context) error {
-	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.ListPostResponse{
-		Posts: []*contract.PostResponse{},
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	resp, err := h.favouriteSvc.ListFavouritePosts(ctxUser.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to retrieve favourite posts")
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }

@@ -30,7 +30,6 @@ func prepareProfileResponse(o *model.User) *ct.ProfileResponse {
 	return data
 }
 
-
 // prepareListProfileResponse converts slice of User models to ListProfileResponse
 func prepareListProfileResponse(o []*model.User) *ct.ListProfileResponse {
 	data := &ct.ListProfileResponse{
@@ -39,6 +38,68 @@ func prepareListProfileResponse(o []*model.User) *ct.ListProfileResponse {
 
 	for _, user := range o {
 		data.Bloggers = append(data.Bloggers, prepareProfileResponse(user))
+	}
+
+	return data
+}
+
+// preparePostResponse converts a Post model to a PostResponse
+func preparePostResponse(post *model.Post) *ct.PostResponse {
+	if post == nil {
+		return &ct.PostResponse{}
+	}
+
+	data := &ct.PostResponse{
+		ID:          post.ID,
+		Title:       post.Title,
+		Body:        post.Body,
+		Slug:        post.Slug,
+		IsPublished: post.IsPublished,
+	}
+
+	if post.CreatedAt != nil {
+		data.CreatedAt = post.CreatedAt.Format(time.RFC3339)
+	}
+
+	if post.UpdatedAt != nil {
+		data.UpdatedAt = post.UpdatedAt.Format(time.RFC3339)
+	}
+
+	// Convert user
+	if post.User != nil {
+		data.User = prepareProfileResponse(post.User)
+	}
+
+	// Convert tags
+	if post.Tags != nil {
+		data.Tags = make([]*ct.TagResponse, len(post.Tags))
+		for i, tag := range post.Tags {
+			data.Tags[i] = prepareTagResponse(tag)
+		}
+	}
+
+	return data
+}
+
+// prepareTagResponse transforms a Tag model to TagResponse
+func prepareTagResponse(tag *model.Tag) *ct.TagResponse {
+	if tag == nil {
+		return nil
+	}
+	return &ct.TagResponse{
+		ID:   tag.ID,
+		Name: tag.Name,
+	}
+}
+
+// prepareListPostResponse converts a slice of Post models to ListPostResponse
+func prepareListPostResponse(posts []*model.Post) *ct.ListPostResponse {
+	data := &ct.ListPostResponse{
+		Posts: make([]*ct.PostResponse, 0, len(posts)),
+	}
+
+	for _, post := range posts {
+		data.Posts = append(data.Posts, preparePostResponse(post))
 	}
 
 	return data
