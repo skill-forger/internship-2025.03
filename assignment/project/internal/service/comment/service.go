@@ -109,9 +109,8 @@ func (s *service) Update(req *ct.UpdateCommentRequest, userID int) (*ct.CommentR
 		return nil, static.ErrUserPermission
 	}
 
-	//Update comment
+	// Update comment
 	updateCommentErr := s.commentRepo.UpdateCommentByID(req.ID, prepareUpdateComment(comment, req))
-
 	if updateCommentErr != nil {
 		return nil, err
 	}
