@@ -81,13 +81,22 @@ func (h *handler) Get(e echo.Context) error {
 //	@Tags         profile
 //	@Produce      json
 //	@Security     BearerToken
-//	@Param        is_published  query     string   false  "Filter by publication status (true/false)"
+//	@Param        is_published  query     boolean     false
 //	@Success      200  {object}   contract.ListPostResponse
 //	@Failure      401  {object}  error
 //	@Router       /profile/posts [get]
 func (h *handler) ListBloggerPosts(e echo.Context) error {
-	// Get the is_published filter from query params
-	isPublishedFilter := e.QueryParam("is_published")
+	// Get the is_published filter from query params and convert to *bool
+	var isPublishedFilter *bool
+	if param := e.QueryParam("is_published"); param != "" {
+		if param == "true" {
+			val := true
+			isPublishedFilter = &val
+		} else if param == "false" {
+			val := false
+			isPublishedFilter = &val
+		}
+	}
 
 	// Get the authenticated user
 	ctxUser, err := hdl.GetContextUser(e)

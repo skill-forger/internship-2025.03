@@ -11,7 +11,7 @@ type User interface {
 	Insert(*model.User) (*model.User, error)
 	Update(*model.User, map[string]interface{}) (*model.User, error)
 	ReadByEmail(string) (*model.User, error)
-	ReadOwnPosts(id int, isPublishedFilter string) ([]*model.Post, error)
+	ReadOwnPosts(id int, isPublishedFilter *bool) ([]*model.Post, error)
 }
 
 type Tag interface {

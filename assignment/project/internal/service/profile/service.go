@@ -111,16 +111,17 @@ func (s *service) GetPost(postID, ctxUserID int) (*ct.PostResponse, error) {
 	return preparePostResponse(post), nil
 }
 
-func (s *service) ListBloggerPosts(id int, isPublishedFilter string) (*ct.ListPostResponse, error) {
+// ListBloggerPosts executes the User get their own posts retrieval logic
+func (s *service) ListBloggerPosts(id int, isPublishedFilter *bool) (*ct.ListPostResponse, error) {
 	posts, err := s.userRepo.ReadOwnPosts(id, isPublishedFilter)
 	if err != nil {
-		return nil, err
+		return nil, static.ErrListBloggerPosts
 	}
 
 	responses := make([]*ct.PostResponse, 0, len(posts))
 	for _, post := range posts {
-		response := preparePostResponse(post)
-		responses = append(responses, &response)
+		res := preparePostResponse(post)
+		responses = append(responses, res)
 	}
 
 	return &ct.ListPostResponse{
