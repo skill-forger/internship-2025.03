@@ -166,7 +166,6 @@ func (h *handler) Create(e echo.Context) error {
 //	@Router			/posts/{postId} [put]
 func (h *handler) Update(e echo.Context) error {
 	var req contract.UpdatePostRequest
-
 	if err := e.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
@@ -177,15 +176,14 @@ func (h *handler) Update(e echo.Context) error {
 	}
 
 	updatePost, err := h.postSvc.Update(ctxUser.ID, &req)
-
-	if err == static.ErrUserPermission {
-		return echo.NewHTTPError(http.StatusForbidden, err)
-	}
-
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
+		switch err {
+		case static.ErrUserPermission:
+			return echo.NewHTTPError(http.StatusForbidden, err)
+		default:
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
 	}
-
 	return e.JSON(http.StatusOK, updatePost)
 }
 

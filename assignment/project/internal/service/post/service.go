@@ -148,7 +148,7 @@ func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.P
 		return nil, err
 	}
 
-	//check ctxUser permission to update
+	// Check ctxUser permission to update
 	if ctxUserID != post.UserID {
 		return nil, static.ErrUserPermission
 	}
