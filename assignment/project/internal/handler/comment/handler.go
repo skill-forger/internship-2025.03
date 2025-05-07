@@ -3,6 +3,7 @@ package comment
 import (
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -183,5 +184,29 @@ func (h *handler) Update(e echo.Context) error {
 // @Failure     400 {object} error
 // @Router      /comments/{commentId} [delete]
 func (h *handler) Delete(e echo.Context) error {
-	return nil
+	// Get comment ID from path parameter
+	commentID, err := strconv.Atoi(e.Param("commentId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, static.ErrInvalidCommentID)
+	}
+
+	// Get user from context
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	// Delete comment
+	if err := h.commentSvc.Delete(commentID, ctxUser.ID); err != nil {
+		switch {
+		case errors.Is(err, static.ErrCommentNotFound):
+			return echo.NewHTTPError(http.StatusNotFound, static.ErrCommentNotFound)
+		case errors.Is(err, static.ErrUserPermission):
+			return echo.NewHTTPError(http.StatusForbidden, static.ErrUserPermission)
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	return e.NoContent(http.StatusNoContent)
 }

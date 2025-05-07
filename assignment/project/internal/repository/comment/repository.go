@@ -83,3 +83,22 @@ func (r *repository) UpdateCommentByID(commentID int, updates map[string]interfa
 
 	return nil
 }
+
+// Delete the comment model, related child comments
+func (r *repository) Delete(commentID int) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		// Soft delete all child comments
+		if err := tx.Model(&model.Comment{}).
+			Where("parent_comment_id = ?", commentID).
+			Update("deleted_at", gorm.Expr("NOW()")).Error; err != nil {
+			return err
+		}
+
+		// Soft delete the parent comment
+		if err := tx.Delete(&model.Comment{}, commentID).Error; err != nil {
+			return err
+		}
+		
+		return nil
+	})
+}

@@ -40,7 +40,8 @@ var (
 	ErrInvalidPostID        = errors.New("error invalid post id")
 
 	// Comment errors
-	ErrCommentNotFound = errors.New("error comment not found")
+	ErrCommentNotFound  = errors.New("error comment not found")
+	ErrInvalidCommentID = errors.New("error invalid comment id")
 
 	// Change Password errors
 	ErrInvalidPassword = errors.New("invalid password")
