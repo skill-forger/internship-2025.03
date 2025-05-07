@@ -14,6 +14,7 @@ type Authentication interface {
 type Profile interface {
 	GetByID(int) (*ct.ProfileResponse, error)
 	Update(int, *ct.UpdateProfileRequest) (*ct.ProfileResponse, error)
+	ChangePassword(int, *ct.ChangePasswordRequest) (*ct.ChangePasswordResponse, error)
 }
 
 type Tag interface {

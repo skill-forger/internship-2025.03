@@ -4,6 +4,8 @@ import (
 	ct "golang-project/internal/contract"
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
+	"golang-project/static"
+	"golang-project/util/hashing"
 )
 
 // service represents the implementation of service.Profile
@@ -45,4 +47,45 @@ func (s *service) Update(id int, req *ct.UpdateProfileRequest) (*ct.ProfileRespo
 	}
 
 	return prepareProfileResponse(updatedUser), nil
+}
+
+// ChangePassword executes the password change logic
+func (s *service) ChangePassword(id int, req *ct.ChangePasswordRequest) (*ct.ChangePasswordResponse, error) {
+	user, err := s.userRepo.Read(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Verify current password
+	hash := hashing.NewBcrypt()
+	err = hash.Compare([]byte(user.Password), []byte(req.CurrentPassword))
+	if err != nil {
+		return nil, static.ErrInvalidPassword
+	}
+
+	// Verify new password matches confirm password
+	if req.NewPassword != req.ConfirmNewPassword {
+		return nil, static.ErrComfirmPassword
+	}
+
+	// Hash new password
+	hashedPassword, err := hash.Generate([]byte(req.NewPassword))
+	if err != nil {
+		return nil, static.ErrPasswordHashingFailed
+	}
+
+	// Update password
+	updates := map[string]any{
+		"password": hashedPassword,
+	}
+
+	// Save updated password
+	_, err = s.userRepo.Update(user, updates)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ct.ChangePasswordResponse{
+		Message: "Password changed successfully",
+	}, nil
 }

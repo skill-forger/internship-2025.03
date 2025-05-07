@@ -11,6 +11,7 @@ import (
 	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
 	"golang-project/server"
+	"golang-project/static"
 )
 
 // handler represents the implementation of handler.Profile
@@ -147,5 +148,29 @@ func (h *handler) Update(e echo.Context) error {
 //	@Failure      400      {object}  error
 //	@Router       /profile/change-password [put]
 func (h *handler) ChangePassword(e echo.Context) error {
-	return nil
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	var request ct.ChangePasswordRequest
+	if err := e.Bind(&request); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request data")
+	}
+
+	response, err := h.profileSvc.ChangePassword(ctxUser.ID, &request)
+	if err != nil {
+		switch err {
+		case static.ErrComfirmPassword:
+			return echo.NewHTTPError(http.StatusBadRequest, "New password and confirmation do not match")
+		case static.ErrInvalidPassword:
+			return echo.NewHTTPError(http.StatusBadRequest, "Current password is incorrect")
+		case static.ErrPasswordHashingFailed:
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to hash new password")
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to change password")
+		}
+	}
+
+	return e.JSON(http.StatusOK, response)
 }
