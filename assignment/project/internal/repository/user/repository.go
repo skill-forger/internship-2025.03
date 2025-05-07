@@ -1,10 +1,10 @@
 package user
 
 import (
-	"gorm.io/gorm"
-
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
+
+	"gorm.io/gorm"
 )
 
 // repository represents the implementation of repository.User
@@ -60,4 +60,30 @@ func (r *repository) Update(o *model.User, updates map[string]interface{}) (*mod
 	}
 
 	return o, nil
+}
+
+func (r *repository) ReadOwnPosts(id int, isPublishedFilter string) ([]*model.Post, error) {
+	var posts []*model.Post
+
+	// Start building the query
+	query := r.db.Where("user_id = ?", id)
+
+	// Add filter by publication status if provided
+	if isPublishedFilter != "" {
+		if isPublishedFilter == "true" {
+			query = query.Where("is_published = ?", true)
+		} else if isPublishedFilter == "false" {
+			query = query.Where("is_published = ?", false)
+		}
+	}
+
+	// Execute the query with preloads
+	if err := query.
+		Preload("Tags").
+		Preload("User").
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }

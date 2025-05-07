@@ -81,12 +81,27 @@ func (h *handler) Get(e echo.Context) error {
 //	@Tags         profile
 //	@Produce      json
 //	@Security     BearerToken
-//	@Param        is_published  query     bool   false  "Filter by status post"
+//	@Param        is_published  query     string   false  "Filter by publication status (true/false)"
 //	@Success      200  {object}   contract.ListPostResponse
 //	@Failure      401  {object}  error
 //	@Router       /profile/posts [get]
 func (h *handler) ListBloggerPosts(e echo.Context) error {
-	return nil
+	// Get the is_published filter from query params
+	isPublishedFilter := e.QueryParam("is_published")
+
+	// Get the authenticated user
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	// Call the service with the user ID and filter
+	res, err := h.profileSvc.ListBloggerPosts(ctxUser.ID, isPublishedFilter)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error retrieving blogger posts")
+	}
+
+	return e.JSON(http.StatusOK, res)
 }
 
 // GetPostDetail returns the details of a specific post (published or draft) of the current blogger
