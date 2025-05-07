@@ -101,7 +101,26 @@ func (h *handler) ListBloggerPosts(e echo.Context) error {
 //	@Failure      404     {object}  error
 //	@Router       /profile/posts/{postId} [get]
 func (h *handler) GetPostDetail(e echo.Context) error {
-	return nil
+	postID, err := strconv.Atoi(e.Param("postId"))
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, static.ErrInvalidPostID)
+	}
+
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	post, err := h.profileSvc.GetDetailPost(postID, ctxUser.ID)
+	if err != nil {
+		switch err {
+		case static.ErrPostOwner:
+			return echo.NewHTTPError(http.StatusForbidden, err)
+		default:
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+	}
+	return e.JSON(http.StatusOK, post)
 }
 
 // Update handles the request to update blogger profile information
