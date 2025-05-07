@@ -34,6 +34,7 @@ type Post interface {
 	List(*ct.ListPostRequest) (*ct.ListPostResponse, error)
 	Create(*ct.CreatePostRequest, int) (*ct.PostResponse, error)
 	Update(int, *ct.UpdatePostRequest) (*ct.PostResponse, error)
+	Delete(int, int) error
 }
 
 // Favourite represents the service logic of Favourite features
