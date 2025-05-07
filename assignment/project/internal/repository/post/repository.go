@@ -179,3 +179,23 @@ func (r *repository) UpdatePost(post *model.Post, updatePost map[string]interfac
 func (r *repository) UpdatePostTag(post *model.Post, tags []*model.Tag) error {
 	return r.db.Model(&post).Association("Tags").Replace(tags)
 }
+
+// Delete delete the post model, related comments, and related post_tag relations in the database
+// If err appear on any step then rollback on all deleted
+func (r *repository) Delete(postID int) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Delete(&model.Post{}, postID).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&model.PostTag{}, "post_id = ?", postID).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&model.Comment{}, "post_id = ?", postID).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
