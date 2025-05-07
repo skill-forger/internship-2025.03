@@ -158,10 +158,8 @@ func (h *handler) UpdatePost(e echo.Context) error {
 		switch err {
 		case static.ErrPostNotFound:
 			return echo.NewHTTPError(http.StatusNotFound, "Post not found")
-		case static.ErrAlreadyFavourite:
-			return echo.NewHTTPError(http.StatusBadRequest, "Post already in favourites")
-		case static.ErrNotFavourite:
-			return echo.NewHTTPError(http.StatusBadRequest, "Post not in favourites")
+		case static.ErrUnsupportedFavouriteAction:
+			return echo.NewHTTPError(http.StatusBadRequest, "Unsupported favourite action")
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update favourite status")
 		}

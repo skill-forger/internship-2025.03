@@ -107,7 +107,6 @@ func (s *service) ListUserPosts(userID int) (*ct.ListPostResponse, error) {
 // UpdateFavouriteStatus handles favorite/unfavorite operations
 func (s *service) UpdateFavouriteStatus(userID int, req *ct.PostFavouriteRequest) (*ct.PostFavouriteStatusResponse, error) {
 	postID := req.PostID
-	isFavourite := req.Action == static.Favourite
 
 	// Check if post exists
 	_, err := s.postRepo.Read(postID)
@@ -124,32 +123,39 @@ func (s *service) UpdateFavouriteStatus(userID int, req *ct.PostFavouriteRequest
 		return nil, static.ErrDatabaseOperation
 	}
 
-	// Handle favouriting/unfavouriting based on current status
-	if isFavourite {
-		if isAlreadyFavourited {
-			return nil, static.ErrAlreadyFavourite
-		}
-
-		favourite := &model.FavoritePost{
-			UserID: userID,
-			PostID: postID,
-		}
-		err = s.favouriteRepo.Favourite(favourite)
-	} else {
+	// Handle different actions
+	switch req.Action {
+	case static.Favourite:
+		// If not already favourited, add to favourites
 		if !isAlreadyFavourited {
-			return nil, static.ErrNotFavourite
+			favourite := &model.FavoritePost{
+				UserID: userID,
+				PostID: postID,
+			}
+			if err = s.favouriteRepo.Favourite(favourite); err != nil {
+				return nil, static.ErrFavouriteStatusUpdate
+			}
 		}
-		err = s.favouriteRepo.Unfavourite(userID, postID)
-	}
+		return &ct.PostFavouriteStatusResponse{
+			PostID:      postID,
+			IsFavourite: true,
+		}, nil
 
-	if err != nil {
-		return nil, static.ErrFavouriteStatusUpdate
-	}
+	case static.Unfavourite:
+		// If already favourited, remove from favourites
+		if isAlreadyFavourited {
+			if err = s.favouriteRepo.Unfavourite(userID, postID); err != nil {
+				return nil, static.ErrFavouriteStatusUpdate
+			}
+		}
+		return &ct.PostFavouriteStatusResponse{
+			PostID:      postID,
+			IsFavourite: false,
+		}, nil
 
-	return &ct.PostFavouriteStatusResponse{
-		PostID:      postID,
-		IsFavourite: isFavourite,
-	}, nil
+	default:
+		return nil, static.ErrUnsupportedFavouriteAction
+	}
 }
 
 // ListFavouritePosts returns all posts that a user has favorited
