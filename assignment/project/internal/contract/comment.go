@@ -55,5 +55,6 @@ type CreateCommentRequest struct {
 // UpdateCommentRequest defines the expected payload when
 // a user wants to update an exist comment.
 type UpdateCommentRequest struct {
+	ID      int    `param:"commentId" swaggerignore:"true"`
 	Content string `json:"content" validate:"required"`
 }

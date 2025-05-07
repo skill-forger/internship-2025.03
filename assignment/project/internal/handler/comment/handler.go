@@ -3,7 +3,6 @@ package comment
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -139,12 +138,6 @@ func (h *handler) Create(e echo.Context) error {
 // @Failure     400 {object} error
 // @Router      /comments/{commentId} [put]
 func (h *handler) Update(e echo.Context) error {
-	// Get comment ID from path parameter
-	commentID, err := strconv.Atoi(e.Param("commentId"))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid comment ID")
-	}
-
 	// Bind request body
 	req := new(ct.UpdateCommentRequest)
 	if err := e.Bind(req); err != nil {
@@ -163,9 +156,16 @@ func (h *handler) Update(e echo.Context) error {
 	}
 
 	// Update comment
-	updatedComment, err := h.commentSvc.Update(req, commentID, ctxUser.ID)
+	updatedComment, err := h.commentSvc.Update(req, ctxUser.ID)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		switch {
+		case errors.Is(err, static.ErrCommentNotFound):
+			return echo.NewHTTPError(http.StatusNotFound, static.ErrCommentNotFound)
+		case errors.Is(err, static.ErrUserPermission):
+			return echo.NewHTTPError(http.StatusForbidden, static.ErrUserPermission)
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
 	}
 
 	return e.JSON(http.StatusOK, updatedComment)

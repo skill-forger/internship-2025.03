@@ -28,7 +28,7 @@ type Comment interface {
 	Select(*contract.ListCommentRequest) ([]*model.Comment, int64, error)
 	Insert(*model.Comment) (*model.Comment, error)
 	Read(int) (*model.Comment, error)
-	Update(*model.Comment, map[string]interface{}) (*model.Comment, error)
+	UpdateCommentByID(int, map[string]interface{}) error
 }
 
 type Post interface {
