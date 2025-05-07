@@ -126,28 +126,40 @@ func (s *service) UpdateFavouriteStatus(userID int, req *ct.PostFavouriteRequest
 	// Handle different actions
 	switch req.Action {
 	case static.Favourite:
-		// If not already favourited, add to favourites
-		if !isAlreadyFavourited {
-			favourite := &model.FavoritePost{
-				UserID: userID,
-				PostID: postID,
-			}
-			if err = s.favouriteRepo.Favourite(favourite); err != nil {
-				return nil, static.ErrFavouriteStatusUpdate
-			}
+		if isAlreadyFavourited {
+			return &ct.PostFavouriteStatusResponse{
+				PostID:      postID,
+				IsFavourite: true,
+			}, nil
 		}
+
+		// Add to favourites if not already there
+		favourite := &model.FavoritePost{
+			UserID: userID,
+			PostID: postID,
+		}
+		if err = s.favouriteRepo.Favourite(favourite); err != nil {
+			return nil, static.ErrFavouriteStatusUpdate
+		}
+
 		return &ct.PostFavouriteStatusResponse{
 			PostID:      postID,
 			IsFavourite: true,
 		}, nil
 
 	case static.Unfavourite:
-		// If already favourited, remove from favourites
-		if isAlreadyFavourited {
-			if err = s.favouriteRepo.Unfavourite(userID, postID); err != nil {
-				return nil, static.ErrFavouriteStatusUpdate
-			}
+		if !isAlreadyFavourited {
+			return &ct.PostFavouriteStatusResponse{
+				PostID:      postID,
+				IsFavourite: false,
+			}, nil
 		}
+
+		// Remove from favourites if it's there
+		if err = s.favouriteRepo.Unfavourite(userID, postID); err != nil {
+			return nil, static.ErrFavouriteStatusUpdate
+		}
+
 		return &ct.PostFavouriteStatusResponse{
 			PostID:      postID,
 			IsFavourite: false,
