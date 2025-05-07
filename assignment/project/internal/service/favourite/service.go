@@ -8,6 +8,8 @@ import (
 	svc "golang-project/internal/service"
 	"golang-project/static"
 
+	"log"
+
 	"gorm.io/gorm"
 )
 
@@ -113,6 +115,7 @@ func (s *service) Favourite(userID, postID int, isFavourite bool) (*ct.PostFavou
 func (s *service) ListFavouritePosts(userID int) (*ct.ListPostResponse, error) {
 	posts, err := s.favouriteRepo.SelectFavouritePosts(userID)
 	if err != nil {
+		log.Printf("Database error in ListFavouritePosts for userID %d: %v", userID, err)
 		return nil, static.ErrDatabaseOperation
 	}
 

@@ -45,10 +45,6 @@ func prepareListProfileResponse(o []*model.User) *ct.ListProfileResponse {
 
 // preparePostResponse converts a Post model to a PostResponse
 func preparePostResponse(post *model.Post) *ct.PostResponse {
-	if post == nil {
-		return &ct.PostResponse{}
-	}
-
 	data := &ct.PostResponse{
 		ID:          post.ID,
 		Title:       post.Title,
@@ -83,9 +79,6 @@ func preparePostResponse(post *model.Post) *ct.PostResponse {
 
 // prepareTagResponse transforms a Tag model to TagResponse
 func prepareTagResponse(tag *model.Tag) *ct.TagResponse {
-	if tag == nil {
-		return nil
-	}
 	return &ct.TagResponse{
 		ID:   tag.ID,
 		Name: tag.Name,
