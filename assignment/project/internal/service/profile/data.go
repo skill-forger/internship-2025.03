@@ -54,3 +54,10 @@ func prepareUpdateProfile(o *model.User, req *ct.UpdateProfileRequest) map[strin
 		"biography":     o.Biography,
 	}
 }
+
+// prepareChangePassword prepares the change password request with hashed password
+func prepareChangePassword(hashedPassword string) map[string]interface{} {
+	return map[string]interface{}{
+		"password": hashedPassword,
+	}
+}

@@ -40,4 +40,8 @@ var (
 
 	// Comment errors
 	ErrCommentNotFound = errors.New("error comment not found")
+
+	// Change Password errors
+	ErrInvalidPassword = errors.New("invalid password")
+	ErrComfirmPassword = errors.New("comfirm new passwords do not match")
 )
