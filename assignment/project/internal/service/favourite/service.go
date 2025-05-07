@@ -15,13 +15,15 @@ import (
 type service struct {
 	favouriteRepo repo.Favourite
 	userRepo      repo.User
+	postRepo      repo.Post
 }
 
 // NewService returns a new implementation of service.Favourite
-func NewService(favouriteRepo repo.Favourite, userRepo repo.User) svc.Favourite {
+func NewService(favouriteRepo repo.Favourite, userRepo repo.User, postRepo repo.Post) svc.Favourite {
 	return &service{
 		favouriteRepo: favouriteRepo,
 		userRepo:      userRepo,
+		postRepo:      postRepo,
 	}
 }
 
@@ -109,5 +111,10 @@ func (s *service) Favourite(userID, postID int, isFavourite bool) (*ct.PostFavou
 
 // ListFavouritePosts returns all posts that a user has favorited
 func (s *service) ListFavouritePosts(userID int) (*ct.ListPostResponse, error) {
-	return nil, nil
+	posts, err := s.favouriteRepo.SelectFavouritePosts(userID)
+	if err != nil {
+		return nil, static.ErrGetFavouritePosts
+	}
+
+	return prepareListPostResponse(posts), nil
 }

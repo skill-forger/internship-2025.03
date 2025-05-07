@@ -25,6 +25,9 @@ var (
 	ErrDatabaseOperation  = errors.New("error occurred during database operation")
 	ErrFollowStatusUpdate = errors.New("error failed to update follow status")
 
+	// Favourite errors - Post favourites
+	ErrGetFavouritePosts    = errors.New("error retrieving favourite posts")
+	
 	// SignUp errors
 	ErrEmailAlreadyExists    = errors.New("error email already exists")
 	ErrInvalidEmail          = errors.New("error invalid email format")

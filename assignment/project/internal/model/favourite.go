@@ -10,3 +10,14 @@ type FollowUser struct {
 func (FollowUser) TableName() string {
 	return "follow_user"
 }
+
+// FavoritePost represents favorite_post table from the database
+type FavoritePost struct {
+	PostID int `gorm:"primaryKey;column:post_id"`
+	UserID int `gorm:"primaryKey;column:user_id"`
+}
+
+// TableName specifies the table name for FavoritePost
+func (FavoritePost) TableName() string {
+	return "favorite_post"
+}
