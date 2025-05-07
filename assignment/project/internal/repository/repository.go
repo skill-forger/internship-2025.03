@@ -29,6 +29,7 @@ type Comment interface {
 	Insert(*model.Comment) (*model.Comment, error)
 	Read(int) (*model.Comment, error)
 	UpdateCommentByID(int, map[string]interface{}) error
+	Delete(int) error
 }
 
 type Post interface {

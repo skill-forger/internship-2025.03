@@ -20,8 +20,8 @@ var (
 	ErrFollowStatusUpdate = errors.New("error failed to update follow status")
 
 	// Favourite errors - Post favourites
-	ErrGetFavouritePosts    = errors.New("error retrieving favourite posts")
-	
+	ErrGetFavouritePosts = errors.New("error retrieving favourite posts")
+
 	// SignUp errors
 	ErrEmailAlreadyExists    = errors.New("error email already exists")
 	ErrInvalidEmail          = errors.New("error invalid email format")
@@ -39,7 +39,8 @@ var (
 	ErrInvalidPostID        = errors.New("error invalid post id")
 
 	// Comment errors
-	ErrCommentNotFound = errors.New("error comment not found")
+	ErrCommentNotFound  = errors.New("error comment not found")
+	ErrInvalidCommentID = errors.New("error invalid comment id")
 
 	// Change Password errors
 	ErrInvalidPassword = errors.New("invalid password")

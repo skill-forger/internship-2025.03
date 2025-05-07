@@ -158,12 +158,12 @@
                     {
                         "type": "integer",
                         "description": "Number of posts per page",
-                        "name": "pageSize",
+                        "name": "page_size",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "name": "postID",
+                        "name": "post_id",
                         "in": "query",
                         "required": true
                     }
@@ -818,92 +818,6 @@
             }
         },
         "/profile/posts": {
-            "put": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can update their profile information",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "profile"
-                ],
-                "summary": "Update blogger profile",
-                "parameters": [
-                    {
-                        "description": "Update profile request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/contract.UpdateProfileRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ProfileResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/profile/change-password": {
-            "put": {
-                "security": [
-                    {
-                        "BearerToken": []
-                    }
-                ],
-                "description": "Blogger can change their password",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "profile"
-                ],
-                "summary": "Change blogger password",
-                "parameters": [
-                    {
-                        "description": "Change password request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/contract.ChangePasswordRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ChangePasswordResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
-                    }
-                }
-            }
-        },
-        "/profile/drafts": {
             "get": {
                 "security": [
                     {
@@ -1041,6 +955,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Create a new tag with the provided name",
                 "consumes": [
                     "application/json"
@@ -1067,7 +986,7 @@
                     "200": {
                         "description": "Tag created successfully",
                         "schema": {
-                            "$ref": "#/definitions/contract.TagDetailResponse"
+                            "$ref": "#/definitions/contract.TagResponse"
                         }
                     },
                     "400": {
@@ -1081,42 +1000,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    }
-                }
-            }
-        },
-        "/tags/:tagId/posts": {
-            "get": {
-                "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tag"
-                ],
-                "summary": "Get all posts for a tag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "tagId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/contract.ListPostResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {}
                     }
                 }
             }
@@ -1151,6 +1034,42 @@
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/tags/{id}/posts": {
+            "get": {
+                "description": "Readers/Bloggers can view all blog posts belong to a particular tag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tag"
+                ],
+                "summary": "Get all posts for a tag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Tag ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/contract.ListPostResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1233,7 +1152,7 @@
                 "id": {
                     "type": "integer"
                 },
-                "parentCommentID": {
+                "parent_comment_id": {
                     "type": "integer"
                 },
                 "updated_at": {
@@ -1262,7 +1181,7 @@
                 "id": {
                     "type": "integer"
                 },
-                "parentCommentID": {
+                "parent_comment_id": {
                     "type": "integer"
                 },
                 "post": {
@@ -1285,7 +1204,7 @@
                 "content": {
                     "type": "string"
                 },
-                "parentCommentID": {
+                "parent_comment_id": {
                     "type": "integer"
                 },
                 "post_id": {
@@ -1315,9 +1234,6 @@
                 },
                 "title": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -1385,7 +1301,7 @@
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/contract.TagDetailResponse"
+                        "$ref": "#/definitions/contract.TagResponse"
                     }
                 }
             }
@@ -1458,7 +1374,7 @@
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/contract.TagDetailResponse"
+                        "$ref": "#/definitions/contract.TagResponse"
                     }
                 },
                 "title": {
@@ -1481,9 +1397,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "display_name": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -1497,6 +1410,9 @@
                     "type": "string"
                 },
                 "profile_image": {
+                    "type": "string"
+                },
+                "pseudonym": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -1563,12 +1479,12 @@
         "contract.SignUpResponse": {
             "type": "object",
             "properties": {
-                "message": {
-                    "type": "string"
+                "user": {
+                    "$ref": "#/definitions/model.User"
                 }
             }
         },
-        "contract.TagDetailResponse": {
+        "contract.TagResponse": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -1651,6 +1567,59 @@
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "biography": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isVerified": {
+                    "type": "boolean"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "profileImage": {
+                    "type": "string"
+                },
+                "pseudonym": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }
