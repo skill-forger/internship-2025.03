@@ -37,15 +37,6 @@ func (s *service) GetByID(id int) (*ct.PostResponse, error) {
 
 	response := preparePostResponse(post)
 
-	// Add user data
-	response.User = prepareProfileResponse(post.User)
-
-	// Add tags data
-	response.Tags = make([]*ct.TagResponse, len(post.Tags))
-	for i, tag := range post.Tags {
-		response.Tags[i] = prepareTagDetailResponse(tag)
-	}
-
 	return response, nil
 }
 
@@ -59,15 +50,6 @@ func (s *service) List(filter *ct.ListPostRequest) (*ct.ListPostResponse, error)
 	responses := make([]*ct.PostResponse, len(posts))
 	for i, post := range posts {
 		response := preparePostResponse(post)
-
-		// Add user data
-		response.User = prepareProfileResponse(post.User)
-
-		// Add tags data
-		response.Tags = make([]*ct.TagResponse, len(post.Tags))
-		for j, tag := range post.Tags {
-			response.Tags[j] = prepareTagDetailResponse(tag)
-		}
 
 		responses[i] = response
 	}
@@ -176,9 +158,7 @@ func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.P
 		return nil, err
 	}
 
-	updateMap := prepareUpdateMap(updatePost)
-
-	updatePostErr := s.postRepo.UpdatePost(post, updateMap)
+	updatePostErr := s.postRepo.UpdatePost(post, prepareUpdateMap(updatePost))
 	if updatePostErr != nil {
 		return nil, updatePostErr
 	}
@@ -196,16 +176,5 @@ func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.P
 		return nil, err
 	}
 
-	response := preparePostResponse(post)
-
-	// Add user data
-	response.User = prepareProfileResponse(post.User)
-
-	// Add tags data
-	response.Tags = make([]*ct.TagResponse, len(post.Tags))
-	for i, tag := range post.Tags {
-		response.Tags[i] = prepareTagDetailResponse(tag)
-	}
-
-	return response, nil
+	return preparePostResponse(post), nil
 }
