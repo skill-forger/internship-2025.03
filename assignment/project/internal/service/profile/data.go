@@ -31,7 +31,7 @@ func prepareProfileResponse(o *model.User) *ct.ProfileResponse {
 }
 
 // prepareUpdateProfile updates fields of a User model and prepares the update map
-func prepareUpdateProfile(o *model.User, req *ct.UpdateProfileRequest) map[string]interface{} {
+func prepareUpdateProfile(o *model.User, req *ct.UpdateProfileRequest) map[string]any {
 	if req.FirstName != "" {
 		o.FirstName = req.FirstName
 	}
@@ -46,18 +46,11 @@ func prepareUpdateProfile(o *model.User, req *ct.UpdateProfileRequest) map[strin
 	o.ProfileImage = req.ProfileImage
 	o.Biography = req.Biography
 
-	return map[string]interface{}{
+	return map[string]any{
 		"first_name":    o.FirstName,
 		"last_name":     o.LastName,
 		"pseudonym":     o.Pseudonym,
 		"profile_image": o.ProfileImage,
 		"biography":     o.Biography,
-	}
-}
-
-// prepareChangePassword prepares the change password request with hashed password
-func prepareChangePassword(hashedPassword string) map[string]interface{} {
-	return map[string]interface{}{
-		"password": hashedPassword,
 	}
 }

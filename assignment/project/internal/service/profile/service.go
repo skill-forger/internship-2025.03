@@ -74,8 +74,10 @@ func (s *service) ChangePassword(id int, req *ct.ChangePasswordRequest) (*ct.Cha
 		return nil, static.ErrPasswordHashingFailed
 	}
 
-	// Prepare update password
-	updates := prepareChangePassword(string(hashedPassword))
+	// Update password
+	updates := map[string]any{
+		"password": hashedPassword,
+	}
 
 	// Save updated password
 	_, err = s.userRepo.Update(user, updates)
