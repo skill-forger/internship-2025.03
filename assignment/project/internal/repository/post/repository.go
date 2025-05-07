@@ -22,25 +22,14 @@ func NewRepository(db *gorm.DB) repo.Post {
 }
 
 // Read finds and returns the post model by id
-// publishedType = 0 => not published
-// publishedType = 1 => published
-// publishedType all other => both
-func (r *repository) Read(id int, publishedType int) (*model.Post, error) {
+func (r *repository) Read(id int) (*model.Post, error) {
 	var result model.Post
 
 	query := r.db.Model(&model.Post{}).
 		Preload("User").
-		Preload("Tags", "deleted_at IS NULL")
-
-	if publishedType == 0 {
-		query.Where("id = ? AND is_published = ?", id, false)
-	} else if publishedType == 1 {
-		query.Where("id = ? AND is_published = ?", id, true)
-	} else {
-		query.Where("id = ?", id)
-	}
-
-	query.First(&result)
+		Preload("Tags", "deleted_at IS NULL").
+		Where("id = ? AND is_published = ?", id, true).
+		First(&result)
 
 	if err := query.Error; err != nil {
 		return nil, err
@@ -181,14 +170,12 @@ func (r *repository) ReadByCondition(condition map[string]interface{}, preloads 
 	return &post, nil
 }
 
-// Update updates the post model in the database
-func (r *repository) Update(post *model.Post, updatePost map[string]interface{}, tags []*model.Tag) error {
-	if err := r.db.Model(&post).Omit("user_id").Updates(updatePost).Error; err != nil {
-		return err
-	}
+// UpdatePost updates the post model in the database
+func (r *repository) UpdatePost(post *model.Post, updatePost map[string]interface{}) error {
+	return r.db.Model(&post).Omit("user_id").Updates(updatePost).Error
+}
 
-	if err := r.db.Model(&post).Association("Tags").Replace(tags); err != nil {
-		return err
-	}
-	return nil
+// UpdatePostTag updates the post_tag table by association with post
+func (r *repository) UpdatePostTag(post *model.Post, tags []*model.Tag) error {
+	return r.db.Model(&post).Association("Tags").Replace(tags)
 }

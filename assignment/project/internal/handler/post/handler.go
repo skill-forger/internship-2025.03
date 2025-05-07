@@ -165,28 +165,25 @@ func (h *handler) Create(e echo.Context) error {
 //	@Failure		400		{object}	error
 //	@Router			/posts/{postId} [put]
 func (h *handler) Update(e echo.Context) error {
+	var req contract.UpdatePostRequest
+	if err := e.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
 	ctxUser, err := hdl.GetContextUser(e)
 	if err != nil {
 		return err
 	}
 
-	var req contract.UpdatePostRequest
-
-	postId, err := strconv.Atoi(e.Param("postId"))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, static.ErrInvalidPostID)
-	}
-	req.ID = postId
-
-	if err := e.Bind(&req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
-	}
-
 	updatePost, err := h.postSvc.Update(ctxUser.ID, &req)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
+		switch err {
+		case static.ErrUserPermission:
+			return echo.NewHTTPError(http.StatusForbidden, err)
+		default:
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
 	}
-
 	return e.JSON(http.StatusOK, updatePost)
 }
 

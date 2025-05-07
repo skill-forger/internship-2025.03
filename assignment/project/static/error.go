@@ -3,7 +3,8 @@ package static
 import "errors"
 
 var (
-	ErrUserPermission = errors.New("User do not have permission")
+	// User Permission errors
+	ErrUserPermission = errors.New("error user do not have permission")
 
 	// Tags errors
 	ErrReadTagID   = errors.New("error get tag detail")
@@ -14,10 +15,15 @@ var (
 	ErrInvalidPostID     = errors.New("error invalid post id")
 	ErrPostTitleRequired = errors.New("error published post required title")
 	ErrPostBodyRequired  = errors.New("error published post required body")
-	ErrPostInvalidField  = errors.New("error invalid field")
+	ErrInvalidPostField  = errors.New("error invalid field")
 
 	// Favourite errors - User following
-	ErrUserNotFound = errors.New("error user id not found")
+	ErrUserNotFound       = errors.New("error user id not found")
+	ErrSelfFollow         = errors.New("error cannot follow yourself")
+	ErrAlreadyFollowing   = errors.New("error already following this user")
+	ErrNotFollowing       = errors.New("error not following this user")
+	ErrDatabaseOperation  = errors.New("error occurred during database operation")
+	ErrFollowStatusUpdate = errors.New("error failed to update follow status")
 
 	// SignUp errors
 	ErrEmailAlreadyExists    = errors.New("error email already exists")
@@ -32,4 +38,8 @@ var (
 	ErrTagNotFoundOrDeleted = errors.New("error one or more tags not found or deleted")
 	ErrInsertPostTags       = errors.New("error creating post tag")
 	ErrFetchPostDetail      = errors.New("error fetching post detail")
+	ErrPostNotFound         = errors.New("error post not found")
+
+	// Comment errors
+	ErrCommentNotFound = errors.New("error comment not found")
 )

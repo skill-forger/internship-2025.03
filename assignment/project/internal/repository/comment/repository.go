@@ -14,7 +14,12 @@ type repository struct {
 	db *gorm.DB
 }
 
-func (r repository) Select(request *ct.ListCommentRequest) ([]*model.Comment, int64, error) {
+// NewRepository returns a new implementation of repository.Comment
+func NewRepository(db *gorm.DB) repo.Comment {
+	return &repository{db: db}
+}
+
+func (r *repository) Select(request *ct.ListCommentRequest) ([]*model.Comment, int64, error) {
 	var total int64
 
 	// Count total parent comments
@@ -46,7 +51,35 @@ func (r repository) Select(request *ct.ListCommentRequest) ([]*model.Comment, in
 	return allComments, total, nil
 }
 
-// NewRepository returns a new implementation of repository.Comment
-func NewRepository(db *gorm.DB) repo.Comment {
-	return &repository{db: db}
+// Read finds and returns the comment model by id
+func (r *repository) Read(id int) (*model.Comment, error) {
+	var comment model.Comment
+	err := r.db.Preload("User").
+		Preload("Post").
+		Preload("ChildComments").
+		Preload("ChildComments.User").
+		First(&comment, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &comment, nil
+}
+
+// Insert creates a new comment in the database
+func (r *repository) Insert(comment *model.Comment) (*model.Comment, error) {
+	if err := r.db.Create(comment).Error; err != nil {
+		return nil, err
+	}
+	return comment, nil
+}
+
+// UpdateCommentByID updates an existing comment in the database
+func (r *repository) UpdateCommentByID(commentID int, updates map[string]interface{}) error {
+	query := r.db.Model(&model.Comment{}).Where("id = ?", commentID).Updates(updates)
+
+	if err := query.Error; err != nil {
+		return err
+	}
+
+	return nil
 }

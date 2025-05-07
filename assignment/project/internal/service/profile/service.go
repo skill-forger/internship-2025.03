@@ -27,3 +27,22 @@ func (s *service) GetByID(id int) (*ct.ProfileResponse, error) {
 
 	return prepareProfileResponse(user), nil
 }
+
+// Update executes the profile update logic
+func (s *service) Update(id int, req *ct.UpdateProfileRequest) (*ct.ProfileResponse, error) {
+	user, err := s.userRepo.Read(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Prepare updates user fields
+	updates := prepareUpdateProfile(user, req)
+
+	// Save updated user
+	updatedUser, err := s.userRepo.Update(user, updates)
+	if err != nil {
+		return nil, err
+	}
+
+	return prepareProfileResponse(updatedUser), nil
+}
