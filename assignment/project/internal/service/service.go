@@ -13,7 +13,7 @@ type Authentication interface {
 // Profile represents the service logic of Profile
 type Profile interface {
 	GetByID(int) (*ct.ProfileResponse, error)
-	GetDetailPost(int, int) (*ct.PostResponse, error)
+	GetPost(int, int) (*ct.PostResponse, error)
 	Update(int, *ct.UpdateProfileRequest) (*ct.ProfileResponse, error)
 	ChangePassword(int, *ct.ChangePasswordRequest) (*ct.ChangePasswordResponse, error)
 }

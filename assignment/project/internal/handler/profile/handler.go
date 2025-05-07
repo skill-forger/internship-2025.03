@@ -111,7 +111,7 @@ func (h *handler) GetPostDetail(e echo.Context) error {
 		return err
 	}
 
-	post, err := h.profileSvc.GetDetailPost(postID, ctxUser.ID)
+	post, err := h.profileSvc.GetPost(postID, ctxUser.ID)
 	if err != nil {
 		switch err {
 		case static.ErrPostOwner:

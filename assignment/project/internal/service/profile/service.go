@@ -94,8 +94,8 @@ func (s *service) ChangePassword(id int, req *ct.ChangePasswordRequest) (*ct.Cha
 	}, nil
 }
 
-// GetDetailPost executes the User get their own post detail retrieval logic
-func (s *service) GetDetailPost(postID, ctxUserID int) (*ct.PostResponse, error) {
+// GetPost executes the User get their own post detail retrieval logic
+func (s *service) GetPost(postID, ctxUserID int) (*ct.PostResponse, error) {
 	post, err := s.postRepo.ReadByCondition(map[string]any{
 		"id": postID,
 	}, "User", "Tags")
