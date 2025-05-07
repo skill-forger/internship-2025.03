@@ -11,12 +11,16 @@ import (
 // service represents the implementation of service.Profile
 type service struct {
 	userRepo repo.User
+	postRepo repo.Post
+	tagRepo  repo.Tag
 }
 
 // NewService returns a new implementation of service.Profile
-func NewService(userRepo repo.User) svc.Profile {
+func NewService(userRepo repo.User, postRepo repo.Post, tagRepo repo.Tag) svc.Profile {
 	return &service{
 		userRepo: userRepo,
+		postRepo: postRepo,
+		tagRepo:  tagRepo,
 	}
 }
 
@@ -88,4 +92,21 @@ func (s *service) ChangePassword(id int, req *ct.ChangePasswordRequest) (*ct.Cha
 	return &ct.ChangePasswordResponse{
 		Message: "Password changed successfully",
 	}, nil
+}
+
+// GetPost executes the User get their own post detail retrieval logic
+func (s *service) GetPost(postID, ctxUserID int) (*ct.PostResponse, error) {
+	post, err := s.postRepo.ReadByCondition(map[string]any{
+		"id": postID,
+	}, "User", "Tags")
+	if err != nil {
+		return nil, err
+	}
+
+	// Check ctxUser own the post
+	if ctxUserID != post.UserID {
+		return nil, static.ErrPostOwner
+	}
+
+	return preparePostResponse(post), nil
 }

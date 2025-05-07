@@ -5,6 +5,7 @@ import "errors"
 var (
 	// User Permission errors
 	ErrUserPermission = errors.New("error user do not have permission")
+	ErrPostOwner      = errors.New("error user do not own the requested post")
 
 	// Tags errors
 	ErrReadTagID   = errors.New("error get tag detail")
@@ -20,8 +21,8 @@ var (
 	ErrFollowStatusUpdate = errors.New("error failed to update follow status")
 
 	// Favourite errors - Post favourites
-	ErrGetFavouritePosts    = errors.New("error retrieving favourite posts")
-	
+	ErrGetFavouritePosts = errors.New("error retrieving favourite posts")
+
 	// SignUp errors
 	ErrEmailAlreadyExists    = errors.New("error email already exists")
 	ErrInvalidEmail          = errors.New("error invalid email format")
