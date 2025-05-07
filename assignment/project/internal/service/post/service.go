@@ -37,15 +37,6 @@ func (s *service) GetByID(id int) (*ct.PostResponse, error) {
 
 	response := preparePostResponse(post)
 
-	// Add user data
-	response.User = prepareProfileResponse(post.User)
-
-	// Add tags data
-	response.Tags = make([]*ct.TagResponse, len(post.Tags))
-	for i, tag := range post.Tags {
-		response.Tags[i] = prepareTagDetailResponse(tag)
-	}
-
 	return response, nil
 }
 
@@ -59,15 +50,6 @@ func (s *service) List(filter *ct.ListPostRequest) (*ct.ListPostResponse, error)
 	responses := make([]*ct.PostResponse, len(posts))
 	for i, post := range posts {
 		response := preparePostResponse(post)
-
-		// Add user data
-		response.User = prepareProfileResponse(post.User)
-
-		// Add tags data
-		response.Tags = make([]*ct.TagResponse, len(post.Tags))
-		for j, tag := range post.Tags {
-			response.Tags[j] = prepareTagDetailResponse(tag)
-		}
 
 		responses[i] = response
 	}
@@ -155,4 +137,44 @@ func (s *service) generateSlug(title string) string {
 		}
 	}
 	return fmt.Sprintf("%s-%d", baseSlug, maxSuffix+1)
+}
+
+// Update updates a post by its ID
+func (s *service) Update(ctxUserID int, updatePost *ct.UpdatePostRequest) (*ct.PostResponse, error) {
+	post, err := s.postRepo.ReadByCondition(map[string]any{
+		"id": updatePost.ID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Check ctxUser permission to update
+	if ctxUserID != post.UserID {
+		return nil, static.ErrUserPermission
+	}
+
+	tags, err := s.tagRepo.Select(updatePost.Tags)
+	if err != nil {
+		return nil, err
+	}
+
+	updatePostErr := s.postRepo.UpdatePost(post, prepareUpdateMap(updatePost))
+	if updatePostErr != nil {
+		return nil, updatePostErr
+	}
+
+	updatePostTagErr := s.postRepo.UpdatePostTag(post, tags)
+	if updatePostTagErr != nil {
+		return nil, updatePostTagErr
+	}
+
+	// Reload updated post
+	post, err = s.postRepo.ReadByCondition(map[string]any{
+		"id": post.ID,
+	}, "User", "Tags")
+	if err != nil {
+		return nil, err
+	}
+
+	return preparePostResponse(post), nil
 }

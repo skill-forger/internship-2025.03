@@ -46,10 +46,21 @@ func prepareTagDetailResponse(tag *model.Tag) *ct.TagResponse {
 	if tag == nil {
 		return nil
 	}
-	return &ct.TagResponse{
+
+	data := &ct.TagResponse{
 		ID:   tag.ID,
 		Name: tag.Name,
 	}
+
+	if tag.CreatedAt != nil {
+		data.CreatedAt = tag.CreatedAt.Format(time.RFC3339)
+	}
+
+	if tag.UpdatedAt != nil {
+		data.UpdatedAt = tag.UpdatedAt.Format(time.RFC3339)
+	}
+
+	return data
 }
 
 // prepareProfileResponse transform model.User to contract.ProfileResponse
@@ -57,7 +68,8 @@ func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
 	if user == nil {
 		return nil
 	}
-	return &ct.ProfileResponse{
+
+	data := &ct.ProfileResponse{
 		ID:           user.ID,
 		FirstName:    user.FirstName,
 		LastName:     user.LastName,
@@ -66,4 +78,30 @@ func prepareProfileResponse(user *model.User) *ct.ProfileResponse {
 		ProfileImage: user.ProfileImage,
 		Biography:    user.Biography,
 	}
+
+	if user.CreatedAt != nil {
+		data.CreatedAt = user.CreatedAt.Format(time.RFC3339)
+	}
+
+	if user.UpdatedAt != nil {
+		data.UpdatedAt = user.UpdatedAt.Format(time.RFC3339)
+	}
+
+	return data
+}
+
+func prepareUpdateMap(updateReq *ct.UpdatePostRequest) map[string]any {
+	updateMap := make(map[string]any)
+
+	if updateReq.Title != "" {
+		updateMap["title"] = updateReq.Title
+	}
+
+	if updateReq.Body != "" {
+		updateMap["body"] = updateReq.Body
+	}
+
+	updateMap["is_published"] = updateReq.IsPublished
+
+	return updateMap
 }

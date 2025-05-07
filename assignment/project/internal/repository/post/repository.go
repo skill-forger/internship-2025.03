@@ -169,3 +169,13 @@ func (r *repository) ReadByCondition(condition map[string]interface{}, preloads 
 
 	return &post, nil
 }
+
+// UpdatePost updates the post model in the database
+func (r *repository) UpdatePost(post *model.Post, updatePost map[string]interface{}) error {
+	return r.db.Model(&post).Omit("user_id").Updates(updatePost).Error
+}
+
+// UpdatePostTag updates the post_tag table by association with post
+func (r *repository) UpdatePostTag(post *model.Post, tags []*model.Tag) error {
+	return r.db.Model(&post).Association("Tags").Replace(tags)
+}
