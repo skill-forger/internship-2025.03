@@ -58,3 +58,23 @@ func (r *repository) SelectFavouritePosts(userID int) ([]*model.Post, error) {
 		Find(&posts).Error
 	return posts, err
 }
+
+// IsFavourite checks if a post is marked as favourite by the user
+func (r *repository) IsFavourite(userID, postID int) (bool, error) {
+	var count int64
+	err := r.db.Model(&model.FavoritePost{}).Where("user_id = ? AND post_id = ?", userID, postID).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+// Favourite marks a post as favourite for a user
+func (r *repository) Favourite(favourite *model.FavoritePost) error {
+	return r.db.Create(favourite).Error
+}
+
+// Unfavourite removes a post from a user's favourites
+func (r *repository) Unfavourite(userID, postID int) error {
+	return r.db.Where("user_id = ? AND post_id = ?", userID, postID).Delete(&model.FavoritePost{}).Error
+}

@@ -104,9 +104,70 @@ func (s *service) ListUserPosts(userID int) (*ct.ListPostResponse, error) {
 	return nil, nil
 }
 
-// Favourite handles favorite/unfavorite operations
-func (s *service) Favourite(userID, postID int, isFavourite bool) (*ct.PostFavouriteStatusResponse, error) {
-	return nil, nil
+// UpdateFavouriteStatus handles favorite/unfavorite operations
+func (s *service) UpdateFavouriteStatus(userID int, req *ct.PostFavouriteRequest) (*ct.PostFavouriteStatusResponse, error) {
+	postID := req.PostID
+
+	// Check if post exists
+	_, err := s.postRepo.Read(postID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, static.ErrPostNotFound
+		}
+		return nil, static.ErrDatabaseOperation
+	}
+
+	// Check current favourite status
+	isAlreadyFavourited, err := s.favouriteRepo.IsFavourite(userID, postID)
+	if err != nil {
+		return nil, static.ErrDatabaseOperation
+	}
+
+	// Handle different actions
+	switch req.Action {
+	case static.Favourite:
+		if isAlreadyFavourited {
+			return &ct.PostFavouriteStatusResponse{
+				PostID:      postID,
+				IsFavourite: true,
+			}, nil
+		}
+
+		// Add to favourites if not already there
+		favourite := &model.FavoritePost{
+			UserID: userID,
+			PostID: postID,
+		}
+		if err = s.favouriteRepo.Favourite(favourite); err != nil {
+			return nil, static.ErrFavouriteStatusUpdate
+		}
+
+		return &ct.PostFavouriteStatusResponse{
+			PostID:      postID,
+			IsFavourite: true,
+		}, nil
+
+	case static.Unfavourite:
+		if !isAlreadyFavourited {
+			return &ct.PostFavouriteStatusResponse{
+				PostID:      postID,
+				IsFavourite: false,
+			}, nil
+		}
+
+		// Remove from favourites if it's there
+		if err = s.favouriteRepo.Unfavourite(userID, postID); err != nil {
+			return nil, static.ErrFavouriteStatusUpdate
+		}
+
+		return &ct.PostFavouriteStatusResponse{
+			PostID:      postID,
+			IsFavourite: false,
+		}, nil
+
+	default:
+		return nil, static.ErrUnsupportedFavouriteAction
+	}
 }
 
 // ListFavouritePosts returns all posts that a user has favorited
