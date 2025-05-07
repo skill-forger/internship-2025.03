@@ -47,6 +47,6 @@ type Favourite interface {
 	ListFollowingUsers(userID int) (*ct.ListProfileResponse, error)
 	ListUserPosts(userID int) (*ct.ListPostResponse, error)
 	// Post favorite operations
-	Favourite(userID, postID int, isFavourite bool) (*ct.PostFavouriteStatusResponse, error)
+	UpdateFavouriteStatus(userID int, req *ct.PostFavouriteRequest) (*ct.PostFavouriteStatusResponse, error)
 	ListFavouritePosts(userID int) (*ct.ListPostResponse, error)
 }

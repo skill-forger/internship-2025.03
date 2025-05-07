@@ -145,17 +145,29 @@ func (h *handler) ListBloggerPosts(e echo.Context) error {
 func (h *handler) UpdatePost(e echo.Context) error {
 	var req contract.PostFavouriteRequest
 	if err := e.Bind(&req); err != nil {
-		return e.JSON(http.StatusBadRequest, map[string]string{
-			"error": "Invalid request payload",
-		})
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
 	}
 
-	// Placeholder implementation
-	isFavourite := req.Action == static.Favourite
-	return e.JSON(http.StatusOK, &contract.PostFavouriteStatusResponse{
-		PostID:      req.PostID,
-		IsFavourite: isFavourite,
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	resp, err := h.favouriteSvc.UpdateFavouriteStatus(ctxUser.ID, &req)
+	if err != nil {
+		switch err {
+		case static.ErrPostNotFound:
+			return echo.NewHTTPError(http.StatusNotFound, "Post not found")
+		case static.ErrAlreadyFavourite:
+			return echo.NewHTTPError(http.StatusBadRequest, "Post already in favourites")
+		case static.ErrNotFavourite:
+			return echo.NewHTTPError(http.StatusBadRequest, "Post not in favourites")
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update favourite status")
+		}
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }
 
 // ListPosts handles the request to get all posts from favourite list

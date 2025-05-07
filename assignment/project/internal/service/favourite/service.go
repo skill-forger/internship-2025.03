@@ -104,9 +104,52 @@ func (s *service) ListUserPosts(userID int) (*ct.ListPostResponse, error) {
 	return nil, nil
 }
 
-// Favourite handles favorite/unfavorite operations
-func (s *service) Favourite(userID, postID int, isFavourite bool) (*ct.PostFavouriteStatusResponse, error) {
-	return nil, nil
+// UpdateFavouriteStatus handles favorite/unfavorite operations
+func (s *service) UpdateFavouriteStatus(userID int, req *ct.PostFavouriteRequest) (*ct.PostFavouriteStatusResponse, error) {
+	postID := req.PostID
+	isFavourite := req.Action == static.Favourite
+
+	// Check if post exists
+	_, err := s.postRepo.Read(postID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, static.ErrPostNotFound
+		}
+		return nil, static.ErrDatabaseOperation
+	}
+
+	// Check current favourite status
+	isAlreadyFavourited, err := s.favouriteRepo.IsFavourite(userID, postID)
+	if err != nil {
+		return nil, static.ErrDatabaseOperation
+	}
+
+	// Handle favouriting/unfavouriting based on current status
+	if isFavourite {
+		if isAlreadyFavourited {
+			return nil, static.ErrAlreadyFavourite
+		}
+
+		favourite := &model.FavoritePost{
+			UserID: userID,
+			PostID: postID,
+		}
+		err = s.favouriteRepo.Favourite(favourite)
+	} else {
+		if !isAlreadyFavourited {
+			return nil, static.ErrNotFavourite
+		}
+		err = s.favouriteRepo.Unfavourite(userID, postID)
+	}
+
+	if err != nil {
+		return nil, static.ErrFavouriteStatusUpdate
+	}
+
+	return &ct.PostFavouriteStatusResponse{
+		PostID:      postID,
+		IsFavourite: isFavourite,
+	}, nil
 }
 
 // ListFavouritePosts returns all posts that a user has favorited

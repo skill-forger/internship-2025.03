@@ -55,4 +55,7 @@ type Favourite interface {
 
 	// Post favourite operations
 	SelectFavouritePosts(userID int) ([]*model.Post, error)
+	IsFavourite(userID, postID int) (bool, error)
+	Favourite(*model.FavoritePost) error
+	Unfavourite(userID, postID int) error
 }

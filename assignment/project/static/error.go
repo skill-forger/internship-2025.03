@@ -21,7 +21,10 @@ var (
 	ErrFollowStatusUpdate = errors.New("error failed to update follow status")
 
 	// Favourite errors - Post favourites
-	ErrGetFavouritePosts = errors.New("error retrieving favourite posts")
+	ErrGetFavouritePosts     = errors.New("error retrieving favourite posts")
+	ErrAlreadyFavourite      = errors.New("error post already in favourites")
+	ErrNotFavourite          = errors.New("error post not in favourites")
+	ErrFavouriteStatusUpdate = errors.New("error failed to update favourite status")
 
 	// SignUp errors
 	ErrEmailAlreadyExists    = errors.New("error email already exists")
