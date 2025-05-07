@@ -18,6 +18,17 @@ func prepareCommentModel(request *ct.CreateCommentRequest, userID int, post *mod
 	}
 }
 
+// prepareUpdateComment updates fields of a Comment model and prepares the update map
+func prepareUpdateComment(o *model.Comment, req *ct.UpdateCommentRequest) map[string]interface{} {
+	if req.Content != "" {
+		o.Content = req.Content
+	}
+
+	return map[string]interface{}{
+		"content": o.Content,
+	}
+}
+
 // prepareListTagResponse transforms the data and returns the List Tag Response
 func prepareListTagResponse(o []*model.Tag) []*ct.TagResponse {
 	data := make([]*ct.TagResponse, 0, len(o))

@@ -138,7 +138,37 @@ func (h *handler) Create(e echo.Context) error {
 // @Failure     400 {object} error
 // @Router      /comments/{commentId} [put]
 func (h *handler) Update(e echo.Context) error {
-	return nil
+	// Bind request body
+	req := new(ct.UpdateCommentRequest)
+	if err := e.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body")
+	}
+
+	// Validate content
+	if len(strings.TrimSpace(req.Content)) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "content is required")
+	}
+
+	// Get user ID from context
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	// Update comment
+	updatedComment, err := h.commentSvc.Update(req, ctxUser.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, static.ErrCommentNotFound):
+			return echo.NewHTTPError(http.StatusNotFound, static.ErrCommentNotFound)
+		case errors.Is(err, static.ErrUserPermission):
+			return echo.NewHTTPError(http.StatusForbidden, static.ErrUserPermission)
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	return e.JSON(http.StatusOK, updatedComment)
 }
 
 // Delete handles the request to delete a comment

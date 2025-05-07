@@ -93,3 +93,27 @@ func (s *service) Create(request *ct.CreateCommentRequest, userID int) (*ct.Comm
 
 	return prepareCommentResponse(commentPreloadResponse), nil
 }
+
+func (s *service) Update(req *ct.UpdateCommentRequest, userID int) (*ct.CommentResponse, error) {
+	// Get comment by ID with preloaded data
+	comment, err := s.commentRepo.Read(req.ID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, static.ErrCommentNotFound
+		}
+		return nil, err
+	}
+
+	// Check if user is the owner of the comment
+	if comment.UserID != userID {
+		return nil, static.ErrUserPermission
+	}
+
+	// Update comment
+	updateCommentErr := s.commentRepo.UpdateCommentByID(req.ID, prepareUpdateComment(comment, req))
+	if updateCommentErr != nil {
+		return nil, err
+	}
+
+	return prepareCommentResponse(comment), nil
+}
