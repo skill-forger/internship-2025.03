@@ -124,10 +124,17 @@ func (h *handler) ListBloggers(e echo.Context) error {
 //	@Failure		400	{object}	error
 //	@Router			/favorites/bloggers/posts [get]
 func (h *handler) ListBloggerPosts(e echo.Context) error {
-	// Placeholder implementation
-	return e.JSON(http.StatusOK, &contract.ListPostResponse{
-		Posts: []*contract.PostResponse{},
-	})
+	ctxUser, err := hdl.GetContextUser(e)
+	if err != nil {
+		return err
+	}
+
+	resp, err := h.favouriteSvc.ListUserPosts(ctxUser.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to retrieve posts from followed bloggers")
+	}
+
+	return e.JSON(http.StatusOK, resp)
 }
 
 // UpdatePost handles adding/removing a post from favourite list
