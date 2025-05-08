@@ -49,7 +49,6 @@ func (s *service) ListFollowingUsers(userID int) (*ct.ListProfileResponse, error
 // UpdateFollowStatus handles follow/unfollow operations
 func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (*ct.BloggerFollowStatusResponse, error) {
 	targetUserID := req.UserID
-	isFollow := req.Action == static.Follow
 
 	// Check if target user exists
 	_, err := s.userRepo.Read(targetUserID)
@@ -71,32 +70,51 @@ func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (
 		return nil, static.ErrDatabaseOperation
 	}
 
-	// Handle follow/unfollow based on current status
-	if isFollow {
+	// Handle different actions
+	switch req.Action {
+	case static.Follow:
 		if isFollowing {
-			return nil, static.ErrAlreadyFollowing
+			return &ct.BloggerFollowStatusResponse{
+				UserID:      targetUserID,
+				IsFollowing: true,
+			}, nil
 		}
 
+		// Add to following list if not already there
 		follow := &model.FollowUser{
 			UserID:       userID,
 			FollowUserID: targetUserID,
 		}
-		err = s.favouriteRepo.Follow(follow)
-	} else {
-		if !isFollowing {
-			return nil, static.ErrNotFollowing
+		if err = s.favouriteRepo.Follow(follow); err != nil {
+			return nil, static.ErrFollowStatusUpdate
 		}
-		err = s.favouriteRepo.Unfollow(userID, targetUserID)
-	}
 
-	if err != nil {
-		return nil, static.ErrFollowStatusUpdate
-	}
+		return &ct.BloggerFollowStatusResponse{
+			UserID:      targetUserID,
+			IsFollowing: true,
+		}, nil
 
-	return &ct.BloggerFollowStatusResponse{
-		UserID:      targetUserID,
-		IsFollowing: isFollow,
-	}, nil
+	case static.Unfollow:
+		if !isFollowing {
+			return &ct.BloggerFollowStatusResponse{
+				UserID:      targetUserID,
+				IsFollowing: false,
+			}, nil
+		}
+
+		// Remove from following list if it's there
+		if err = s.favouriteRepo.Unfollow(userID, targetUserID); err != nil {
+			return nil, static.ErrFollowStatusUpdate
+		}
+
+		return &ct.BloggerFollowStatusResponse{
+			UserID:      targetUserID,
+			IsFollowing: false,
+		}, nil
+
+	default:
+		return nil, static.ErrUnsupportedFollowAction
+	}
 }
 
 // ListUserPosts returns all posts from bloggers that a user is following

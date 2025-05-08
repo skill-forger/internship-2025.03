@@ -17,12 +17,11 @@ var (
 	ErrTagNotFound = errors.New("error tag id not found")
 
 	// Favourite errors - User following
-	ErrUserNotFound       = errors.New("error user id not found")
-	ErrSelfFollow         = errors.New("error cannot follow yourself")
-	ErrAlreadyFollowing   = errors.New("error already following this user")
-	ErrNotFollowing       = errors.New("error not following this user")
-	ErrDatabaseOperation  = errors.New("error occurred during database operation")
-	ErrFollowStatusUpdate = errors.New("error failed to update follow status")
+	ErrUserNotFound            = errors.New("error user id not found")
+	ErrSelfFollow              = errors.New("error cannot follow yourself")
+	ErrDatabaseOperation       = errors.New("error occurred during database operation")
+	ErrFollowStatusUpdate      = errors.New("error failed to update follow status")
+	ErrUnsupportedFollowAction = errors.New("error unsupported follow action")
 
 	// Favourite errors - Post favourites
 	ErrGetFavouritePosts          = errors.New("error retrieving favourite posts")
