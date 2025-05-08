@@ -71,10 +71,8 @@ func (h *handler) UpdateBlogger(e echo.Context) error {
 			return echo.NewHTTPError(http.StatusNotFound, "User not found")
 		case static.ErrSelfFollow:
 			return echo.NewHTTPError(http.StatusBadRequest, "Cannot follow yourself")
-		case static.ErrAlreadyFollowing:
-			return echo.NewHTTPError(http.StatusBadRequest, "Already following this user")
-		case static.ErrNotFollowing:
-			return echo.NewHTTPError(http.StatusBadRequest, "Not following this user")
+		case static.ErrUnsupportedFollowAction:
+			return echo.NewHTTPError(http.StatusBadRequest, "Unsupported follow action")
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update follow status")
 		}
