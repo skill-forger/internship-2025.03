@@ -1,17 +1,16 @@
 package profile
 
 import (
-	"net/http"
-	"strconv"
-
-	"github.com/labstack/echo/v4"
-
 	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
 	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
 	"golang-project/server"
 	"golang-project/static"
+	"net/http"
+	"strconv"
+
+	"github.com/labstack/echo/v4"
 )
 
 // handler represents the implementation of handler.Profile
@@ -86,17 +85,7 @@ func (h *handler) Get(e echo.Context) error {
 //	@Failure      401  {object}  error
 //	@Router       /profile/posts [get]
 func (h *handler) ListBloggerPosts(e echo.Context) error {
-	// Get the is_published filter from query params and convert to *bool
-	var isPublishedFilter *bool
-	if param := e.QueryParam("is_published"); param != "" {
-		if param == "true" {
-			val := true
-			isPublishedFilter = &val
-		} else if param == "false" {
-			val := false
-			isPublishedFilter = &val
-		}
-	}
+	param := e.QueryParam("is_published")
 
 	// Get the authenticated user
 	ctxUser, err := hdl.GetContextUser(e)
@@ -105,7 +94,7 @@ func (h *handler) ListBloggerPosts(e echo.Context) error {
 	}
 
 	// Call the service with the user ID and filter
-	res, err := h.profileSvc.ListBloggerPosts(ctxUser.ID, isPublishedFilter)
+	res, err := h.profileSvc.ListBloggerPosts(ctxUser.ID, param)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error retrieving blogger posts")
 	}

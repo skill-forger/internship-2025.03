@@ -16,7 +16,7 @@ type Profile interface {
 	GetPost(int, int) (*ct.PostResponse, error)
 	Update(int, *ct.UpdateProfileRequest) (*ct.ProfileResponse, error)
 	ChangePassword(int, *ct.ChangePasswordRequest) (*ct.ChangePasswordResponse, error)
-	ListBloggerPosts(id int, isPublishedFilter *bool) (*ct.ListPostResponse, error)
+	ListBloggerPosts(id int, isPublishedFilter string) (*ct.ListPostResponse, error)
 }
 
 type Tag interface {

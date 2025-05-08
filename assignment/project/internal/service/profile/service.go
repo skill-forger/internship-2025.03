@@ -6,6 +6,7 @@ import (
 	svc "golang-project/internal/service"
 	"golang-project/static"
 	"golang-project/util/hashing"
+	"strconv"
 )
 
 // service represents the implementation of service.Profile
@@ -112,7 +113,16 @@ func (s *service) GetPost(postID, ctxUserID int) (*ct.PostResponse, error) {
 }
 
 // ListBloggerPosts executes the User get their own posts retrieval logic
-func (s *service) ListBloggerPosts(id int, isPublishedFilter *bool) (*ct.ListPostResponse, error) {
+func (s *service) ListBloggerPosts(id int, isPublishedParam string) (*ct.ListPostResponse, error) {
+	var isPublishedFilter *bool
+	if isPublishedParam != "" {
+		if b, err := strconv.ParseBool(isPublishedParam); err == nil {
+			isPublishedFilter = &b
+		} else {
+			return nil, static.ErrParamInvalid
+		}
+	}
+
 	posts, err := s.userRepo.ReadOwnPosts(id, isPublishedFilter)
 	if err != nil {
 		return nil, static.ErrListBloggerPosts
@@ -120,8 +130,7 @@ func (s *service) ListBloggerPosts(id int, isPublishedFilter *bool) (*ct.ListPos
 
 	responses := make([]*ct.PostResponse, 0, len(posts))
 	for _, post := range posts {
-		res := preparePostResponse(post)
-		responses = append(responses, res)
+		responses = append(responses, preparePostResponse(post))
 	}
 
 	return &ct.ListPostResponse{

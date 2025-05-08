@@ -9,6 +9,7 @@ var (
 
 	//Profile errors
 	ErrListBloggerPosts = errors.New("error retrieving blogger posts")
+	ErrParamInvalid     = errors.New("error invalid param")
 
 	// Tags errors
 	ErrReadTagID   = errors.New("error get tag detail")
