@@ -1,12 +1,13 @@
 package profile
 
 import (
+	"strconv"
+
 	ct "golang-project/internal/contract"
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
 	"golang-project/static"
 	"golang-project/util/hashing"
-	"strconv"
 )
 
 // service represents the implementation of service.Profile

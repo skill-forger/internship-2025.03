@@ -1,16 +1,17 @@
 package profile
 
 import (
+	"net/http"
+	"strconv"
+
+	"github.com/labstack/echo/v4"
+
 	ct "golang-project/internal/contract"
 	hdl "golang-project/internal/handler"
 	"golang-project/internal/middleware"
 	svc "golang-project/internal/service"
 	"golang-project/server"
 	"golang-project/static"
-	"net/http"
-	"strconv"
-
-	"github.com/labstack/echo/v4"
 )
 
 // handler represents the implementation of handler.Profile

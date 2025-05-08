@@ -1,9 +1,10 @@
 package profile
 
 import (
+	"time"
+
 	ct "golang-project/internal/contract"
 	"golang-project/internal/model"
-	"time"
 )
 
 // prepareSignInResponse transforms the data and returns the Profile Response

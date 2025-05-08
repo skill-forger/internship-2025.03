@@ -1,10 +1,10 @@
 package user
 
 import (
+	"gorm.io/gorm"
+
 	"golang-project/internal/model"
 	repo "golang-project/internal/repository"
-
-	"gorm.io/gorm"
 )
 
 // repository represents the implementation of repository.User
