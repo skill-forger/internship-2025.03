@@ -61,3 +61,25 @@ func (r *repository) Update(o *model.User, updates map[string]interface{}) (*mod
 
 	return o, nil
 }
+
+func (r *repository) ReadOwnPosts(id int, isPublishedFilter *bool) ([]*model.Post, error) {
+	var posts []*model.Post
+
+	// Start building the query
+	query := r.db.Where("user_id = ?", id)
+
+	// Add filter by publication status if provided
+	if isPublishedFilter != nil {
+		query = query.Where("is_published = ?", *isPublishedFilter)
+	}
+
+	// Execute the query with preloads
+	if err := query.
+		Preload("Tags").
+		Preload("User").
+		Find(&posts).Error; err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}

@@ -1,6 +1,8 @@
 package profile
 
 import (
+	"strconv"
+
 	ct "golang-project/internal/contract"
 	repo "golang-project/internal/repository"
 	svc "golang-project/internal/service"
@@ -109,4 +111,30 @@ func (s *service) GetPost(postID, ctxUserID int) (*ct.PostResponse, error) {
 	}
 
 	return preparePostResponse(post), nil
+}
+
+// ListBloggerPosts executes the User get their own posts retrieval logic
+func (s *service) ListBloggerPosts(id int, isPublishedParam string) (*ct.ListPostResponse, error) {
+	var isPublishedFilter *bool
+	if isPublishedParam != "" {
+		if b, err := strconv.ParseBool(isPublishedParam); err == nil {
+			isPublishedFilter = &b
+		} else {
+			return nil, static.ErrParamInvalid
+		}
+	}
+
+	posts, err := s.userRepo.ReadOwnPosts(id, isPublishedFilter)
+	if err != nil {
+		return nil, static.ErrListBloggerPosts
+	}
+
+	responses := make([]*ct.PostResponse, 0, len(posts))
+	for _, post := range posts {
+		responses = append(responses, preparePostResponse(post))
+	}
+
+	return &ct.ListPostResponse{
+		Posts: responses,
+	}, nil
 }

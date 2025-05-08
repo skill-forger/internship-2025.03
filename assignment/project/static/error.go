@@ -7,6 +7,10 @@ var (
 	ErrUserPermission = errors.New("error user do not have permission")
 	ErrPostOwner      = errors.New("error user do not own the requested post")
 
+	//Profile errors
+	ErrListBloggerPosts = errors.New("error retrieving blogger posts")
+	ErrParamInvalid     = errors.New("error invalid param")
+
 	// Tags errors
 	ErrReadTagID   = errors.New("error get tag detail")
 	ErrHasPosts    = errors.New("error delete tag because it has associated posts")
