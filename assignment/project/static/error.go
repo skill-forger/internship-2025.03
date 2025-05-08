@@ -26,6 +26,7 @@ var (
 
 	// Favourite errors - Post favourites
 	ErrGetFavouritePosts          = errors.New("error retrieving favourite posts")
+	ErrGetFollowedBloggerPosts    = errors.New("error retrieving followed blogger posts")
 	ErrFavouriteStatusUpdate      = errors.New("error failed to update favourite status")
 	ErrUnsupportedFavouriteAction = errors.New("error unsupported favourite action")
 

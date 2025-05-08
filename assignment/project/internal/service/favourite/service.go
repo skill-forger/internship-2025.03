@@ -101,7 +101,12 @@ func (s *service) UpdateFollowStatus(userID int, req *ct.BloggerFollowRequest) (
 
 // ListUserPosts returns all posts from bloggers that a user is following
 func (s *service) ListUserPosts(userID int) (*ct.ListPostResponse, error) {
-	return nil, nil
+	posts, err := s.favouriteRepo.SelectFollowingUsersPosts(userID)
+	if err != nil {
+		return nil, static.ErrGetFollowedBloggerPosts
+	}
+
+	return prepareListPostResponse(posts), nil
 }
 
 // UpdateFavouriteStatus handles favorite/unfavorite operations

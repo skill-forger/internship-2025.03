@@ -53,6 +53,7 @@ type Favourite interface {
 	SelectFollowing(userID int) ([]*model.User, error)
 	Follow(*model.FollowUser) error
 	Unfollow(userID, followUserID int) error
+	SelectFollowingUsersPosts(userID int) ([]*model.Post, error)
 
 	// Post favourite operations
 	SelectFavouritePosts(userID int) ([]*model.Post, error)

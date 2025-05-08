@@ -47,6 +47,19 @@ func (r *repository) Unfollow(userID, followUserID int) error {
 	return r.db.Where("user_id = ? AND follow_user_id = ?", userID, followUserID).Delete(&model.FollowUser{}).Error
 }
 
+// SelectFollowingUsersPosts returns all published posts from users that the given user is following
+func (r *repository) SelectFollowingUsersPosts(userID int) ([]*model.Post, error) {
+	var posts []*model.Post
+	err := r.db.Model(&model.Post{}).
+		Preload("User").
+		Preload("Tags", "deleted_at IS NULL").
+		Joins("JOIN follow_user ON posts.user_id = follow_user.follow_user_id").
+		Where("follow_user.user_id = ? AND posts.is_published = ?", userID, true).
+		Order("posts.created_at DESC").
+		Find(&posts).Error
+	return posts, err
+}
+
 // SelectFavouritePosts returns all posts that the given user has marked as favourite
 func (r *repository) SelectFavouritePosts(userID int) ([]*model.Post, error) {
 	var posts []*model.Post
